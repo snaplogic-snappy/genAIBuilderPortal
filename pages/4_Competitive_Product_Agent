@@ -7,10 +7,10 @@ from dotenv import dotenv_values
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline
-URL = env["SL_HR_TASK_URL"]
-BEARER_TOKEN = env["SL_HR_TASK_TOKEN"]
+URL = env["SL_CPA_TASK_URL"]
+BEARER_TOKEN = env["SL_CPA_TASK_TOKEN"]
 timeout = int(env["SL_TASK_TIMEOUT"])
-namespace = env["SL_HR_TASK_NAMESPACE"]
+namespace = env["SL_CPA_TASK_NAMESPACE"]
 # Streamlit Page Properties
 page_title=env["HR_PAGE_TITLE"]
 title=env["HR_TITLE"]
@@ -29,19 +29,18 @@ st.title(title)
 
 st.markdown(
     """  
-    ### This is a HR Chatbot demo that allows employees to ask HR questions 
-    Examples 
-    - When do I get paid ?
-    - Do I get a bonus ?
-    - What is the expense policy ?
+    ### This is a Scraped Product Data Ddemo that allows employees to quickly find information about competing Cycling products
+    - Carbon Fiber Frames ?
+    - Most expensive grip tape ?
+    - weight of carbon fiber bikes ?
  """)
 
 # Initialize chat history
-if "hr_messages" not in st.session_state:
-    st.session_state.hr_messages = []
+if "cpa_messages" not in st.session_state:
+    st.session_state.cpa_messages = []
 
 # Display chat messages from history on app rerun
-for message in st.session_state.hr_messages:
+for message in st.session_state.cpa_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
@@ -50,7 +49,7 @@ prompt = st.chat_input("Ask me anything")
 if prompt:
     st.chat_message("user").markdown(prompt)
     # Add user message to chat history
-    st.session_state.hr_messages.append({"role": "user", "content": prompt})
+    st.session_state.cpa_messages.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
         params={'namespace': namespace}
         data = {"prompt" : prompt}
@@ -71,12 +70,12 @@ if prompt:
             # with st.chat_message("assistant"):
             #     st.markdown(result)
             if 'choices' in result:
-                response=result['choices'][0]['message']['content'].replace("NEWLINE ", "**") + "**"
+                response=result['completion'].replace("NEWLINE ", "**") + "**"
                 # Display assistant response in chat message container
                 with st.chat_message("assistant"):
                     typewriter(text=response, speed=10)
                 # Add assistant response to chat history
-                st.session_state.hr_messages.append({"role": "assistant", "content": response})
+                st.session_state.cpa_messages.append({"role": "assistant", "content": response})
             else:
                 with st.chat_message("assistant"):
                     st.error(f"❌ Error in the SnapLogic API response")
