@@ -66,7 +66,7 @@ if prompt:
         )
 
        # if response.status_code==200:
-          %  result = response.json()
+        %  result = response.json()
         with st.chat_message("assistant"):
             st.markdown(result)
           #  if ['entity'][0]['completion'] in result:
