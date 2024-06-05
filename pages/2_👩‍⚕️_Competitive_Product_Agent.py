@@ -3,7 +3,6 @@ import requests
 import time
 from dotenv import dotenv_values
 
-
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline
@@ -12,9 +11,8 @@ BEARER_TOKEN = env["SL_CPA_TASK_TOKEN"]
 timeout = int(env["SL_TASK_TIMEOUT"])
 namespace = env["SL_CPA_TASK_NAMESPACE"]
 # Streamlit Page Properties
-page_title=env["CPA_PAGE_TITLE"]
-title=env["CPA_TITLE"]
-
+page_title = env["CPA_PAGE_TITLE"]
+title = env["CPA_TITLE"]
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
@@ -51,8 +49,8 @@ if prompt:
     # Add user message to chat history
     st.session_state.cpa_messages.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
-        params={'namespace': namespace}
-        data = {"prompt" : prompt}
+        params = {'namespace': namespace}
+        data = {"prompt": prompt}
         headers = {
             'Authorization': f'Bearer {BEARER_TOKEN}'
         }
@@ -65,23 +63,18 @@ if prompt:
             verify=False
         )
 
-        if response.status_code==200:
+        if response.status_code == 200:
             result = response.json()
-            #with st.chat_message("assistant"):
-                #typewriter(text=response, speed=10)
             if isinstance(result, list) and len(result) > 0 and "completion" in result[0]:
                 response_text = result[0]["completion"].replace("NEWLINE ", "\n") + "\n"
-            #if ['entity'][0]['completion'] in result:
-                #response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
-                 #Display assistant response in chat message container
+                # Display assistant response in chat message container
                 with st.chat_message("assistant"):
-                    typewriter(text=response, speed=10)
-                 #Add assistant response to chat history
-                st.session_state.cpa_messages.append({"role": "assistant", "content": response})
+                    typewriter(text=response_text, speed=10)
+                # Add assistant response to chat history
+                st.session_state.cpa_messages.append({"role": "assistant", "content": response_text})
             else:
                 with st.chat_message("assistant"):
-                    st.error(f"❌ Error in the SnapLogic API response")
-                    
+                    st.error("❌ Error in the SnapLogic API response")
         else:
             with st.chat_message("assistant"):
                 st.error(f"❌ Error while calling the SnapLogic API")
