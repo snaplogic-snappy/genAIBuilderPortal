@@ -59,7 +59,7 @@ if prompt:
         response = requests.post(
             url=URL,
             params=params,
-            data=data,
+            json=data,
             headers=headers,
             timeout=timeout,
             verify=False
@@ -67,18 +67,20 @@ if prompt:
 
         if response.status_code==200:
             result = response.json()
-            with st.chat_message("assistant"):
-                typewriter(text=response, speed=10)
-          #  if ['entity'][0]['completion'] in result:
-             #   response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
-           #      #Display assistant response in chat message container
-            #    with st.chat_message("assistant"):
-             #       typewriter(text=response, speed=10)
+            #with st.chat_message("assistant"):
+                #typewriter(text=response, speed=10)
+            if isinstance(result, list) and len(result) > 0 and "completion" in result[0]:
+                response_text = result[0]["completion"].replace("NEWLINE ", "\n") + "\n"
+            #if ['entity'][0]['completion'] in result:
+                #response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
+                 #Display assistant response in chat message container
+                with st.chat_message("assistant"):
+                    typewriter(text=response, speed=10)
                  #Add assistant response to chat history
-              #  st.session_state.cpa_messages.append({"role": "assistant", "content": response})
-         #   else:
-          #      with st.chat_message("assistant"):
-           #         st.error(f"❌ Error in the SnapLogic API response")
+                st.session_state.cpa_messages.append({"role": "assistant", "content": response})
+            else:
+                with st.chat_message("assistant"):
+                    st.error(f"❌ Error in the SnapLogic API response")
                     
         else:
             with st.chat_message("assistant"):
