@@ -69,8 +69,8 @@ if prompt:
             result = response.json()
              #with st.chat_message("assistant"):
                  #st.markdown(result)
-            if ['choices'][0]['completion'] in result:
-                response=result['choices'][0]['completion'].replace("NEWLINE ", "**") + "**"
+            if ['entity'][0]['completion'] in result:
+                response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
                  Display assistant response in chat message container
                 with st.chat_message("assistant"):
                     typewriter(text=response, speed=10)
