@@ -71,10 +71,10 @@ if prompt:
                  #st.markdown(result)
             if ['entity'][0]['completion'] in result:
                 response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
-                 Display assistant response in chat message container
+                 #Display assistant response in chat message container
                 with st.chat_message("assistant"):
                     typewriter(text=response, speed=10)
-                 Add assistant response to chat history
+                 #Add assistant response to chat history
                 st.session_state.cpa_messages.append({"role": "assistant", "content": response})
             else:
                 with st.chat_message("assistant"):
