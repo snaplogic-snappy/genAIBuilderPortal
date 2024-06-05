@@ -67,19 +67,18 @@ if prompt:
 
         if response.status_code==200:
             result = response.json()
-             with st.chat_message("assistant"):
-                 st.markdown(result)
-           # if 1==1
-            #'completion' in result:
-            #    response=result['completion'].replace("NEWLINE ", "**") + "**"
-                # Display assistant response in chat message container
-             #   with st.chat_message("assistant"):
-              #      typewriter(text=response, speed=10)
-                # Add assistant response to chat history
-              #  st.session_state.cpa_messages.append({"role": "assistant", "content": response})
-            #else:
-              #  with st.chat_message("assistant"):
-                 #   st.error(f"❌ Error in the SnapLogic API response")
+             #with st.chat_message("assistant"):
+                 #st.markdown(result)
+            if 'completion' in result:
+                response=result['completion'].replace("NEWLINE ", "**") + "**"
+                 Display assistant response in chat message container
+                with st.chat_message("assistant"):
+                    typewriter(text=response, speed=10)
+                 Add assistant response to chat history
+                st.session_state.cpa_messages.append({"role": "assistant", "content": response})
+            else:
+                with st.chat_message("assistant"):
+                    st.error(f"❌ Error in the SnapLogic API response")
                     
         else:
             with st.chat_message("assistant"):
