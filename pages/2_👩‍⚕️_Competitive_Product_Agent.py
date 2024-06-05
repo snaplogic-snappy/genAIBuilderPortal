@@ -68,7 +68,7 @@ if prompt:
         if response.status_code==200:
             %  result = response.json()
             with st.chat_message("assistant"):
-                st.markdown(result)
+                typewriter(text=response, speed=10)
           #  if ['entity'][0]['completion'] in result:
              #   response=result['entity'][0]['completion'].replace("NEWLINE ", "**") + "**"
            #      #Display assistant response in chat message container
