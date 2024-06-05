@@ -29,7 +29,7 @@ st.title(title)
 
 st.markdown(
     """  
-    ### This is a Scraped Product Data Ddemo that allows employees to quickly find information about competing Cycling products
+    ### This is a Scraped Product Data Demo that allows employees to quickly find information about competing Cycling products
     - Carbon Fiber Frames ?
     - Most expensive grip tape ?
     - weight of carbon fiber bikes ?
