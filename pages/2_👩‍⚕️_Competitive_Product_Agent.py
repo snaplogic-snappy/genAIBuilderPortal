@@ -79,7 +79,7 @@ if prompt:
             else:
                 with st.chat_message("assistant"):
                     st.error(f"❌ Error in the SnapLogic API response")
-                    st.error(f"{result['reason']}")
+                    
         else:
             with st.chat_message("assistant"):
                 st.error(f"❌ Error while calling the SnapLogic API")
