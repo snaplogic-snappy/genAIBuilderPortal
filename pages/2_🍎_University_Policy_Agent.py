@@ -29,9 +29,9 @@ st.title(title)
 
 st.markdown(
     """  
-    ### This is a HR Chatbot demo that allows employees to ask HR questions 
+    ### This is a University Policy Agent demo that allows students or parents to quickly answer their questions regarding University policies. 
     Examples 
-    - When do I get paid ?
+    - Can I get a dog?
     - Do I get a bonus ?
     - What is the expense policy ?
  """)
