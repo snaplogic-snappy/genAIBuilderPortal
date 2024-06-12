@@ -32,7 +32,7 @@ st.markdown(
     ### This is a University Policy Agent demo that allows students or parents to quickly answer their questions regarding University policies. 
     Examples 
     - Can I get a dog?
-    - Do I get a bonus ?
+    - What happens if my son or daughter is intoxicated on campus?
     - What is the expense policy ?
  """)
 
