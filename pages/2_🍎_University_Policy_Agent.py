@@ -33,7 +33,7 @@ st.markdown(
     Examples 
     - Can I get a dog?
     - What happens if my son or daughter is intoxicated on campus?
-    - What is the expense policy ?
+    - I lost my ID, what should I do?
  """)
 
 # Initialize chat history
@@ -46,7 +46,7 @@ for message in st.session_state.uni_messages:
         st.markdown(message["content"])
 
 # React to user input
-prompt = st.chat_input("Ask me anything")
+prompt = st.chat_input("Ask me anything about our University Policies")
 if prompt:
     st.chat_message("user").markdown(prompt)
     # Add user message to chat history
