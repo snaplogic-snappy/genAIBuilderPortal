@@ -34,7 +34,8 @@ st.markdown(
     - Can I get a dog?
     - What happens if my son or daughter is intoxicated on campus?
     - I lost my ID, what should I do?
- """)
+ """
+)
 
 # Initialize chat history
 if "uni_messages" not in st.session_state:
@@ -52,15 +53,16 @@ if prompt:
     # Add user message to chat history
     st.session_state.uni_messages.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
-        params={'namespace': namespace}
-        data = {"prompt" : prompt}
+        params = {'namespace': namespace}
+        data = {"prompt": prompt}
         headers = {
-            'Authorization': f'Bearer {BEARER_TOKEN}'
+            'Authorization': f'Bearer {BEARER_TOKEN}',
+            'Content-Type': 'application/json'
         }
         response = requests.post(
             url=URL,
             params=params,
-            data=data,
+            json=data,  # Ensure the payload is sent as JSON
             headers=headers,
             timeout=timeout,
             verify=False
@@ -68,13 +70,14 @@ if prompt:
 
         if response.status_code == 200:
             result = response.json()
+            print(result)  # For debugging purposes
             if 'completion' in result:
                 response_text = result['completion'].replace("NEWLINE ", "\n") + "\n"
                 # Display assistant response in chat message container
                 with st.chat_message("assistant"):
                     typewriter(text=response_text, speed=10)
                 # Add assistant response to chat history
-                st.session_state.cpa_messages.append({"role": "assistant", "content": response_text})
+                st.session_state.uni_messages.append({"role": "assistant", "content": response_text})
             else:
                 with st.chat_message("assistant"):
                     st.error("❌ Error in the SnapLogic API response")
