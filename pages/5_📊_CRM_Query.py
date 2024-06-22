@@ -10,8 +10,15 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="CRM Chatbot")
+st.set_page_config(page_title="CRM Chatbot - *BETA*")
 st.title("Query directly against Salesforce")
+
+st.markdown(
+    """  
+    ### This is a an CRM Chatbot demo that allows management to ask questions about Accounts and Opportunities in Salesforce 
+    Examples 
+    - Which opportunities have the best chance of closing in February 2023?
+ """)
 
 # Initialize chat history
 if "messages" not in st.session_state:
