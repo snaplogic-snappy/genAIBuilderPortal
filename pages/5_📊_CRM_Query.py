@@ -10,8 +10,8 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="CCB: GenAI Chatbot")
-st.title("Cambridge & Counties Bank - CRM Bot")
+st.set_page_config(page_title="CRM Chatbot")
+st.title("Query directly against Salesforce")
 
 # Initialize chat history
 if "messages" not in st.session_state:
