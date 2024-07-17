@@ -13,8 +13,6 @@ def typewriter(text: str, speed: int):
 st.set_page_config(page_title="GenAI Builder - Chatbot")
 st.title("Invited Clubs")
 
-
-
 st.markdown(
     """  
     ### This is a a Chatbot demo that enables inquirers to ask questions about Included Clubs
@@ -24,8 +22,6 @@ st.markdown(
     - Member Attendance
     - Tee Time availability
  """)
-
-
 
 # Initialize chat history
 if "messages" not in st.session_state:
