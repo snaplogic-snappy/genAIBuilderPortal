@@ -13,6 +13,20 @@ def typewriter(text: str, speed: int):
 st.set_page_config(page_title="GenAI Builder - Chatbot")
 st.title("Invited Clubs")
 
+
+
+st.markdown(
+    """  
+    ### This is a a Chatbot demo that enables inquirers to ask questions about Included Clubs
+    Examples 
+    - What Clubs are located in Texas
+    - Other Property Information
+    - Member Attendance
+    - Tee Time availability
+ """)
+
+
+
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
