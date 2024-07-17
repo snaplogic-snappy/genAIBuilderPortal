@@ -11,12 +11,12 @@ def typewriter(text: str, speed: int):
         time.sleep(1 / speed)
 
 st.set_page_config(page_title="GenAI Builder - Chatbot")
-st.title("Invited Clubs")
+st.title("Invited Clubs - Formerly ClubCorp")
 
 st.markdown(
-    """  
-    ### This is a a Chatbot demo that enables inquirers to ask questions about Included Clubs
-    Examples 
+    """
+    ### This is a Hospitality Chatbot demo that enables inquirers to ask questions about Invited Clubs Golf
+    Examples
     - What Clubs are located in Texas
     - Other Property Information
     - Member Attendance
