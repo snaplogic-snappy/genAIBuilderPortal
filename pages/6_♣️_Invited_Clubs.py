@@ -18,9 +18,9 @@ st.markdown(
     ### This is a a Chatbot demo that enables inquirers to ask questions about Included Clubs
     Examples 
     - What Clubs are located in Texas
-	- Other Property Information
-- Member Attendance
-	- Tee Time availability
+    - Other Property Information
+    - Member Attendance
+    - Tee Time availability
  """)
 
 # Initialize chat history
