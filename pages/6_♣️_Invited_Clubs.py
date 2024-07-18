@@ -39,8 +39,6 @@ if prompt:
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt}) 
     with st.spinner("Working..."):    
-        params={'namespace': namespace}
-        data = {"prompt" : prompt}
 
     URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/Demo_GenAI_App_Builder_NA/Invited%20Clubs/ACB%20-%20GenAI%20Step%202%20-%20Invited%20Clubs%20-%20RAG%20Task'
     BEARER_TOKEN = 'P2IjJo0bdIfmQ4k6rq0r4QTRR8LRI5kp'
