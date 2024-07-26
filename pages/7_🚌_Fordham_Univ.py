@@ -17,10 +17,11 @@ st.markdown(
     """  
     ### This is an Academic Chatbot demo that enables inquirers to ask questions about Fordham University Regulations.
     Examples: 
-    - What are the University regulations?
+    - What are the university values for advertising
     - What is the Code of Conduct?
-    - What are the Public Safety policies?
- """)
+    - Describe the Community Safety Expectations for Students
+    - What are the university provisions regarding alcohol?
+    """)
 
 # Initialize chat history
 if "messages" not in st.session_state:
