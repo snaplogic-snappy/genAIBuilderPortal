@@ -15,8 +15,8 @@ st.title("Fordham University ")
 
 st.markdown(
     """  
-    ### This is a Academic Chatbot demo that enables inquirers to ask questions about Fordham University Regulations.
-    Examples 
+    ### This is an Academic Chatbot demo that enables inquirers to ask questions about Fordham University Regulations.
+    Examples: 
     - What are the University regulations?
     - What is the Code of Conduct?
     - What are the Public Safety policies?
