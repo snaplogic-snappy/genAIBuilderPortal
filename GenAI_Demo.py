@@ -18,7 +18,7 @@ st.sidebar.success("Select a demo above.")
 st.markdown(
     """
     
-    ## SnapLogic GenAI Builder allows you to create LLM-based applications in no time! 
+    ## SnapLogic GenAI App Builder allows you to create LLM-based applications in no time! 
     
     ### **👈 Select a demo from the sidebar** to see some examples of what GenAI Builder can do!
     ## Want to learn more?
