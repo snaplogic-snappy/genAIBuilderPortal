@@ -20,7 +20,7 @@ st.markdown(
     
     ## SnapLogic GenAI App Builder allows you to create LLM-based applications in no time! 
     
-    ### **👈 Select a demo from the sidebar** to see some examples of what GenAI Builder can do!
+    ### **👈 Select a demo from the sidebar** to see some examples of what GenAI App Builder can do!
     ## Want to learn more?
     - Check out [GenAI Builder](https://www.snaplogic.com/products/genai-builder)
     - Jump into our [documentation](https://docs-snaplogic.atlassian.net/wiki/spaces/SD/overview?homepageId=34537)
