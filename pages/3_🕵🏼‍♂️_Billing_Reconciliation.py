@@ -50,7 +50,7 @@ st.markdown(
     Sample files:
     - [Contract (OK)](https://snaplogic.box.com/s/vbdo1942zjm7fsxmdx9vizoojjs3uu6q)
     - [Contract (Missing formula in ERP)](https://snaplogic.box.com/s/9v4sn7hmw8mugismmftwodnnmrx2p92z)
-    - [Download (Wrong formula in ERP](https://snaplogic.box.com/s/ao0zdxjmhfbgwwzeb0ew26acbf6z6sxn)
+    - [Download (Wrong formula in ERP)](https://snaplogic.box.com/s/ao0zdxjmhfbgwwzeb0ew26acbf6z6sxn)
     """
 )
 
