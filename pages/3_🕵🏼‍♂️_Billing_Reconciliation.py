@@ -44,11 +44,13 @@ st.markdown(
     The issues that can happen are the following:
     - the pricing revision formula is not applied at all => It means the initial price (P0) will never be increased
     - the pricing revision formula is wrong in the ERP
+    
     Consequences: the customers are **underbilled**
 
-    - [Download fileOk](https://snaplogic.box.com/s/vbdo1942zjm7fsxmdx9vizoojjs3uu6q)
-    - [Download fileMissing](https://snaplogic.box.com/s/9v4sn7hmw8mugismmftwodnnmrx2p92z)
-    - [Download fileWrong](https://snaplogic.box.com/s/ao0zdxjmhfbgwwzeb0ew26acbf6z6sxn)
+    Sample files:
+    - [Contract (OK)](https://snaplogic.box.com/s/vbdo1942zjm7fsxmdx9vizoojjs3uu6q)
+    - [Contract (Missing formula in ERP)](https://snaplogic.box.com/s/9v4sn7hmw8mugismmftwodnnmrx2p92z)
+    - [Download (Wrong formula in ERP](https://snaplogic.box.com/s/ao0zdxjmhfbgwwzeb0ew26acbf6z6sxn)
     """
 )
 
