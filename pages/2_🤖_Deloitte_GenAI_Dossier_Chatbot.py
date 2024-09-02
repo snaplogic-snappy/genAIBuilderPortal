@@ -88,7 +88,7 @@ if prompt:
                 with st.chat_message("assistant"):
                     typewriter(text=response, speed=10)
                 # Add assistant response to chat history
-                st.session_state.hr_messages.append({"role": "assistant", "content": response})
+                st.session_state.dl_messages.append({"role": "assistant", "content": response})
             else:
                 with st.chat_message("assistant"):
                     st.error(f"❌ Error in the SnapLogic API response")
