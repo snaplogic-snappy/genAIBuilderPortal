@@ -69,7 +69,7 @@ uploaded_file = st.file_uploader(' ')
 if uploaded_file is not None:
     file_bytes = uploaded_file.getvalue()
     with st.chat_message("assistant"):
-        st.markdown("Successful Upload !"Click below to launch the content comparison! )
+        st.markdown("Successful Upload !Click below to launch the content comparison! ")
     time.sleep(0.5)
     if st.button(":blue[Analyze!]"):
         with st.spinner("Comparing PDF and ERP ..."):
