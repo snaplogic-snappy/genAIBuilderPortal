@@ -33,13 +33,15 @@ with st.expander("Examples", expanded=True, icon=":material/lightbulb:"):
         | Document | Question|
         | -------- | :-------- |
         | MSG_01_HGPL-B.pdf | What is the weight of the grippers by size? |
-        | MSG_01_HGPL-B.pdf | What is the maximum operating frequency of the gripper? |
-        | MSG_02_HGPT_HGPL_HGDT.pdf | What are the differences between the various grippers? |
+        | MSG_01_HGPL-B.pdf | Wie hoch ist die maximale Betriebsfrequenz des Greifers? |
+        | MSG_02_HGPT_HGPL_HGDT.pdf | Was sind die Unterschiede zwischen den verschiedenen Greifern? |
         | MSG_02_HGPT_HGPL_HGDT.pdf  | What is the maximum lifting force of the HGPL in size 14? |
         | MSG_04_measurement_test.pdf | In which interval is the setpoint for the density? |
         | MSG_04_measurement_test.pdf | In which interval is the actual value for the density? |
         """)
 
+#Links to PDFs in BOX
+"**The documents for this use case can be found here: https://snaplogic.app.box.com/folder/283319060942**"
 
 # Document Selection
 doc = st.radio(
