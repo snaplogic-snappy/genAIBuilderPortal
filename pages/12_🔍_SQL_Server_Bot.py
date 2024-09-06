@@ -22,11 +22,11 @@ st.markdown(
  """
 )
 # Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+if "SQL_messages" not in st.session_state:
+    st.session_state.SQL_messages = []
 
 # Display chat messages from history on app rerun
-for message in st.session_state.messages:
+for message in st.session_state.SQL_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
@@ -35,33 +35,34 @@ prompt = st.chat_input("Ask me anything about the data in the SQL Server Databas
 if prompt:
     st.chat_message("user").markdown(prompt)
     # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.session_state.SQL_messages.append({"role": "user", "content": prompt})
 
-    URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Joe/SQL_GenAI/Get%20SQL%20Schema%20from%20Task'
-    BEARER_TOKEN = 'tROo6n4jVsV1u3RhxKvbihsNIHNxZ1zJ'
-
-    data = {"prompt": prompt}
-
-    headers = {
-        'Authorization': f'Bearer {BEARER_TOKEN}'
-    }
-
-    response = requests.post(
-        url=URL,
-        data=data,
-        headers=headers,
-        timeout=180,
-        verify=False
-    )
-
-    result = response.json()
-    # st.write(result)
-    # response=result[0]['choices'][0]['message']['content']
-    response = result[0]['content'] + '\n\n```' + result[0]['sql'] + '```'
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        # st.markdown(response,unsafe_allow_html=True)
-        typewriter(text=response, speed=10)
-
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    with st.spinner("Working..."):
+        URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Joe/SQL_GenAI/Get%20SQL%20Schema%20from%20Task'
+        BEARER_TOKEN = 'tROo6n4jVsV1u3RhxKvbihsNIHNxZ1zJ'
+    
+        data = {"prompt": prompt}
+    
+        headers = {
+            'Authorization': f'Bearer {BEARER_TOKEN}'
+        }
+    
+        response = requests.post(
+            url=URL,
+            data=data,
+            headers=headers,
+            timeout=180,
+            verify=False
+        )
+    
+        result = response.json()
+        # st.write(result)
+        # response=result[0]['choices'][0]['message']['content']
+        response = result[0]['content'] + '\n\n```' + result[0]['sql'] + '```'
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            # st.markdown(response,unsafe_allow_html=True)
+            typewriter(text=response, speed=10)
+    
+        # Add assistant response to chat history
+        st.session_state.SQL_messages.append({"role": "assistant", "content": response})
