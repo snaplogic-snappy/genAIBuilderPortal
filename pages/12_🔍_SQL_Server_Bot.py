@@ -19,7 +19,10 @@ st.markdown(
 
     ### This use-case is about querying SQL style databases using natural language.
     This chatbot will allow you to ask  questions of the data (in this case a table of accounts) and get a natural response, including the raw SQL for validation purposes.
- """
+     Examples 
+    - Which account made the most money in 2015 ?
+    - How many accounts were active in 2024 ?
+    """
 )
 # Initialize chat history
 if "messages" not in st.session_state:
