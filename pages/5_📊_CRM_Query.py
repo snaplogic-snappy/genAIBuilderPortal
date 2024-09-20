@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import time
+from dotenv import dotenv_values
+
 
 # Load environment
 env = dotenv_values(".env")
