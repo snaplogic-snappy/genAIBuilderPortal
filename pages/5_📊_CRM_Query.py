@@ -30,6 +30,7 @@ st.markdown(
     ### This is a an CRM AI Assistant demo that allows management to ask questions about Accounts and Opportunities in Salesforce 
     Examples 
     - Which opportunities have the best chance of closing in February 2023?
+    - List all opportunities, sorted by Amount higher first, return Name, amount and closing date
  """)
 
 # Initialize chat history
