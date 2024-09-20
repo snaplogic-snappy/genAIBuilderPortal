@@ -2,6 +2,16 @@ import streamlit as st
 import requests
 import time
 
+# Load environment
+env = dotenv_values(".env")
+# SnapLogic RAG pipeline
+URL = env["SL_CRM_TASK_URL"]
+BEARER_TOKEN = env["SL_CRM_TASK_TOKEN"]
+timeout = int(env["SL_TASK_TIMEOUT"])
+# Streamlit Page Properties
+page_title=env["CRM_PAGE_TITLE"]
+title=env["CRM_TITLE"]
+
 def typewriter(text: str, speed: int):
     tokens = text.split()
     container = st.empty()
@@ -10,12 +20,12 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="CRM Chatbot - *BETA*")
-st.title("Query directly against Salesforce")
+st.set_page_config(page_title=page_title)
+st.title(title)
 
 st.markdown(
     """  
-    ### This is a an CRM Chatbot demo that allows management to ask questions about Accounts and Opportunities in Salesforce 
+    ### This is a an CRM AI Assistant demo that allows management to ask questions about Accounts and Opportunities in Salesforce 
     Examples 
     - Which opportunities have the best chance of closing in February 2023?
  """)
@@ -37,9 +47,7 @@ if prompt:
     st.session_state.CRM_messages.append({"role": "user", "content": prompt})
 
     with st.spinner("Working..."):
-        URL = 'https://snapgpt.labs.snaplogicdev.com/api/1/rest/slsched/feed/snaplogic/projects/Nilesh%20Parmar/GenAI_SOQL_Generation_NP_Task'
-        BEARER_TOKEN ='KKsuIzfnymYwRbzKuKsazMo1cE9bQ1QM'
-    
+        
         data = {"prompt" : prompt}
     
         headers = {
