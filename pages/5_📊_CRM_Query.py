@@ -74,3 +74,4 @@ if prompt:
     
         # Add assistant response to chat history
         st.session_state.CRM_messages.append({"role": "assistant", "content": response})
+        st.rerun()
