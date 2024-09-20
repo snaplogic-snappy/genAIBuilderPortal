@@ -69,8 +69,8 @@ if prompt:
         response=result[0]['choices'][0]['message']['content']
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
-            #st.markdown(response,unsafe_allow_html=True)
-            typewriter(text=response, speed=10)
+            st.markdown(response,unsafe_allow_html=True)
+            #typewriter(text=response, speed=10)
     
         # Add assistant response to chat history
         st.session_state.CRM_messages.append({"role": "assistant", "content": response})
