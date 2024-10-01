@@ -63,12 +63,11 @@ if uploaded_file is not None:
 
         result = response.json()
         # st.write(result)
-
         response = (
             """
             | Method 1 (Text parsing)    | Method 2 (Image parsing) | Method 3 (Vector Search) |
             | -------- | ------- | ------- |
-            | """+result[0]["parseToTextResult"]["content"]+"""  | WIP    | WIP    |
+            | """+result[0]["parseToTextResult"]["content"]+"""  | """+result[0]["parseToImageResult"]["content"]+"""     | """+result[0]["vectorQueryResult"]["content"]+"""     |
             """
         )
         # Display assistant response in chat message container
