@@ -31,6 +31,7 @@ st.markdown(
     Examples 
     - Which opportunities have the best chance of closing in February 2023?
     - List all opportunities, sorted by Amount higher first, return Name, amount and closing date
+    - What is the total amount of opportunities closing in 2024 ?
  """)
 
 # Initialize chat history
@@ -67,12 +68,14 @@ if prompt:
     
         result = response.json()
         #st.write(result)
-        response=result[0]['choices'][0]['message']['content']
+        response=result[0]['choices'][0]['message']['content'] + "\n\n"
+        soql_cmd=result[0]['soql']
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             st.markdown(response,unsafe_allow_html=True)
-            #typewriter(text=response, speed=10)
+            with st.expander("Generated SOQL command", expanded=False):
+                st.markdown(soql_cmd,unsafe_allow_html=True)
     
         # Add assistant response to chat history
-        st.session_state.CRM_messages.append({"role": "assistant", "content": response})
-        st.rerun()
+        st.session_state.CRM_messages.append({"role": "assistant", "content": response+soql_cmd})
+        #st.rerun()
