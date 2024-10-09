@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+from dotenv import dotenv_values
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
@@ -10,19 +11,28 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-if 'doc_key' not in st.session_state:
-    st.session_state.doc_key = None
-    st.session_state.doc_status = 0
-
 def doc_proc():
     if st.session_state.doc_key == None:
         st.session_state.doc_status = 0
     if st.session_state.doc_key != None:
         st.session_state.doc_status = 1
 
+if 'doc_key' not in st.session_state:
+    st.session_state.doc_key = None
+    st.session_state.doc_status = 0
 
-st.set_page_config(page_title="GenAI Builder - Chatbot")
-st.title("Manufacturing Spec Assistant")
+# Load environment
+env = dotenv_values(".env")
+# SnapLogic RAG pipeline
+URL = env["SL_GM_TASK_URL"]
+BEARER_TOKEN = env["SL_GM_TASK_TOKEN"]
+timeout = int(env["SL_TASK_TIMEOUT"])
+# Streamlit Page Properties
+page_title=env["GM_PAGE_TITLE"]
+title=env["GM_TITLE"]
+
+st.set_page_config(page_title=page_title)
+st.title(title)
 st.subheader("This is an Assistant to help users retrieve information from Manufacturing Specifications and Tests.", divider = "blue")
 
 #with st.container(height=300):
