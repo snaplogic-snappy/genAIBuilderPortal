@@ -91,15 +91,10 @@ if prompt:
     st.session_state.GM_messages.append({"role": "user", "content": prompt})
 
     with st.spinner("Working..."):
-        URL = 'https://afd77e11a20c840bab10aabe6b8482ee-971464689.eu-west-3.elb.amazonaws.com/api/1/rest/feed-master/queue/ConnectFasterInc/RG/msg/MSG_Ultra%20Task'
-        BEARER_TOKEN = 's7R0GSJF7AfAayGFrSxHeFC3Tc1tjo3P'
-    
         data = {"prompt" : prompt, "Document" : st.session_state.doc_key}
-    
         headers = {
             'Authorization': f'Bearer {BEARER_TOKEN}'
         }
-        
         response = requests.post(
             url=URL,
             data=data,
@@ -107,15 +102,12 @@ if prompt:
             timeout=180,
             verify=False
         )
-    
         result = response.json()
         #st.write(result)
         response=result['choices'][0]['message']['content']
-    
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             st.markdown(response,unsafe_allow_html=True)
             #typewriter(text=response, speed=10)
-    
     # Add assistant response to chat history
         st.session_state.GM_messages.append({"role": "assistant", "content": response})
