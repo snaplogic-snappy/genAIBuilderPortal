@@ -54,25 +54,17 @@ st.markdown(
     """
 )
 
-time.sleep(2.0)
-
-
 with st.chat_message("assistant"):
     st.markdown("Welcome! 👋")
-
-time.sleep(1.0)
 with st.chat_message("assistant"):
-    st.markdown("Select the PDF Contract to check against the ERP")
-    
-time.sleep(0.5)
+    st.markdown("Select the PDF Contract")
 uploaded_file = st.file_uploader(' ')
 if uploaded_file is not None:
     file_bytes = uploaded_file.getvalue()
     with st.chat_message("assistant"):
         st.markdown("Successful Upload !Click below to launch the content comparison! ")
-    time.sleep(0.5)
     if st.button(":blue[Analyze!]"):
-        with st.spinner("Comparing PDF and ERP ..."):
+        with st.spinner("Comparing Contract and ERP ..."):
             headers = {
                 'Authorization': f'Bearer {BEARER_TOKEN}',
                 'Content-Type': 'application/octet-stream'
@@ -106,6 +98,15 @@ if uploaded_file is not None:
                     st.latex(f"{result['pdf']['revisionFormulaPDF']}")
                     typewriter(text="The price revision formula extracted from the ERP is the following:", speed=10)
                     st.latex(f"{result['erp']['revisionFormulaERP']}")
+                    time.sleep(1.0)
+                    st.markdown("""<hr style="height:10px;border:none;color:#333;background-color:#333;" /> """, unsafe_allow_html=True)
+                    c1, c2, c3 = st.columns(3)
+                    with c1:
+                        st.metric(label="Amount Billed by the ERP", value="462,39 €")
+                    with c2:
+                        st.metric(label="Amount to be billed according to the contract", value="569,63 €")
+                    with c3:
+                        st.metric(label="Underbilled Amount", value="107,24 €")
             elif result["status"] == "NOK_DISABLED_FORMULA":
                     time.sleep(1.0)
                     st.error(f"❌ {result['message']}")            
