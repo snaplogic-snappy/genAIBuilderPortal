@@ -47,13 +47,9 @@ st.markdown(
     """
 )
 
-time.sleep(10.0)
-
-
 with st.chat_message("assistant"):
     st.markdown("Bienvenue! 👋")
 
-time.sleep(1.0)
 with st.chat_message("assistant"):
     st.markdown("Sélectionnez le contrat PDF à contrôler")
     
