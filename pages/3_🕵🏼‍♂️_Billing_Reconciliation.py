@@ -104,7 +104,7 @@ if uploaded_file is not None:
                     with c1:
                         st.metric(label="Amount Billed by the ERP", value="462,39 €")
                     with c2:
-                        st.metric(label="Amount to be billed according to the contract", value="569,63 €")
+                        st.metric(label="Amount to be billed from the contract", value="569,63 €")
                     with c3:
                         st.metric(label="Underbilled Amount", value="107,24 €")
             elif result["status"] == "NOK_DISABLED_FORMULA":
