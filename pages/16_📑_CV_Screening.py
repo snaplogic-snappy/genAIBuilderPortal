@@ -34,8 +34,6 @@ st.markdown(
 )
 
 with st.chat_message("assistant"):
-    st.markdown("Welcome! 👋")
-with st.chat_message("assistant"):
     st.markdown("Please select the CV (PDF format)")
 
 roles = ["Sales Engineer", "Solutions Architect", "Account Executive", "Customer Success Manager"]
@@ -44,7 +42,8 @@ territories = ["DACH", "UK&I", "Southern Europe", "Nordics"]
 
 role = st.selectbox('Select Role', roles)
 seniority = st.selectbox('Select Seniority Level', seniorities)
-territory = st.selectbox('Select Territory', territories)
+#territory = st.selectbox('Select Territory', territories)
+territory = st.text_input('Territory description', value="", placeholder="DACH: Greenfield territory, 10 people including sales, presales, field marketing, BDR and channel. Need to hunt new logo and grow a few strategic accounts like Siemens and Syngenta.")
 
 uploaded_file = st.file_uploader(' ')
 if uploaded_file is not None:
