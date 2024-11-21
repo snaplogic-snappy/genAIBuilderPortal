@@ -47,7 +47,6 @@ for message in st.session_state.sales_assistant:
 prompt = st.chat_input("Ask me anything about SnapLogic sales")
 if prompt:
     st.chat_message("user").markdown(prompt)
-    # Add user message to chat history
     st.session_state.sales_assistant.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
         data = {"prompt" : prompt}
@@ -61,18 +60,20 @@ if prompt:
             timeout=timeout,
             verify=False
         )
-        if response.status_code==200:
-            result = response.json()
-            if len(result) > 0 :
-                response=result[0]
-                # Display assistant response in chat message container
+        if response.status_code == 200:
+            try:
+                result = response.json()
+                if "response" in result:
+                    assistant_response = result["response"]
+                    with st.chat_message("assistant"):
+                        typewriter(text=assistant_response, speed=10)
+                    st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
+                else:
+                    with st.chat_message("assistant"):
+                        st.error("❌ Invalid response format from API")
+            except ValueError:
                 with st.chat_message("assistant"):
-                    typewriter(text=response, speed=10)
-                # Add assistant response to chat history
-                st.session_state.sales_assistant.append({"role": "assistant", "content": response})
-            else:
-                with st.chat_message("assistant"):
-                    st.error(f"❌ Error in the SnapLogic API response: Empty Result")
+                    st.error("❌ Invalid JSON response from API")
         else:
-                st.error(f"❌ Error while calling the SnapLogic API")
+            st.error(f"❌ Error while calling the SnapLogic API")
         st.rerun()
