@@ -6,9 +6,9 @@ from dotenv import dotenv_values
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline
-URL = env["SL_UW_TASK_URL"]
-BEARER_TOKEN = env["SL_UW_TASK_TOKEN"]
-timeout = int(env["SL_TASK_TIMEOUT"])
+URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/SalesAssistant/callAgentWorkerSalesAssistant"
+BEARER_TOKEN = "rsFZlA7hO5Ngp4loIH600cXHcKKluHYL"
+timeout = 180
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
