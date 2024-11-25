@@ -20,8 +20,7 @@ def typewriter(text: str, speed: int):
 
 st.set_page_config(page_title="Data Analytics Assistant")
 st.title("Intelligent Data Analytics Assistant")
-st.markdown(
-    """  
+st.markdown("""  
     ### AI-powered analytics assistant for exploring datasets
     Currently analyzing TSA claims data. Ask questions in natural language - the assistant will automatically refine queries to find accurate insights.
     
@@ -32,16 +31,26 @@ st.markdown(
     - Which airports have the highest claim denial rates?
     - What's the seasonal pattern of electronics-related claims?
     - Analyze correlation between claim amounts and processing time
- """)
+""")
 
-# Initialize chat history
+# Initialize chat history and toggle states
 if "data_analytics" not in st.session_state:
     st.session_state.data_analytics = []
+if "toggle_states" not in st.session_state:
+    st.session_state.toggle_states = {}
 
-# Display chat messages from history on app rerun
-for message in st.session_state.data_analytics:
+# Display chat messages from history
+for idx, message in enumerate(st.session_state.data_analytics):
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        if message["role"] == "assistant":
+            st.markdown(message.get("answer", message.get("content", "")))
+            if message.get("summary"):
+                toggle_key = f"toggle_{idx}"
+                if st.toggle("Show thinking process", False, key=toggle_key):
+                    st.markdown("### Agent's Thought Process")
+                    st.markdown(message["summary"])
+        else:
+            st.markdown(message["content"])
 
 # React to user input
 prompt = st.chat_input("Ask me anything about the TSA claims data")
@@ -50,9 +59,7 @@ if prompt:
     st.session_state.data_analytics.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
         data = {"prompt": prompt}
-        headers = {
-            'Authorization': f'Bearer {BEARER_TOKEN}'
-        }
+        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
         response = requests.post(
             url=URL,
             data=data,
@@ -69,19 +76,17 @@ if prompt:
                     summary = response_data.get("summary", "")
                     
                     with st.chat_message("assistant"):
-                        # Display answer immediately
                         typewriter(text=answer, speed=10)
-                        
-                        # Add toggle button for summary
                         if summary:
-                            if st.toggle("Show thinking process", False):
+                            toggle_key = f"toggle_{len(st.session_state.data_analytics)}"
+                            if st.toggle("Show thinking process", False, key=toggle_key):
                                 st.markdown("### Agent's Thought Process")
                                 st.markdown(summary)
                     
-                    # Add to chat history
                     st.session_state.data_analytics.append({
-                        "role": "assistant", 
-                        "content": answer
+                        "role": "assistant",
+                        "answer": answer,
+                        "summary": summary
                     })
                 else:
                     with st.chat_message("assistant"):
