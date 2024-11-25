@@ -6,9 +6,9 @@ from dotenv import dotenv_values
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline
-URL = env["SL_UW_TASK_URL"]
-BEARER_TOKEN = env["SL_UW_TASK_TOKEN"]
-timeout = int(env["SL_TASK_TIMEOUT"])
+URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Aleksandra%20Kulawska/tsa_claims/TSAAgent"
+BEARER_TOKEN = "i1nVy1k0xi9ot9G0BM8FTPOoccRe4nOw"
+timeout = 180
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
@@ -61,15 +61,34 @@ if prompt:
             verify=False
         )
         if response.status_code == 200:
-            result = response.json()
-            if len(result) > 0:
-                response = result[0]
+            try:
+                result = response.json()
+                if len(result) > 0 and isinstance(result[0], dict):
+                    response_data = result[0]
+                    answer = response_data.get("answer", "")
+                    summary = response_data.get("summary", "")
+                    
+                    with st.chat_message("assistant"):
+                        # Display answer immediately
+                        typewriter(text=answer, speed=10)
+                        
+                        # Add toggle button for summary
+                        if summary:
+                            if st.toggle("Show thinking process", False):
+                                st.markdown("### Agent's Thought Process")
+                                st.markdown(summary)
+                    
+                    # Add to chat history
+                    st.session_state.data_analytics.append({
+                        "role": "assistant", 
+                        "content": answer
+                    })
+                else:
+                    with st.chat_message("assistant"):
+                        st.error("❌ Invalid response format from API")
+            except ValueError:
                 with st.chat_message("assistant"):
-                    typewriter(text=response, speed=10)
-                st.session_state.data_analytics.append({"role": "assistant", "content": response})
-            else:
-                with st.chat_message("assistant"):
-                    st.error("❌ Error in the SnapLogic API response: Empty Result")
+                    st.error("❌ Invalid JSON response from API")
         else:
             st.error("❌ Error while calling the SnapLogic API")
         st.rerun()
