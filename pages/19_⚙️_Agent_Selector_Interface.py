@@ -49,6 +49,8 @@ if "current_result" not in st.session_state:
     st.session_state.current_result = None
 if "show_details" not in st.session_state:
     st.session_state.show_details = False
+if "first_display" not in st.session_state:
+    st.session_state.first_display = True
 
 # Agent selector
 selected_agent = st.selectbox(
@@ -93,6 +95,7 @@ if st.button("Run Agent", type="primary"):
                             "summary": summary,
                             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                         }
+                        st.session_state.first_display = True  # Reset first_display flag
                         
                         # Add to results history
                         st.session_state.agent_results.append(st.session_state.current_result)
@@ -111,7 +114,11 @@ if st.session_state.current_result:
     st.markdown("### Current Results")
     result_container = st.container()
     with result_container:
-        typewriter(text=st.session_state.current_result["answer"], speed=10)
+        if st.session_state.first_display:
+            typewriter(text=st.session_state.current_result["answer"], speed=10)
+            st.session_state.first_display = False  # Turn off typewriter for subsequent displays
+        else:
+            st.markdown(st.session_state.current_result["answer"])
         
         # Add toggle button for summary
         if st.session_state.current_result.get("summary"):
