@@ -18,10 +18,10 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="Data Analytics Assistant")
-st.title("Intelligent Data Analytics Assistant")
+st.set_page_config(page_title="Data Science Assistant")
+st.title("Intelligent Data Science Assistant")
 st.markdown("""  
-    ### AI-powered analytics assistant for exploring datasets
+    ### AI-powered data science assistant for exploring datasets
     Currently analyzing TSA claims data. Ask questions in natural language - the assistant will automatically refine queries to find accurate insights.
     
     Sample queries:
