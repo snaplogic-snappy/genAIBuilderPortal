@@ -19,10 +19,10 @@ AGENTS = {
         "token": "123",
         "description": "Automatically updates sales data and generates insights"
     },
-    "User Review Analyzer": {
-        "url": "https://api.com/user_review",
-        "token": "456",
-        "description": "Analyzes user reviews and provides sentiment analysis"
+    "Sentiment Analysis Agent": {
+        "url": "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Agent%20Creator/Sentiment%20Analysis%20Agent/reviewAgent",
+        "token": "tadYY9X0bG88raf3vVaWTwl37iR049VM",
+        "description": "This pipeline processes customer reviews from a Google Sheet, analyzes their sentiment, and allocates them to relevant teams using a multi-agent system. It utilizes AWS Bedrock for prompt generation and executes sub-pipelines for planning and summarizing the reviews."
     }
 }
 
