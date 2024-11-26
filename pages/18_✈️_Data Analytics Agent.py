@@ -8,7 +8,7 @@ env = dotenv_values(".env")
 # SnapLogic RAG pipeline
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Aleksandra%20Kulawska/tsa_claims/TSAAgent"
 BEARER_TOKEN = "i1nVy1k0xi9ot9G0BM8FTPOoccRe4nOw"
-timeout = 180
+timeout = 300
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
