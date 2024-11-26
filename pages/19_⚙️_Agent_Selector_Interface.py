@@ -67,7 +67,7 @@ if st.button("Run Agent", type="primary"):
         }
         
         try:
-            response = requests.post(
+            response = requests.get(  # Changed from post to get
                 url=agent_config["url"],
                 headers=headers,
                 timeout=timeout,
