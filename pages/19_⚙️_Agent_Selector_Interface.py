@@ -9,12 +9,7 @@ timeout = 300
 
 # Agent configurations
 AGENTS = {
-    "Sample Analysis Agent": {
-        "url": "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Jocelyn/shared/sampleBackendAnalysis",
-        "token": "fR8nGueztyAi5kGTJssZ3pWrHPFkOGcS",
-        "description": "Sample analysis agent"
-    },
-    "Sales Auto Update Agent": {
+    "Sales Auto Update Agent (not ready)": {
         "url": "https://api.com/salesforce_update",
         "token": "123",
         "description": "Automatically updates sales data and generates insights"
