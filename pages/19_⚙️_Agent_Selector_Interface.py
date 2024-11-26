@@ -14,7 +14,6 @@ AGENTS = {
         "token": "fR8nGueztyAi5kGTJssZ3pWrHPFkOGcS",
         "description": "Sample analysis agent"
     },
-    {
     "Sales Auto Update Agent": {
         "url": "https://api.com/salesforce_update",
         "token": "123",
