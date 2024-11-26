@@ -42,9 +42,13 @@ st.markdown("""
     Each agent performs specific automated tasks and provides detailed results.
 """)
 
-# Initialize results history
+# Initialize results history and current result
 if "agent_results" not in st.session_state:
     st.session_state.agent_results = []
+if "current_result" not in st.session_state:
+    st.session_state.current_result = None
+if "show_details" not in st.session_state:
+    st.session_state.show_details = False
 
 # Agent selector
 selected_agent = st.selectbox(
@@ -67,7 +71,7 @@ if st.button("Run Agent", type="primary"):
         }
         
         try:
-            response = requests.get(  # Changed from post to get
+            response = requests.get(
                 url=agent_config["url"],
                 headers=headers,
                 timeout=timeout,
@@ -82,28 +86,17 @@ if st.button("Run Agent", type="primary"):
                         answer = response_data.get("answer", "")
                         summary = response_data.get("summary", "")
                         
-                        # Create container for results
-                        result_container = st.container()
-                        with result_container:
-                            st.markdown("### Results")
-                            
-                            # Display answer
-                            typewriter(text=answer, speed=10)
-                            
-                            # Add toggle button for summary
-                            if summary:
-                                toggle_key = f"toggle_{len(st.session_state.agent_results)}"
-                                if st.toggle("Show process details", False, key=toggle_key):
-                                    st.markdown("### Agent's Process Details")
-                                    st.markdown(summary)
-                        
-                        # Add to results history
-                        st.session_state.agent_results.append({
+                        # Store current result in session state
+                        st.session_state.current_result = {
                             "agent": selected_agent,
                             "answer": answer,
                             "summary": summary,
                             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                        })
+                        }
+                        
+                        # Add to results history
+                        st.session_state.agent_results.append(st.session_state.current_result)
+                        
                     else:
                         st.error("❌ Invalid response format from API")
                 except ValueError:
@@ -113,10 +106,25 @@ if st.button("Run Agent", type="primary"):
         except requests.exceptions.RequestException as e:
             st.error(f"❌ Error connecting to the agent: {str(e)}")
 
+# Display current result if exists
+if st.session_state.current_result:
+    st.markdown("### Current Results")
+    result_container = st.container()
+    with result_container:
+        typewriter(text=st.session_state.current_result["answer"], speed=10)
+        
+        # Add toggle button for summary
+        if st.session_state.current_result.get("summary"):
+            show_details = st.toggle("Show process details", value=st.session_state.show_details, key="current_toggle")
+            if show_details:
+                st.markdown("### Agent's Process Details")
+                st.markdown(st.session_state.current_result["summary"])
+            st.session_state.show_details = show_details
+
 # Display historical results
-if st.session_state.agent_results:
+if len(st.session_state.agent_results) > 1:  # More than just the current result
     st.markdown("### Historical Results")
-    for idx, result in enumerate(reversed(st.session_state.agent_results)):
+    for idx, result in enumerate(reversed(st.session_state.agent_results[:-1])):  # Exclude current result
         with st.expander(f"{result['agent']} - {result['timestamp']}"):
             st.markdown(result["answer"])
             if result.get("summary"):
