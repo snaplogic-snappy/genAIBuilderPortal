@@ -25,7 +25,7 @@ st.markdown("""
     Currently analyzing TSA claims data. Ask questions in natural language - the assistant will automatically refine queries to find accurate insights.
     
     Sample queries:
-    - Which are the top three airports with the highest total numbver of claims?
+    - Which are the top three airports with the highest total number of claims?
     - What are the most common types of claims filed at major airports?
     - Which airports have the highest claim denial rates?
 """)
