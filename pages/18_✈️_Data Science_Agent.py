@@ -25,12 +25,9 @@ st.markdown("""
     Currently analyzing TSA claims data. Ask questions in natural language - the assistant will automatically refine queries to find accurate insights.
     
     Sample queries:
+    - Which are the top three airports with the highest total numbver of claims?
     - What are the most common types of claims filed at major airports?
-    - Show the trend of claim amounts over time in California
-    - Compare average settlement amounts between different items
     - Which airports have the highest claim denial rates?
-    - What's the seasonal pattern of electronics-related claims?
-    - Analyze correlation between claim amounts and processing time
 """)
 
 # Initialize chat history and toggle states
