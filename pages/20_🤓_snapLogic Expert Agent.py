@@ -65,7 +65,7 @@ if prompt:
                 if "response" in result:
                     assistant_response = result["response"]
                     with st.chat_message("assistant"):
-                        typewriter(text=assistant_response, speed=10)
+                        typewriter(text=assistant_response, speed=30)
                     st.session_state.expert_assistant.append({"role": "assistant", "content": assistant_response})
                 else:
                     with st.chat_message("assistant"):
