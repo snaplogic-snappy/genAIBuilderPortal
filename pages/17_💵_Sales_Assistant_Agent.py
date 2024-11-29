@@ -27,7 +27,7 @@ st.markdown(
     
     Sample queries:
     - What are SnapLogic's key differentiators against MuleSoft?
-    - Show me customer success stories in the healthcare industry
+    - Create a customer facing documents with customer success stories in the healthcare industry
     - What's our pricing model for enterprise customers?
     - What ROI metrics can I share with prospects?
     - Find competitive analysis against Boomi for financial services
