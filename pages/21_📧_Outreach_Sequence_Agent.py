@@ -20,11 +20,20 @@ def typewriter(text: str, speed: int):
 
 def parse_email_sequence(response_data):
     try:
-        data = json.loads(response_data)
-        if isinstance(data, list) and len(data) > 0:
-            email_sequence = data[0].get('response', {}).get('email_sequence', [])
-            return sorted(email_sequence, key=lambda x: int(x['email_number']))
-    except:
+        if isinstance(response_data, str):
+            data = json.loads(response_data)
+        else:
+            data = response_data
+            
+        email_sequence = data.get('response', {}).get('email_sequence', [])
+        if not email_sequence:
+            st.error("No email sequence found in response")
+            return None
+            
+        return sorted(email_sequence, key=lambda x: int(x['email_number']))
+    except Exception as e:
+        st.error(f"Error processing response: {str(e)}")
+        st.write("Debug - Response data:", response_data)
         return None
 
 st.set_page_config(page_title="Email Sequence Generator")
@@ -42,6 +51,7 @@ st.markdown("""
 if "sequence_generator" not in st.session_state:
     st.session_state.sequence_generator = []
 
+# Display chat history
 for message in st.session_state.sequence_generator:
     with st.chat_message(message["role"]):
         if message["role"] == "user":
@@ -84,23 +94,21 @@ if prompt:
         if response.status_code == 200:
             try:
                 result = response.json()
-                if "response" in result:
-                    response_data = result["response"]
-                    emails = parse_email_sequence(response_data)
-                    
-                    if emails:
-                        st.session_state.sequence_generator.append({
-                            "role": "assistant",
-                            "emails": emails,
-                            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                        })
-                    else:
-                        st.error("❌ Could not parse email sequence from response")
+                emails = parse_email_sequence(result)
+                if emails:
+                    st.session_state.sequence_generator.append({
+                        "role": "assistant",
+                        "emails": emails,
+                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                    })
                 else:
-                    st.error("❌ Invalid response format from API")
-            except ValueError:
-                st.error("❌ Invalid JSON response from API")
+                    st.error("❌ Could not parse email sequence from response")
+                    st.write("Debug - Raw response:", result)
+            except Exception as e:
+                st.error(f"❌ Error processing response: {str(e)}")
+                st.write("Response content:", response.text)
         else:
-            st.error("❌ Error while calling the API")
+            st.error(f"❌ Error calling API (Status {response.status_code})")
+            st.write("Response content:", response.text)
         
         st.rerun()
