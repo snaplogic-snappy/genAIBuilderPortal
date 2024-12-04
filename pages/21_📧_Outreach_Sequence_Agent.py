@@ -18,14 +18,12 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-def parse_email_sequence(json_response):
+def parse_email_sequence(response_data):
     try:
-        emails = []
-        data = json.loads(json_response)
-        for item in data:
-            if isinstance(item, dict) and 'email_number' in item:
-                emails.append(item)
-        return sorted(emails, key=lambda x: int(x['email_number']))
+        data = json.loads(response_data)
+        if isinstance(data, list) and len(data) > 0:
+            email_sequence = data[0].get('response', {}).get('email_sequence', [])
+            return sorted(email_sequence, key=lambda x: int(x['email_number']))
     except:
         return None
 
