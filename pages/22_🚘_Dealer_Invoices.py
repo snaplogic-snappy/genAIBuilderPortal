@@ -1,4 +1,4 @@
-import streamlit as st
+fy import streamlit as st
 import requests
 import time
 from dotenv import dotenv_values
@@ -34,7 +34,7 @@ st.markdown(
     - Who was the most regular customer?
     - Tell me which technicians carried out work on which cars.  Identify the car by referencing their Reg No's.
     - Tell me if any of the customers may be unhappy with the service.  Give a reason as to why you feel this way. Ignore any contract clauses.
-    - Tell me if any vehicles showed signs of excess tyre wear.
+    - Tell me if any vehicles showed signs of excess tyre wear. Identify the vehicle using the Reg No.
  """)
 
 # Initialize chat history
