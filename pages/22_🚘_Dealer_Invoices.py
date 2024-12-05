@@ -12,8 +12,8 @@ BEARER_TOKEN = env["SL_DI_TASK_TOKEN"]
 timeout = int(env["SL_TASK_TIMEOUT"])
 #namespace = env["SL_DI_TASK_NAMESPACE"]
 # Streamlit Page Properties
-page_title=env["UW_PAGE_TITLE"]
-title=env["UW_TITLE"]
+page_title=env["DI_PAGE_TITLE"]
+title=env["DI_TITLE"]
 
 
 def typewriter(text: str, speed: int):
