@@ -99,22 +99,26 @@ if prompt:
             )
             
             if response.status_code == 200:
-                try:
-                    # Print raw response for debugging
-                    print("Raw response:", response.text)
-                    result = response.json()
-                    if "response" in result:
-                        assistant_response = result["response"]
-                        with st.chat_message("assistant"):
-                            typewriter(text=assistant_response, speed=30)
-                        st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
-                    else:
-                        st.session_state.error_message = "❌ Invalid response format from API. Expected 'response' field in JSON."
-                except ValueError as e:
-                    st.session_state.error_message = f"❌ Invalid JSON response from API. Error details: {str(e)}\n\nPlease report this to jarcega@snaplogic.com with the following response:\n{response.text[:200]}..."
-            else:
-                error_message = handle_api_error(response.status_code, response.headers)
-                st.session_state.error_message = f"❌ {error_message}"
+                content_type = response.headers.get('content-type', '')
+                if 'text/html' in content_type.lower():
+                    st.session_state.error_message = "❌ Authentication required. Please login to your Salesforce account."
+                    # Check if there's a redirect URL and open it
+                    if 'location' in response.headers:
+                        webbrowser.open(response.headers['location'])
+                elif 'application/json' in content_type.lower():
+                    try:
+                        result = response.json()
+                        if "response" in result:
+                            assistant_response = result["response"]
+                            with st.chat_message("assistant"):
+                                typewriter(text=assistant_response, speed=30)
+                            st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
+                        else:
+                            st.session_state.error_message = "❌ Invalid response format from API"
+                    except ValueError as e:
+                        st.session_state.error_message = "❌ Invalid JSON response from API"
+                else:
+                    st.session_state.error_message = f"❌ Unexpected response type: {content_type}"
                     
         except requests.exceptions.Timeout:
             st.session_state.error_message = "❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com"
