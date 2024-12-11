@@ -40,7 +40,7 @@ st.markdown(
     ### AI-powered sales assistant for SnapLogic employees
     Get instant answers to your sales-related questions, with references to official SnapLogic content.
     
-    Sample queries :
+    Sample queries:
     - What are SnapLogic's key differentiators against MuleSoft?
     - Create a customer facing documents with customer success stories in the healthcare industry
     - What's our pricing model for enterprise customers?
@@ -52,6 +52,16 @@ st.markdown(
 # Initialize chat history
 if "sales_assistant" not in st.session_state:
     st.session_state.sales_assistant = []
+
+# Initialize error state
+if "error_message" not in st.session_state:
+    st.session_state.error_message = None
+
+# Display error message if exists
+if st.session_state.error_message:
+    st.error(st.session_state.error_message)
+    # Clear error after displaying
+    st.session_state.error_message = None
 
 # Display chat messages from history on app rerun
 for message in st.session_state.sales_assistant:
@@ -89,24 +99,18 @@ if prompt:
                             typewriter(text=assistant_response, speed=30)
                         st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
                     else:
-                        with st.chat_message("assistant"):
-                            st.error("❌ Invalid response format from API")
+                        st.session_state.error_message = "❌ Invalid response format from API"
                 except ValueError as e:
-                    with st.chat_message("assistant"):
-                        st.error("❌ Invalid JSON response from API")
+                    st.session_state.error_message = "❌ Invalid JSON response from API"
             else:
                 error_message = handle_api_error(response.status_code)
-                with st.chat_message("assistant"):
-                    st.error(f"❌ {error_message}")
+                st.session_state.error_message = f"❌ {error_message}"
                     
         except requests.exceptions.Timeout:
-            with st.chat_message("assistant"):
-                st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
+            st.session_state.error_message = "❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com"
         except requests.exceptions.ConnectionError:
-            with st.chat_message("assistant"):
-                st.error("❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com")
+            st.session_state.error_message = "❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com"
         except Exception as e:
-            with st.chat_message("assistant"):
-                st.error(f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com")
+            st.session_state.error_message = f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com"
         
         st.rerun()
