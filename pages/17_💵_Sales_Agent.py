@@ -100,12 +100,16 @@ if prompt:
             
             if response.status_code == 200:
                 content_type = response.headers.get('content-type', '')
+                # If it's HTML and we have a redirect URL, it's likely the auth flow
                 if 'text/html' in content_type.lower():
-                    # Create a container for the HTML content
-                    auth_container = st.empty()
-                    # Display the HTML content which contains the Salesforce login popup
-                    auth_container.components.html(response.text, height=600)
-                    st.session_state.error_message = "Please complete the Salesforce authentication to continue."
+                    # Try to get the redirect URL from the response
+                    redirect_url = response.url  # The final URL after any redirects
+                    if redirect_url:
+                        # Open the Salesforce login popup in browser
+                        webbrowser.open(redirect_url)
+                        st.session_state.error_message = "A login window has been opened. Please complete the Salesforce authentication and try again."
+                    else:
+                        st.session_state.error_message = "Unable to initiate Salesforce authentication. Please contact jarcega@snaplogic.com"
                 elif 'application/json' in content_type.lower():
                     try:
                         result = response.json()
