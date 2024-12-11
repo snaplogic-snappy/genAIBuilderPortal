@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import time
-import webbrowser
+from urllib.parse import urlencode
 from dotenv import dotenv_values
 
 # Load environment
@@ -22,82 +22,117 @@ def typewriter(text: str, speed: int):
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
-st.markdown(
-    """  
-    ### AI-powered sales assistant for SnapLogic employees
-    Get instant answers to your sales-related questions, with references to official SnapLogic content.
+
+# Get current URL parameters
+query_params = st.experimental_get_query_params()
+
+# Check if we're in a callback from Salesforce auth
+if "code" in query_params:
+    st.success("✅ Successfully authenticated! You can now use the assistant.")
+    # Here you would typically exchange the code for a token
+    # and store it in session_state
+    st.session_state.authenticated = True
+
+# Check authentication state
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.markdown(
+        """
+        ### Welcome to SnapLogic Sales Assistant
+        Please authenticate with Salesforce to continue.
+        """
+    )
     
-    Sample queries:
-    - What are SnapLogic's key differentiators against MuleSoft?
-    - Create a customer facing documents with customer success stories in the healthcare industry
-    - What's our pricing model for enterprise customers?
-    - What ROI metrics can I share with prospects?
-    - Find competitive analysis against Boomi for financial services
-    - What's our partner program structure?
- """)
-
-# Initialize chat history
-if "sales_assistant" not in st.session_state:
-    st.session_state.sales_assistant = []
-
-# Display chat messages from history on app rerun
-for message in st.session_state.sales_assistant:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# React to user input
-prompt = st.chat_input("Ask me anything about SnapLogic sales")
-
-if prompt:
-    st.chat_message("user").markdown(prompt)
-    st.session_state.sales_assistant.append({"role": "user", "content": prompt})
-    
-    with st.spinner("Working..."):
+    # Create a button that redirects to Salesforce login
+    if st.button("Login with Salesforce"):
+        # Get the redirect URL from the API first
         try:
-            data = {"prompt": prompt}
-            headers = {
-                'Authorization': f'Bearer {BEARER_TOKEN}'
-            }
-            
             response = requests.post(
                 url=URL,
-                data=data,
-                headers=headers,
+                data={"prompt": "test"},  # dummy prompt to trigger auth
+                headers={'Authorization': f'Bearer {BEARER_TOKEN}'},
                 timeout=timeout,
                 verify=False
             )
             
-            if response.status_code == 200:
-                try:
-                    # First try to parse as JSON
-                    result = response.json()
-                    if "response" in result:
-                        assistant_response = result["response"]
-                        with st.chat_message("assistant"):
-                            typewriter(text=assistant_response, speed=30)
-                        st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
-                except ValueError:
-                    # If it's not JSON, check if it's the auth HTML
-                    if 'text/html' in response.headers.get('content-type', '').lower():
-                        # Extract the redirect URL from the HTML response
-                        html_content = response.text
-                        if "window.location.href" in html_content:
-                            # Find the Salesforce URL in the response
-                            import re
-                            match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
-                            if match:
-                                redirect_url = match.group(1)
-                                # Open the authentication URL in a new tab
-                                webbrowser.open_new_tab(redirect_url)
-                                st.info("🔒 A new window has been opened for Salesforce authentication. Please complete the login process and then try your query again.")
-                            else:
-                                st.error("❌ Could not find authentication URL in response")
-                    else:
-                        st.error("❌ Invalid response format from API")
-                        
-        except requests.exceptions.Timeout:
-            st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
-        except requests.exceptions.ConnectionError:
-            st.error("❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com")
+            if 'text/html' in response.headers.get('content-type', '').lower():
+                import re
+                match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", response.text)
+                if match:
+                    auth_url = match.group(1)
+                    # Use Streamlit's built-in redirect
+                    st.markdown(f'<meta http-equiv="refresh" content="0;url={auth_url}">', unsafe_allow_html=True)
+                else:
+                    st.error("Could not find authentication URL")
         except Exception as e:
-            st.error(f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com")
+            st.error(f"Error initiating authentication: {str(e)}")
+
+else:
+    st.markdown(
+        """  
+        ### AI-powered sales assistant for SnapLogic employees
+        Get instant answers to your sales-related questions, with references to official SnapLogic content.
+        
+        Sample queries:
+        - What are SnapLogic's key differentiators against MuleSoft?
+        - Create a customer facing documents with customer success stories in the healthcare industry
+        - What's our pricing model for enterprise customers?
+        - What ROI metrics can I share with prospects?
+        - Find competitive analysis against Boomi for financial services
+        - What's our partner program structure?
+     """)
+
+    # Initialize chat history
+    if "sales_assistant" not in st.session_state:
+        st.session_state.sales_assistant = []
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.sales_assistant:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # React to user input
+    prompt = st.chat_input("Ask me anything about SnapLogic sales")
+
+    if prompt:
+        st.chat_message("user").markdown(prompt)
+        st.session_state.sales_assistant.append({"role": "user", "content": prompt})
+        
+        with st.spinner("Working..."):
+            try:
+                data = {"prompt": prompt}
+                headers = {
+                    'Authorization': f'Bearer {BEARER_TOKEN}'
+                }
+                
+                response = requests.post(
+                    url=URL,
+                    data=data,
+                    headers=headers,
+                    timeout=timeout,
+                    verify=False
+                )
+                
+                if response.status_code == 200:
+                    try:
+                        result = response.json()
+                        if "response" in result:
+                            assistant_response = result["response"]
+                            with st.chat_message("assistant"):
+                                typewriter(text=assistant_response, speed=30)
+                            st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
+                        else:
+                            st.error("❌ Invalid response format from API")
+                    except ValueError:
+                        st.error("❌ Authentication required. Please log in again.")
+                        st.session_state.authenticated = False
+                        st.rerun()
+                            
+            except requests.exceptions.Timeout:
+                st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
+            except requests.exceptions.ConnectionError:
+                st.error("❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com")
+            except Exception as e:
+                st.error(f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com")
