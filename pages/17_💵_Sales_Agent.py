@@ -80,6 +80,9 @@ if prompt:
                     if 'text/html' in response.headers.get('content-type', '').lower():
                         # Extract the redirect URL from the HTML response
                         html_content = response.text
+                        st.write("Content type:", response.headers.get('content-type'))
+                        st.write("HTML content received:", html_content[:200])  # Show first 200 chars
+                        
                         if "window.location.href" in html_content:
                             # Find the Salesforce URL in the response
                             import re
@@ -87,9 +90,15 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Open URL in new tab
-                                webbrowser.open_new_tab(redirect_url)
-                                st.info("🔒 A login window has been opened. Please complete the Salesforce authentication and try your query again.")
+                                st.write("Found redirect URL:", redirect_url)  # Debug the URL
+                                # Try both methods
+                                try:
+                                    webbrowser.open(redirect_url)
+                                except Exception as e:
+                                    st.error(f"Error opening browser: {str(e)}")
+                                # Also show as clickable link as fallback
+                                st.markdown(f"[Click here to login]({redirect_url})")
+                                st.info("🔒 Please click the link above to login with Salesforce if the window doesn't open automatically.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
                         
