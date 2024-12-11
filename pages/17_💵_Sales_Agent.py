@@ -39,10 +39,6 @@ st.markdown(
 if "sales_assistant" not in st.session_state:
     st.session_state.sales_assistant = []
 
-# Initialize error state
-if "error_message" not in st.session_state:
-    st.session_state.error_message = None
-
 # Display chat messages from history on app rerun
 for message in st.session_state.sales_assistant:
     with st.chat_message(message["role"]):
@@ -96,5 +92,3 @@ if prompt:
             st.error("❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com")
         except Exception as e:
             st.error(f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com")
-
-        st.rerun()
