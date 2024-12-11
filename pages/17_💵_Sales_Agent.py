@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import webbrowser
 from dotenv import dotenv_values
 
 # Load environment
@@ -86,9 +87,9 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Create a button to open the authentication window
-                                st.markdown(f'<iframe src="{redirect_url}" style="width:100%;height:600px;border:none;"></iframe>', unsafe_allow_html=True)
-                                st.info("🔒 Please complete the Salesforce authentication in the window above and try your query again.")
+                                # Open the authentication URL in a new tab
+                                webbrowser.open_new_tab(redirect_url)
+                                st.info("🔒 A new window has been opened for Salesforce authentication. Please complete the login process and then try your query again.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
                     else:
