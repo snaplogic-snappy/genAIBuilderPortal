@@ -7,8 +7,8 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 
 # SnapLogic RAG pipeline
-URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/gateway/Sales%20Agent/SalesAgent"
-BEARER_TOKEN = "rsFZlA7hO5Ngp4loIH600cXHcKKluHYL"
+URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed/ConnectFasterInc/apim/SnapLogic%20Sales%20Agent/1.0/callAgentWorkerSalesAssistant"
+BEARER_TOKEN = "b752b027d75439d8b14675082bdd3093"
 timeout = 180
 
 def typewriter(text: str, speed: int):
