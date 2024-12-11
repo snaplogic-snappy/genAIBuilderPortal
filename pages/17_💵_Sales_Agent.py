@@ -100,6 +100,8 @@ if prompt:
             
             if response.status_code == 200:
                 try:
+                    # Print raw response for debugging
+                    print("Raw response:", response.text)
                     result = response.json()
                     if "response" in result:
                         assistant_response = result["response"]
@@ -107,9 +109,9 @@ if prompt:
                             typewriter(text=assistant_response, speed=30)
                         st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
                     else:
-                        st.session_state.error_message = "❌ Invalid response format from API"
+                        st.session_state.error_message = "❌ Invalid response format from API. Expected 'response' field in JSON."
                 except ValueError as e:
-                    st.session_state.error_message = "❌ Invalid JSON response from API"
+                    st.session_state.error_message = f"❌ Invalid JSON response from API. Error details: {str(e)}\n\nPlease report this to jarcega@snaplogic.com with the following response:\n{response.text[:200]}..."
             else:
                 error_message = handle_api_error(response.status_code, response.headers)
                 st.session_state.error_message = f"❌ {error_message}"
