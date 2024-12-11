@@ -86,9 +86,24 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Create a button to open the authentication window
-                                st.markdown(f'<iframe src="{redirect_url}" style="width:100%;height:600px;border:none;"></iframe>', unsafe_allow_html=True)
-                                st.info("🔒 Please complete the Salesforce authentication in the window above and try your query again.")
+                                # Create a link that opens in a new tab
+                                st.markdown(f'''
+                                    <a href="{redirect_url}" target="_blank">
+                                        <button style="
+                                            background-color: #0176d3;
+                                            color: white;
+                                            padding: 10px 20px;
+                                            border: none;
+                                            border-radius: 4px;
+                                            cursor: pointer;
+                                            font-size: 16px;">
+                                            Login with Salesforce
+                                        </button>
+                                    </a>
+                                    ''', 
+                                    unsafe_allow_html=True
+                                )
+                                st.info("🔒 Click the button above to authenticate with Salesforce in a new window. After logging in, return to this window and try your query again.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
                     else:
