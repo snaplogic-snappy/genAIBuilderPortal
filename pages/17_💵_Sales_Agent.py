@@ -19,20 +19,6 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-def handle_api_error(status_code: int, headers: dict) -> str:
-    error_messages = {
-        401: "Authentication required. The system will redirect you to login.",
-        403: "Authorization required. The system will redirect you to login.",
-        404: "Resource not found: The requested endpoint doesn't exist",
-        429: "Too many requests: Rate limit exceeded",
-        500: "Internal server error: Something went wrong on the server",
-        502: "Bad gateway: The server received an invalid response",
-        503: "Service unavailable: The server is temporarily down",
-        504: "Gateway timeout: The server took too long to respond"
-    }
-    base_message = error_messages.get(status_code, f"Unexpected error (Status code: {status_code})")
-    return base_message
-
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
 st.markdown(
@@ -57,11 +43,6 @@ if "sales_assistant" not in st.session_state:
 if "error_message" not in st.session_state:
     st.session_state.error_message = None
 
-# Display error message if exists
-if st.session_state.error_message:
-    st.error(st.session_state.error_message)
-    st.session_state.error_message = None
-
 # Display chat messages from history on app rerun
 for message in st.session_state.sales_assistant:
     with st.chat_message(message["role"]):
@@ -81,48 +62,39 @@ if prompt:
                 'Authorization': f'Bearer {BEARER_TOKEN}'
             }
             
-            # Make request with redirect handling
             response = requests.post(
                 url=URL,
                 data=data,
                 headers=headers,
                 timeout=timeout,
-                verify=False,
-                allow_redirects=False  # Don't auto-follow redirects
+                verify=False
             )
             
-            # Handle different response scenarios
             if response.status_code == 200:
                 try:
+                    # First try to parse as JSON
                     result = response.json()
                     if "response" in result:
                         assistant_response = result["response"]
                         with st.chat_message("assistant"):
                             typewriter(text=assistant_response, speed=30)
                         st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
+                except ValueError:
+                    # If it's not JSON, check if it's the auth HTML
+                    if 'text/html' in response.headers.get('content-type', '').lower():
+                        # Create a container for the auth HTML
+                        auth_container = st.empty()
+                        # Render the HTML which contains the redirect script
+                        auth_container.components.html(response.text, height=0)
+                        st.info("🔒 Redirecting to Salesforce login... Please complete the authentication and try again.")
                     else:
-                        st.session_state.error_message = "❌ Invalid response format from API"
-                except ValueError as e:
-                    st.session_state.error_message = "❌ Invalid JSON response from API"
-            # Handle redirect responses (301, 302, 303, 307)
-            elif response.status_code in [301, 302, 303, 307]:
-                redirect_url = response.headers.get('Location')
-                if redirect_url:
-                    # Create a button for authentication
-                    st.markdown(f'<a href="{redirect_url}" target="_blank">Click here to authenticate with Salesforce</a>', unsafe_allow_html=True)
-                    st.session_state.error_message = "Please authenticate with Salesforce to continue. After authentication, retry your question."
-                else:
-                    st.session_state.error_message = "Authentication required but no redirect URL provided."
-            # Handle other status codes
-            else:
-                error_message = handle_api_error(response.status_code, response.headers)
-                st.session_state.error_message = f"❌ {error_message}"
-                    
+                        st.error("❌ Invalid response format from API")
+                        
         except requests.exceptions.Timeout:
-            st.session_state.error_message = "❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com"
+            st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
         except requests.exceptions.ConnectionError:
-            st.session_state.error_message = "❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com"
+            st.error("❌ Connection error. Please check your internet connection.\n\nIf this persists, contact jarcega@snaplogic.com")
         except Exception as e:
-            st.session_state.error_message = f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com"
-        
+            st.error(f"❌ An unexpected error occurred: {str(e)}\n\nPlease report this to jarcega@snaplogic.com")
+
         st.rerun()
