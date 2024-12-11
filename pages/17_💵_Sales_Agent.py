@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+from urllib.parse import parse_qs, urlparse
 from dotenv import dotenv_values
 
 # Load environment
@@ -19,8 +20,24 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
+# Get query parameters to check for callback
+query_params = st.experimental_get_query_params()
+
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
+
+# Check if we're receiving a callback with data
+if 'response' in query_params:
+    try:
+        # Get the response from query params
+        response_data = {"response": query_params['response'][0]}
+        with st.chat_message("assistant"):
+            typewriter(text=response_data["response"], speed=30)
+        if "sales_assistant" in st.session_state:
+            st.session_state.sales_assistant.append({"role": "assistant", "content": response_data["response"]})
+    except Exception as e:
+        st.error(f"Error processing response: {str(e)}")
+
 st.markdown(
     """  
     ### AI-powered sales assistant for SnapLogic employees
@@ -63,12 +80,12 @@ if prompt:
                 data=data,
                 headers=headers,
                 timeout=timeout,
-                verify=False
+                verify=False,
+                allow_redirects=False  # Don't auto-follow redirects
             )
             
             if response.status_code == 200:
                 try:
-                    # First try to parse as JSON
                     result = response.json()
                     if "response" in result:
                         assistant_response = result["response"]
@@ -84,23 +101,15 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                
-                                # Create a clean link to start the OAuth flow
-                                st.markdown("""
-                                    <div style='text-align: center; margin: 20px 0;'>
-                                        <h3>Authentication Required</h3>
-                                        <p>Please authenticate with Salesforce to continue</p>
-                                    </div>
-                                """, unsafe_allow_html=True)
-                                
-                                st.link_button("Login with Salesforce", redirect_url)
-                                
-                                # Add instructions for the flow
-                                st.info("""
-                                    1. Click the button above to login with Salesforce
-                                    2. Complete authentication in the new window
-                                    3. Return here and retry your question
-                                """)
+                                # Add current page as redirect_uri parameter
+                                current_url = st.experimental_get_query_params().get('redirect_uri', [None])[0]
+                                if current_url:
+                                    redirect_url = f"{redirect_url}&redirect_uri={current_url}"
+                                import webbrowser
+                                webbrowser.open_new_tab(redirect_url)
+                                st.info("🔒 Authentication window opened. Please complete the login process.")
+                            else:
+                                st.error("❌ Could not find authentication URL in response")
                     else:
                         st.error("❌ Invalid response format from API")
                         
