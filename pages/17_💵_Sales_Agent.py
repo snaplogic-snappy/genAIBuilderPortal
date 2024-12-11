@@ -101,13 +101,43 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Add current page as redirect_uri parameter
-                                current_url = st.experimental_get_query_params().get('redirect_uri', [None])[0]
-                                if current_url:
-                                    redirect_url = f"{redirect_url}&redirect_uri={current_url}"
-                                import webbrowser
-                                webbrowser.open_new_tab(redirect_url)
-                                st.info("🔒 Authentication window opened. Please complete the login process.")
+                                
+                                # Make request to get the Salesforce login page
+                                auth_response = requests.get(redirect_url, verify=False)
+                                if auth_response.status_code == 200:
+                                    # Get and clean up the auth page HTML
+                                    auth_html = auth_response.text
+                                    
+                                    # Add JavaScript to intercept the form submission
+                                    auth_html = auth_html.replace('</body>',
+                                    """
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var form = document.querySelector('form');
+                                            if(form) {
+                                                form.onsubmit = function(e) {
+                                                    e.preventDefault();
+                                                    fetch(form.action, {
+                                                        method: form.method,
+                                                        body: new FormData(form)
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        // Send the response back to parent
+                                                        parent.postMessage({type: 'AUTH_COMPLETE', data: data}, '*');
+                                                    });
+                                                };
+                                            }
+                                        });
+                                    </script>
+                                    </body>
+                                    """)
+                                    
+                                    # Display the auth page HTML
+                                    st.markdown(auth_html, unsafe_allow_html=True)
+                                    
+                                    # Add message for user
+                                    st.info("Please authorize access to continue. Your response will appear here once authorized.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
                     else:
