@@ -100,48 +100,41 @@ if prompt:
                             import re
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
-                                redirect_url = match.group(1)
+                                auth_url = match.group(1)
                                 
-                                # Make request to get the Salesforce login page
-                                auth_response = requests.get(redirect_url, verify=False)
-                                if auth_response.status_code == 200:
-                                    # Get and clean up the auth page HTML
-                                    auth_html = auth_response.text
+                                # Create the authorization UI
+                                st.markdown("""
+                                    <div style='background-color: #f9f9f9; padding: 20px; border-radius: 10px; border: 1px solid #ddd;'>
+                                        <h3>Salesforce Authorization Required</h3>
+                                        <p>Click the button below to authorize access:</p>
+                                    </div>
+                                """, unsafe_allow_html=True)
+                                
+                                if st.button("Authorize Access"):
+                                    auth_response = requests.get(auth_url, verify=False, allow_redirects=True)
                                     
-                                    # Add JavaScript to intercept the form submission
-                                    auth_html = auth_html.replace('</body>',
-                                    """
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            var form = document.querySelector('form');
-                                            if(form) {
-                                                form.onsubmit = function(e) {
-                                                    e.preventDefault();
-                                                    fetch(form.action, {
-                                                        method: form.method,
-                                                        body: new FormData(form)
-                                                    })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        // Send the response back to parent
-                                                        parent.postMessage({type: 'AUTH_COMPLETE', data: data}, '*');
-                                                    });
-                                                };
-                                            }
-                                        });
-                                    </script>
-                                    </body>
-                                    """)
+                                    # After authorization, retry the original query with updated session
+                                    retry_response = requests.post(
+                                        url=URL,
+                                        data=data,
+                                        headers=headers,
+                                        timeout=timeout,
+                                        verify=False,
+                                        cookies=auth_response.cookies  # Pass through the auth cookies
+                                    )
                                     
-                                    # Display the auth page HTML
-                                    st.markdown(auth_html, unsafe_allow_html=True)
-                                    
-                                    # Add message for user
-                                    st.info("Please authorize access to continue. Your response will appear here once authorized.")
+                                    if retry_response.status_code == 200:
+                                        try:
+                                            result = retry_response.json()
+                                            if "response" in result:
+                                                assistant_response = result["response"]
+                                                with st.chat_message("assistant"):
+                                                    typewriter(text=assistant_response, speed=30)
+                                                st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
+                                        except ValueError:
+                                            st.error("❌ Error processing response after authorization")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
-                    else:
-                        st.error("❌ Invalid response format from API")
                         
         except requests.exceptions.Timeout:
             st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
