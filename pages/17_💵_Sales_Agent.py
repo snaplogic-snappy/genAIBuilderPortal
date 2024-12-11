@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import time
-import webbrowser
 from dotenv import dotenv_values
 
 # Load environment
@@ -20,17 +19,10 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-def handle_api_error(status_code: int, response_headers: dict) -> str:
-    if status_code in (401, 403):
-        # Check if there's a redirect URL in the response headers
-        login_url = response_headers.get('Location') or response_headers.get('location')
-        if login_url:
-            # Open the Salesforce login popup
-            webbrowser.open(login_url)
-            return "You need to login to Salesforce. A login window has been opened. Please login and try again."
-        return "Authentication required. Please login to Salesforce and try again."
-    
+def handle_api_error(status_code: int, headers: dict) -> str:
     error_messages = {
+        401: "Authentication required. The system will redirect you to login.",
+        403: "Authorization required. The system will redirect you to login.",
         404: "Resource not found: The requested endpoint doesn't exist",
         429: "Too many requests: Rate limit exceeded",
         500: "Internal server error: Something went wrong on the server",
@@ -39,7 +31,7 @@ def handle_api_error(status_code: int, response_headers: dict) -> str:
         504: "Gateway timeout: The server took too long to respond"
     }
     base_message = error_messages.get(status_code, f"Unexpected error (Status code: {status_code})")
-    return f"{base_message}\n\nPlease report this issue to jarcega@snaplogic.com with the following details:\n- Time of error: {time.strftime('%Y-%m-%d %H:%M:%S')}\n- Status code: {status_code}"
+    return base_message
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
@@ -68,7 +60,6 @@ if "error_message" not in st.session_state:
 # Display error message if exists
 if st.session_state.error_message:
     st.error(st.session_state.error_message)
-    # Clear error after displaying
     st.session_state.error_message = None
 
 # Display chat messages from history on app rerun
@@ -90,38 +81,42 @@ if prompt:
                 'Authorization': f'Bearer {BEARER_TOKEN}'
             }
             
+            # Make request with redirect handling
             response = requests.post(
                 url=URL,
                 data=data,
                 headers=headers,
                 timeout=timeout,
-                verify=False
+                verify=False,
+                allow_redirects=False  # Don't auto-follow redirects
             )
             
+            # Handle different response scenarios
             if response.status_code == 200:
-                content_type = response.headers.get('content-type', '')
-                # If it's HTML and we have a redirect URL, it's likely the auth flow
-                if 'text/html' in content_type.lower():
-                    # Try to get the redirect URL from the response
-                    redirect_url = response.url  # The final URL after any redirects
-                    if redirect_url:
-                        # Open the Salesforce login popup in browser
-                        webbrowser.open(redirect_url)
-                        st.session_state.error_message = "A login window has been opened. Please complete the Salesforce authentication and try again."
+                try:
+                    result = response.json()
+                    if "response" in result:
+                        assistant_response = result["response"]
+                        with st.chat_message("assistant"):
+                            typewriter(text=assistant_response, speed=30)
+                        st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
                     else:
-                        st.session_state.error_message = "Unable to initiate Salesforce authentication. Please contact jarcega@snaplogic.com"
-                elif 'application/json' in content_type.lower():
-                    try:
-                        result = response.json()
-                        if "response" in result:
-                            assistant_response = result["response"]
-                            with st.chat_message("assistant"):
-                                typewriter(text=assistant_response, speed=30)
-                            st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
-                        else:
-                            st.session_state.error_message = "❌ Invalid response format from API"
-                    except ValueError as e:
-                        st.session_state.error_message = "❌ Invalid JSON response from API"
+                        st.session_state.error_message = "❌ Invalid response format from API"
+                except ValueError as e:
+                    st.session_state.error_message = "❌ Invalid JSON response from API"
+            # Handle redirect responses (301, 302, 303, 307)
+            elif response.status_code in [301, 302, 303, 307]:
+                redirect_url = response.headers.get('Location')
+                if redirect_url:
+                    # Create a button for authentication
+                    st.markdown(f'<a href="{redirect_url}" target="_blank">Click here to authenticate with Salesforce</a>', unsafe_allow_html=True)
+                    st.session_state.error_message = "Please authenticate with Salesforce to continue. After authentication, retry your question."
+                else:
+                    st.session_state.error_message = "Authentication required but no redirect URL provided."
+            # Handle other status codes
+            else:
+                error_message = handle_api_error(response.status_code, response.headers)
+                st.session_state.error_message = f"❌ {error_message}"
                     
         except requests.exceptions.Timeout:
             st.session_state.error_message = "❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com"
