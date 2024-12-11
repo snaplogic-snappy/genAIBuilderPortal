@@ -78,11 +78,19 @@ if prompt:
                 except ValueError:
                     # If it's not JSON, check if it's the auth HTML
                     if 'text/html' in response.headers.get('content-type', '').lower():
-                        # Create a container for the auth HTML
-                        auth_container = st.empty()
-                        # Render the HTML which contains the redirect script
-                        auth_container.components.html(response.text, height=0)
-                        st.info("🔒 Redirecting to Salesforce login... Please complete the authentication and try again.")
+                        # Extract the redirect URL from the HTML response
+                        html_content = response.text
+                        if "window.location.href" in html_content:
+                            # Find the Salesforce URL in the response
+                            import re
+                            match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
+                            if match:
+                                redirect_url = match.group(1)
+                                # Create a button to open the authentication window
+                                st.markdown(f'<iframe src="{redirect_url}" style="width:100%;height:600px;border:none;"></iframe>', unsafe_allow_html=True)
+                                st.info("🔒 Please complete the Salesforce authentication in the window above and try your query again.")
+                            else:
+                                st.error("❌ Could not find authentication URL in response")
                     else:
                         st.error("❌ Invalid response format from API")
                         
