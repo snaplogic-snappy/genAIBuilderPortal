@@ -86,28 +86,15 @@ if prompt:
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Create a link that opens in a new tab
-                                st.markdown(f'''
-                                    <a href="{redirect_url}" target="_blank">
-                                        <button style="
-                                            background-color: #0176d3;
-                                            color: white;
-                                            padding: 10px 20px;
-                                            border: none;
-                                            border-radius: 4px;
-                                            cursor: pointer;
-                                            font-size: 16px;">
-                                            Login with Salesforce
-                                        </button>
-                                    </a>
-                                    ''', 
+                                # Automatically open the URL in a new tab
+                                st.markdown(f"""
+                                    <script>window.open('{redirect_url}', '_blank');</script>
+                                    """, 
                                     unsafe_allow_html=True
                                 )
-                                st.info("🔒 Click the button above to authenticate with Salesforce in a new window. After logging in, return to this window and try your query again.")
+                                st.info("🔒 A login window has been opened. Please complete the Salesforce authentication and try your query again.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
-                    else:
-                        st.error("❌ Invalid response format from API")
                         
         except requests.exceptions.Timeout:
             st.error("❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com")
