@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import webbrowser
 from dotenv import dotenv_values
 
 # Load environment
@@ -19,10 +20,17 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-def handle_api_error(status_code: int) -> str:
+def handle_api_error(status_code: int, response_headers: dict) -> str:
+    if status_code in (401, 403):
+        # Check if there's a redirect URL in the response headers
+        login_url = response_headers.get('Location') or response_headers.get('location')
+        if login_url:
+            # Open the Salesforce login popup
+            webbrowser.open(login_url)
+            return "You need to login to Salesforce. A login window has been opened. Please login and try again."
+        return "Authentication required. Please login to Salesforce and try again."
+    
     error_messages = {
-        401: "Authentication error: Invalid or expired token",
-        403: "Authorization error: Insufficient permissions to access this resource",
         404: "Resource not found: The requested endpoint doesn't exist",
         429: "Too many requests: Rate limit exceeded",
         500: "Internal server error: Something went wrong on the server",
@@ -37,7 +45,6 @@ st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
 st.markdown(
     """  
-    # UNDER MAINTENANCE
     ### AI-powered sales assistant for SnapLogic employees
     Get instant answers to your sales-related questions, with references to official SnapLogic content.
     
@@ -104,7 +111,7 @@ if prompt:
                 except ValueError as e:
                     st.session_state.error_message = "❌ Invalid JSON response from API"
             else:
-                error_message = handle_api_error(response.status_code)
+                error_message = handle_api_error(response.status_code, response.headers)
                 st.session_state.error_message = f"❌ {error_message}"
                     
         except requests.exceptions.Timeout:
