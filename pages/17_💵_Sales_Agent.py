@@ -7,7 +7,7 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 
 # SnapLogic RAG pipeline
-URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/gateway/Sales%20Agent/SalesAgent"
+URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed/ConnectFasterInc/apim/SnapLogic%20Sales%20Agent/1.0/callAgentWorkerSalesAssistant"
 BEARER_TOKEN = "rsFZlA7hO5Ngp4loIH600cXHcKKluHYL"
 timeout = 180
 
