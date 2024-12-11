@@ -40,7 +40,7 @@ st.markdown(
     ### AI-powered sales assistant for SnapLogic employees
     Get instant answers to your sales-related questions, with references to official SnapLogic content.
     
-    Sample queries:
+    Sample queries :
     - What are SnapLogic's key differentiators against MuleSoft?
     - Create a customer facing documents with customer success stories in the healthcare industry
     - What's our pricing model for enterprise customers?
