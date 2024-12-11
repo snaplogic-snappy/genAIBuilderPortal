@@ -83,15 +83,12 @@ if prompt:
                         if "window.location.href" in html_content:
                             # Find the Salesforce URL in the response
                             import re
+                            import webbrowser
                             match = re.search(r"window\.location\.href\s*=\s*'([^']+)'", html_content)
                             if match:
                                 redirect_url = match.group(1)
-                                # Automatically open the URL in a new tab
-                                st.markdown(f"""
-                                    <script>window.open('{redirect_url}', '_blank');</script>
-                                    """, 
-                                    unsafe_allow_html=True
-                                )
+                                # Open URL in new tab
+                                webbrowser.open_new_tab(redirect_url)
                                 st.info("🔒 A login window has been opened. Please complete the Salesforce authentication and try your query again.")
                             else:
                                 st.error("❌ Could not find authentication URL in response")
