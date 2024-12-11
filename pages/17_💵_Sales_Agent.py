@@ -101,10 +101,11 @@ if prompt:
             if response.status_code == 200:
                 content_type = response.headers.get('content-type', '')
                 if 'text/html' in content_type.lower():
-                    st.session_state.error_message = "❌ Authentication required. Please login to your Salesforce account."
-                    # Check if there's a redirect URL and open it
-                    if 'location' in response.headers:
-                        webbrowser.open(response.headers['location'])
+                    # Create a container for the HTML content
+                    auth_container = st.empty()
+                    # Display the HTML content which contains the Salesforce login popup
+                    auth_container.components.html(response.text, height=600)
+                    st.session_state.error_message = "Please complete the Salesforce authentication to continue."
                 elif 'application/json' in content_type.lower():
                     try:
                         result = response.json()
@@ -117,8 +118,6 @@ if prompt:
                             st.session_state.error_message = "❌ Invalid response format from API"
                     except ValueError as e:
                         st.session_state.error_message = "❌ Invalid JSON response from API"
-                else:
-                    st.session_state.error_message = f"❌ Unexpected response type: {content_type}"
                     
         except requests.exceptions.Timeout:
             st.session_state.error_message = "❌ Request timed out. Please try again later.\n\nIf this persists, contact jarcega@snaplogic.com"
