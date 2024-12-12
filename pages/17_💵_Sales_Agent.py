@@ -23,7 +23,7 @@ st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
 st.markdown(
     """  
-    
+    ### UNDER MAINTENANCE ###
     ### AI-powered sales assistant for SnapLogic employees
     Get instant answers to your sales-related questions, with references to official SnapLogic content.
     
