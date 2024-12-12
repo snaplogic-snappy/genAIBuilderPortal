@@ -10,7 +10,7 @@ env = dotenv_values(".env")
 #URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/ApiRfpAgent"
 #BEARER_TOKEN = "nNpLBJrd8FAtFh3TVC9xR97QAwWtJHgF"
 #added by MS
-URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/gateway/Sales%20Agent/SalesAgent"
+URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/apim/SnapLogic%20Sales%20Agent/1.0/callAgentWorkerSalesAssistant"
 timeout = 180
 
 def typewriter(text: str, speed: int):
