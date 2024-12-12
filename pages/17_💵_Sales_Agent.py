@@ -7,8 +7,10 @@ from dotenv import dotenv_values
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline
 # URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/SalesAssistant/callAgentWorkerSalesAssistant"
-URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/ApiRfpAgent"
-BEARER_TOKEN = "nNpLBJrd8FAtFh3TVC9xR97QAwWtJHgF"
+#URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/ApiRfpAgent"
+#BEARER_TOKEN = "nNpLBJrd8FAtFh3TVC9xR97QAwWtJHgF"
+#added by MS
+URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/gateway/Sales%20Agent/SalesAgent"
 timeout = 180
 
 def typewriter(text: str, speed: int):
@@ -21,6 +23,7 @@ def typewriter(text: str, speed: int):
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
+#added by MS
 st.html("<head><meta http-equiv='Content-Security-Policy' content=default-src 'self'; script-src 'unsafe-inline';></head>")
 st.markdown(
     """  
