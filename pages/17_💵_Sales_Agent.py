@@ -21,7 +21,7 @@ def typewriter(text: str, speed: int):
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
 st.title("SnapLogic Sales Assistant")
-st.html("<head><meta http-equiv="Content-Security-Policy" content="default-src 'self'"></head>")
+st.html("<head><meta http-equiv='Content-Security-Policy' content='default-src self'></head>")
 st.markdown(
     """  
     ### UNDER MAINTENANCE ###
