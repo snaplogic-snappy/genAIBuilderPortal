@@ -8,8 +8,8 @@ import os
 env = dotenv_values(".env")
 
 # Customer Intelligence API endpoint
-URL = "https://your-api-endpoint/customer-intelligence"
-BEARER_TOKEN = env.get("API_TOKEN", "your-default-token")
+URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Aleksandra%20Kulawska/customer_churn/main_pipeline%20Task"
+BEARER_TOKEN = "vSOLUL58nAc0Yaq2YaADIxgORNpSf98b"
 timeout = 300
 
 def typewriter(text: str, speed: int):
