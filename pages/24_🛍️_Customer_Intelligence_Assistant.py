@@ -23,16 +23,45 @@ def typewriter(text: str, speed: int):
 st.set_page_config(page_title="Customer Intelligence Assistant")
 st.title("Customer Intelligence AI Assistant")
 
+# Overview section with stats
+st.markdown("""
+### 📊 Customer Segments Overview
+This AI-powered assistant analyzes your customer base using advanced clustering algorithms to identify distinct customer segments.
+
+It helps you understand:
+- Customer behavior patterns
+- Purchase frequency and value
+- Segment-specific trends
+- Churn risk factors
+- Campaign response rates
+""")
+
+# Quick stats in the main page using columns
+st.subheader("Quick Stats")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("Total Segments", "5")
+with col2:
+    st.metric("Active Customers", "12,458")
+with col3:
+    st.metric("Avg. Customer Value", "$487")
+with col4:
+    st.metric("Churn Risk", "14%")
+
+# Divider
+st.markdown("---")
+
+# Main chat interface
 st.markdown("""  
-    ### AI-powered assistant for understanding customer segments and behavior
-    Ask questions about your customer base - the assistant will analyze patterns and provide actionable insights.
-    
-    Sample queries:
-    - What are the key characteristics of each customer segment?
-    - Which customer segments have the highest lifetime value?
-    - What are the common purchasing patterns in each segment?
-    - How do different segments respond to marketing campaigns?
-    - Which segments show the highest churn risk?
+### Ask Questions About Your Customer Base
+Ask questions about your customers - the assistant will analyze patterns and provide actionable insights.
+
+Sample queries:
+- What are the key characteristics of each customer segment?
+- Which customer segments have the highest lifetime value?
+- What are the common purchasing patterns in each segment?
+- How do different segments respond to marketing campaigns?
+- Which segments show the highest churn risk?
 """)
 
 # Initialize chat history and toggle states
@@ -116,27 +145,3 @@ if prompt:
                 st.error(f"❌ Connection Error: {str(e)}")
         
         st.rerun()
-
-# Add a sidebar with additional information
-with st.sidebar:
-    st.header("📊 Customer Segments Overview")
-    st.info("""
-    This assistant analyzes your customer base using advanced clustering algorithms to identify distinct customer segments. 
-    
-    It can help you understand:
-    - Customer behavior patterns
-    - Purchase frequency and value
-    - Segment-specific trends
-    - Churn risk factors
-    - Campaign response rates
-    """)
-    
-    # Add segment metrics (these would be populated by your backend)
-    st.subheader("Quick Stats")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Total Segments", "5")
-        st.metric("Avg. Customer Value", "$487")
-    with col2:
-        st.metric("Active Customers", "12,458")
-        st.metric("Churn Risk", "14%")
