@@ -78,9 +78,19 @@ if prompt:
         }
         
         try:
+            # Add prompt as query parameter
+            url_with_params = f"{URL}?PROMPT={requests.utils.quote(prompt)}"
+            
+            # Only send file data in body if present
+            body_data = {}
+            if "document" in data:
+                body_data["document"] = data["document"]
+                if "filename" in data:
+                    body_data["filename"] = data["filename"]
+            
             response = requests.post(
-                url=URL,
-                data=json.dumps(data),
+                url=url_with_params,
+                data=json.dumps(body_data) if body_data else None,
                 headers=headers,
                 timeout=TIMEOUT
             )
