@@ -29,7 +29,20 @@ st.set_page_config(
 st.title("👥 Customer Intelligence AI Assistant")
 st.caption("Powered by advanced clustering algorithms")
 
-# Stats section - using native Streamlit columns
+# Custom CSS for stats container
+st.markdown("""
+    <style>
+    .stats-container {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Stats section in a container
+st.markdown('<div class="stats-container">', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric("Total Segments", "5", "Active")
@@ -39,6 +52,7 @@ with col3:
     st.metric("Avg. Customer Value", "$487", "+$23")
 with col4:
     st.metric("Churn Risk", "14%", "-2%")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Features container
 with st.expander("🎯 What can this assistant do?", expanded=True):
