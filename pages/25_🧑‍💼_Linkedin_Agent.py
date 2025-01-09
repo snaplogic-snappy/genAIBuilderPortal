@@ -62,7 +62,14 @@ if prompt:
         # If a file was uploaded, add it to the request
         if uploaded_file is not None:
             file_content = uploaded_file.read()
-            data["document"] = file_content.decode("utf-8") if isinstance(file_content, bytes) else file_content
+            # Convert to base64 if it's binary content
+            if isinstance(file_content, bytes):
+                import base64
+                encoded_content = base64.b64encode(file_content).decode('utf-8')
+                data["document"] = encoded_content
+                data["filename"] = uploaded_file.name  # Add filename to help with file type detection
+            else:
+                data["document"] = file_content
         
         # Make API request
         headers = {
