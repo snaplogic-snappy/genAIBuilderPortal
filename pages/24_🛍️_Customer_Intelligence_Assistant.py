@@ -20,49 +20,65 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="Customer Intelligence Assistant")
-st.title("Customer Intelligence AI Assistant")
+st.set_page_config(
+    page_title="Customer Intelligence Assistant",
+    layout="wide"
+)
 
-# Overview section with stats
-st.markdown("""
-### 📊 Customer Segments Overview
-This AI-powered assistant analyzes your customer base using advanced clustering algorithms to identify distinct customer segments.
+# Title and main container
+with st.container():
+    st.title("👥 Customer Intelligence AI Assistant")
+    st.caption("Powered by advanced clustering algorithms")
 
-It helps you understand:
-- Customer behavior patterns
-- Purchase frequency and value
-- Segment-specific trends
-- Churn risk factors
-- Campaign response rates
-""")
+# Stats container with custom styling
+with st.container():
+    st.markdown("""
+        <style>
+            .metric-container {
+                background-color: #f0f2f6;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 10px 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    with st.container():
+        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Total Segments", "5", "Active")
+        with col2:
+            st.metric("Active Customers", "12,458", "+2.4%")
+        with col3:
+            st.metric("Avg. Customer Value", "$487", "+$23")
+        with col4:
+            st.metric("Churn Risk", "14%", "-2%")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# Quick stats in the main page using columns
-st.subheader("Quick Stats")
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Total Segments", "5")
-with col2:
-    st.metric("Active Customers", "12,458")
-with col3:
-    st.metric("Avg. Customer Value", "$487")
-with col4:
-    st.metric("Churn Risk", "14%")
+# Features container
+with st.expander("🎯 What can this assistant do?", expanded=True):
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        ### Key Features
+        - 📊 Segment Analysis
+        - 💰 Customer Value Tracking
+        - 📈 Behavior Pattern Detection
+        - 🎯 Campaign Response Insights
+        """)
+    with col2:
+        st.markdown("""
+        ### Sample Questions
+        - "What defines our high-value segments?"
+        - "Show purchase patterns by segment"
+        - "Which segments have highest churn risk?"
+        - "Compare campaign responses across segments"
+        """)
 
-# Divider
+# Chat interface
 st.markdown("---")
-
-# Main chat interface
-st.markdown("""  
-### Ask Questions About Your Customer Base
-Ask questions about your customers - the assistant will analyze patterns and provide actionable insights.
-
-Sample queries:
-- What are the key characteristics of each customer segment?
-- Which customer segments have the highest lifetime value?
-- What are the common purchasing patterns in each segment?
-- How do different segments respond to marketing campaigns?
-- Which segments show the highest churn risk?
-""")
+st.subheader("💬 Ask About Your Customers")
 
 # Initialize chat history and toggle states
 if "customer_analytics" not in st.session_state:
@@ -77,14 +93,13 @@ for idx, message in enumerate(st.session_state.customer_analytics):
             st.markdown(message.get("answer", message.get("content", "")))
             if message.get("summary"):
                 toggle_key = f"toggle_{idx}"
-                if st.toggle("Show analysis process", False, key=toggle_key):
-                    st.markdown("### Analysis Details")
+                with st.expander("View Analysis Details", expanded=False):
                     st.markdown(message["summary"])
         else:
             st.markdown(message["content"])
 
-# React to user input
-prompt = st.chat_input("Ask me anything about your customer segments")
+# Chat input
+prompt = st.chat_input("Ask me anything about your customer segments...")
 if prompt:
     st.chat_message("user").markdown(prompt)
     st.session_state.customer_analytics.append({"role": "user", "content": prompt})
@@ -114,15 +129,12 @@ if prompt:
                         with st.chat_message("assistant"):
                             typewriter(text=answer, speed=10)
                             
-                            # Display any visualizations if provided
                             if visualizations:
-                                st.markdown("### Segment Visualization")
-                                st.plotly_chart(visualizations)
+                                with st.container():
+                                    st.plotly_chart(visualizations, use_container_width=True)
                             
                             if summary:
-                                toggle_key = f"toggle_{len(st.session_state.customer_analytics)}"
-                                if st.toggle("Show analysis process", False, key=toggle_key):
-                                    st.markdown("### Analysis Details")
+                                with st.expander("View Analysis Details", expanded=False):
                                     st.markdown(summary)
                         
                         st.session_state.customer_analytics.append({
