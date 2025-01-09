@@ -27,7 +27,7 @@ st.set_page_config(
 
 # Title and description
 st.title("👥 Customer Intelligence AI Assistant")
-st.caption("Powered by advanced clustering algorithms")
+st.caption("Your customers. Our AI.")
 
 # Custom CSS for stats container
 st.markdown("""
