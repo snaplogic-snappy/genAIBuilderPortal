@@ -37,6 +37,8 @@ st.markdown(
 
 # File upload
 uploaded_file = st.file_uploader("Upload a document (optional)", type=['txt', 'pdf', 'docx'])
+if uploaded_file is not None:
+    st.success("File uploaded successfully!")
 
 # Initialize chat history
 if "linkedin_generator" not in st.session_state:
@@ -81,19 +83,28 @@ if prompt:
             # Add prompt as query parameter
             url_with_params = f"{URL}?PROMPT={requests.utils.quote(prompt)}"
             
-            # Only send file data in body if present
-            body_data = {}
-            if "document" in data:
-                body_data["document"] = data["document"]
-                if "filename" in data:
-                    body_data["filename"] = data["filename"]
+            # Set up basic headers
+            headers = {
+                'Authorization': f'Bearer {BEARER_TOKEN}'
+            }
             
-            response = requests.post(
-                url=url_with_params,
-                data=json.dumps(body_data) if body_data else None,
-                headers=headers,
-                timeout=TIMEOUT
-            )
+            # If there's a file, send it as raw bytes with octet-stream
+            if uploaded_file is not None:
+                headers['Content-Type'] = 'application/octet-stream'
+                file_bytes = uploaded_file.getvalue()
+                response = requests.post(
+                    url=url_with_params,
+                    data=file_bytes,
+                    headers=headers,
+                    timeout=TIMEOUT
+                )
+            else:
+                # No file, just send empty request with prompt in URL
+                response = requests.post(
+                    url=url_with_params,
+                    headers=headers,
+                    timeout=TIMEOUT
+                )
             
             if response.status_code == 200:
                 try:
