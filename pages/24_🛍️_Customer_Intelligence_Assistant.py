@@ -25,36 +25,33 @@ st.set_page_config(
     layout="wide"
 )
 
-# Title and main container
-with st.container():
-    st.title("👥 Customer Intelligence AI Assistant")
-    st.caption("Powered by advanced clustering algorithms")
+# Title
+st.title("👥 Customer Intelligence AI Assistant")
+st.caption("Powered by advanced clustering algorithms")
 
-# Stats container with custom styling
-with st.container():
-    st.markdown("""
-        <style>
-            .metric-container {
-                background-color: #f0f2f6;
-                padding: 20px;
-                border-radius: 10px;
-                margin: 10px 0;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-    
-    with st.container():
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric("Total Segments", "5", "Active")
-        with col2:
-            st.metric("Active Customers", "12,458", "+2.4%")
-        with col3:
-            st.metric("Avg. Customer Value", "$487", "+$23")
-        with col4:
-            st.metric("Churn Risk", "14%", "-2%")
-        st.markdown('</div>', unsafe_allow_html=True)
+# Stats with custom styling
+st.markdown("""
+    <style>
+        .metric-container {
+            background-color: #f0f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="metric-container">', unsafe_allow_html=True)
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("Total Segments", "5", "Active")
+with col2:
+    st.metric("Active Customers", "12,458", "+2.4%")
+with col3:
+    st.metric("Avg. Customer Value", "$487", "+$23")
+with col4:
+    st.metric("Churn Risk", "14%", "-2%")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Features container
 with st.expander("🎯 What can this assistant do?", expanded=True):
@@ -130,8 +127,7 @@ if prompt:
                             typewriter(text=answer, speed=10)
                             
                             if visualizations:
-                                with st.container():
-                                    st.plotly_chart(visualizations, use_container_width=True)
+                                st.plotly_chart(visualizations, use_container_width=True)
                             
                             if summary:
                                 with st.expander("View Analysis Details", expanded=False):
