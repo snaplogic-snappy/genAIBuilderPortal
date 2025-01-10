@@ -26,7 +26,7 @@ st.set_page_config(
 )
 
 # Title and description
-st.title("👥 Customer Intelligence AI Assistant")
+st.title("🛍️ Customer Intelligence AI Assistant")
 st.caption("Your customers. SnapLogic's AI.")
 
 # Custom CSS for stats container
