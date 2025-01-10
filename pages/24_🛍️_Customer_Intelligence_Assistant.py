@@ -63,15 +63,13 @@ with st.expander("🎯 What can this assistant do?", expanded=True):
         - 📊 Segment Analysis
         - 💰 Customer Value Tracking
         - 📈 Behavior Pattern Detection
-        - 🎯 Campaign Response Insights
         """)
     with col2:
         st.markdown("""
         ### Sample Questions
-        - "What defines our high-value segments?"
         - "Show purchase patterns by segment"
+        - "What defines our high-value segments?"
         - "Which segments have highest churn risk?"
-        - "Compare campaign responses across segments"
         """)
 
 # Chat interface
