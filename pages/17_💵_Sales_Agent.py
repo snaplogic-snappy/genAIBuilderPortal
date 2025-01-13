@@ -68,11 +68,11 @@ if "SF_token" not in st.session_state:
 
     # create a button to start the OAuth2 flow
     result = oauth2.authorize_button(
-        name="SnapLogic Employees log in into Salesforce",
+        name="Log in",
         icon="https://www.salesforce.com/etc/designs/sfdc-www/en_us/favicon.ico",
         redirect_uri=REDIRECT_URI, 
         scope=SCOPE,
-        use_container_width=True
+        use_container_width=False
     )
     
     if result:
@@ -96,7 +96,7 @@ if "SF_token" not in st.session_state:
         st.rerun()
 else:
     st.write(f"Congrats **{st.session_state.SF_user}**, you are logged in now!")
-    if st.button("Logout"):
+    if st.button("Log out"):
         cleartoken()
         st.rerun()
 
