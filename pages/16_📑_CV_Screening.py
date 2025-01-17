@@ -9,8 +9,8 @@ env = dotenv_values(".env")
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRecruiter/reviewCv"
 BEARER_TOKEN = "JoY01uLt3hRe3fu9YpVKooJmhbhInfPi"
 timeout = 120
-page_title = "CV Screning Tool"
-title = "CV Screning Tool"
+page_title = "CV Screening Tool"
+title = "CV Screening Tool"
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
