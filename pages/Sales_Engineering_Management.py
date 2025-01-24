@@ -22,7 +22,7 @@ def main():
     st.title("SE Management Dashboard (N.A.)")
     st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns([1,1])
+    col1, col2 = st.columns([.7,.3])
     
     with col1:
         api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
