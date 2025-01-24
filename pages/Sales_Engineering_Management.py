@@ -28,7 +28,7 @@ def fetch_svg_from_api(url, token):
 def main():
     st.title("SE Management Agents")
     
-    api_url = "https://snaplogic.com/api/rest/1/blah"
+    api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
     bearer_token = "12345"
     
     svg_placeholder = st.empty()
