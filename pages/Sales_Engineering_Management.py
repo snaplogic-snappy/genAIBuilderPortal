@@ -1,41 +1,29 @@
-
-
-
 import streamlit as st
 import requests
 import time
-from dotenv import dotenv_values
 
 def fetch_svg_from_api(url, token):
-    """Fetch SVG content from specified API endpoint with enhanced headers."""
+    """Fetch SVG content from API endpoint with attachment handling."""
     headers = {
         'Authorization': f'Bearer {token}',
-        'Accept': 'image/svg+xml',
-        'Content-Type': 'application/json'  # Add this if API expects JSON
+        'Accept': '*/*'  # Accept any content type
     }
     
     try:
         response = requests.get(url, headers=headers, stream=True)
         response.raise_for_status()
         
-        # Check content type to ensure it's SVG
-        content_type = response.headers.get('Content-Type', '')
-        if 'image/svg+xml' not in content_type:
-            st.error(f"Unexpected content type: {content_type}")
-            return
+        # Retrieve the entire SVG content
+        svg_content = response.content.decode('utf-8')
         
-        # Stream SVG content
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                yield chunk.decode('utf-8')
-                time.sleep(0.5)  # Simulated streaming delay
+        # Stream the content in chunks
+        for i in range(0, len(svg_content), 100):
+            yield svg_content[i:i+100]
+            time.sleep(0.1)  # Simulate streaming
     
     except requests.RequestException as e:
         st.error(f"API Request Failed: {e}")
         st.error(f"Response headers: {response.headers}")
-        st.error(f"Response content: {response.text}")
-
-
 
 def main():
     st.title("SE Management Agents")
@@ -45,8 +33,11 @@ def main():
     
     svg_placeholder = st.empty()
     
+    # Collect and display full SVG
+    full_svg = ""
     for svg_chunk in fetch_svg_from_api(api_url, bearer_token):
-        svg_placeholder.markdown(svg_chunk, unsafe_allow_html=True)
+        full_svg += svg_chunk
+        svg_placeholder.markdown(full_svg, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
