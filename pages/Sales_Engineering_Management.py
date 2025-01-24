@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-
+st.set_page_config(layout="wide")
 def fetch_svg_from_api(url, token):
     """Fetch SVG content from API endpoint."""
     headers = {
