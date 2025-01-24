@@ -25,7 +25,7 @@ def main():
     
     api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
     bearer_token = "12345"  # Replace with actual token
-    col1, col2 = st.columns([.7,.3])
+    col1, col2 = st.columns([.6,.4])
     with col1:
         svg_content = fetch_svg_from_api(api_url, bearer_token)
         
