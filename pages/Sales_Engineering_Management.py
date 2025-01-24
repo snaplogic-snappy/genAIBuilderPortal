@@ -23,15 +23,15 @@ def main():
     st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     
     
-    with st.container():
-        api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
-        bearer_token = "12345"  # Replace with actual token
+    st.container():
+    api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
+    bearer_token = "12345"  # Replace with actual token
         
-        svg_content = fetch_svg_from_api(api_url, bearer_token)
+    svg_content = fetch_svg_from_api(api_url, bearer_token)
         
-        if svg_content:
-            import streamlit.components.v1 as components
-            components.html(svg_content, height=600, scrolling=True)
+    if svg_content:
+        import streamlit.components.v1 as components
+        components.html(svg_content, height=600, scrolling=True)
 
 if __name__ == "__main__":
     main()
