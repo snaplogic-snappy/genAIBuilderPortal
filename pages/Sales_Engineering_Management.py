@@ -7,16 +7,24 @@ import time
 from dotenv import dotenv_values
 
 def fetch_svg_from_api(url, token):
-    """Fetch SVG content from specified API endpoint."""
+    """Fetch SVG content from specified API endpoint with enhanced headers."""
     headers = {
         'Authorization': f'Bearer {token}',
-        'Accept': 'image/svg+xml'
+        'Accept': 'image/svg+xml',
+        'Content-Type': 'application/json'  # Add this if API expects JSON
     }
     
     try:
         response = requests.get(url, headers=headers, stream=True)
         response.raise_for_status()
         
+        # Check content type to ensure it's SVG
+        content_type = response.headers.get('Content-Type', '')
+        if 'image/svg+xml' not in content_type:
+            st.error(f"Unexpected content type: {content_type}")
+            return
+        
+        # Stream SVG content
         for chunk in response.iter_content(chunk_size=1024):
             if chunk:
                 yield chunk.decode('utf-8')
@@ -24,6 +32,10 @@ def fetch_svg_from_api(url, token):
     
     except requests.RequestException as e:
         st.error(f"API Request Failed: {e}")
+        st.error(f"Response headers: {response.headers}")
+        st.error(f"Response content: {response.text}")
+
+
 
 def main():
     st.title("SE Management Agents")
