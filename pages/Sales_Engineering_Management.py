@@ -12,7 +12,7 @@ def fetch_svg_from_api(url, token):
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         
-        return response.content.decode('utf-8')
+        return response.text
     
     except requests.RequestException as e:
         st.error(f"API Request Failed: {e}")
@@ -22,14 +22,17 @@ def main():
     st.title("SE Management Dashboard (N.A.)")
     st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     
-    api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
-    bearer_token = "12345"  # Replace with actual token
+    col1, col2 = st.columns([1,1])
     
-    svg_content = fetch_svg_from_api(api_url, bearer_token)
-    
-    if svg_content:
-        import streamlit.components.v1 as components
-        components.html(svg_content, height=300)  # Reduced height to approximately 50%
+    with col1:
+        api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
+        bearer_token = "12345"  # Replace with actual token
+        
+        svg_content = fetch_svg_from_api(api_url, bearer_token)
+        
+        if svg_content:
+            import streamlit.components.v1 as components
+            components.html(svg_content, height=600, scrolling=True)
 
 if __name__ == "__main__":
     main()
