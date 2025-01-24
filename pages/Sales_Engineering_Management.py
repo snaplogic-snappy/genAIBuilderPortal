@@ -19,7 +19,8 @@ def fetch_svg_from_api(url, token):
         return None
 
 def main():
-    st.title("UNDER CONSTRUCTION SE Management Agents")
+    st.title("SE Management Dashboard (N.A.)")
+    st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     
     api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
     bearer_token = "12345"  # Replace with actual token
@@ -28,7 +29,7 @@ def main():
     
     if svg_content:
         import streamlit.components.v1 as components
-        components.html(svg_content, height=600)
+        components.html(svg_content, height=300)  # Reduced height to approximately 50%
 
 if __name__ == "__main__":
     main()
