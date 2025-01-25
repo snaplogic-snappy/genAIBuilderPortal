@@ -22,11 +22,11 @@ def fetch_svg_from_api(url, token):
 
 def main():
     #st.title("SE Management Dashboard (N.A.)")
-    st.markdown("<h3 style='font-size: 24px; color:#00A859; text-align: center;'>SE Management Dashboard (N.A.)</h3>", unsafe_allow_html=True)
+    st.markdown("<h2 style='font-size: 24px; color:#00A859; text-align: center;'>SE Management Dashboard (N.A.)</h2>", unsafe_allow_html=True)
 
     # Add a blinking subheading
     blinking_subheading = """
-    <h4 style="color:#006F8E; animation: blink 1s step-start 3;">
+    <h4 style="color:#006F8E;text-align: center; animation: blink 1s step-start 3;">
         Powered by AgentCreator
     </h4>
     <style>
