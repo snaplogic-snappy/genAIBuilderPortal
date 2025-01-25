@@ -21,7 +21,7 @@ def fetch_svg_from_api(url, token):
         return None
 
 def main():
-    <h3>st.title("SE Management Dashboard (N.A.)")<h3>
+    <h3>st.title("SE Management Dashboard (N.A.)")</h3>
         
     # Add a blinking subheading
     blinking_subheading = """
