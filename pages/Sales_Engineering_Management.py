@@ -69,13 +69,13 @@ def main():
         if 'svg_content_col2' not in st.session_state:
             st.session_state.svg_content_col2 = fetch_svg_from_api(api_url_with_params, bearer_token)
         
-        #if st.button('Refresh'):
-         #####   with st.spinner('Refreshing data...'):
-                # First API call
-              #  refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
-            #with st.spinner('Fetching Data'):  
-                # Second API call
-             #   st.session_state.svg_content_col2 = fetch_svg_from_api(api_url, bearer_token)
+        if st.button('Refresh'):
+            with st.spinner('Refreshing data...'):
+              First API call
+              refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
+            with st.spinner('Fetching Data'):  
+              Second API call
+              st.session_state.svg_content_col2 = fetch_svg_from_api(api_url, bearer_token)
         
         if st.session_state.svg_content_col2:
             import streamlit.components.v1 as components
