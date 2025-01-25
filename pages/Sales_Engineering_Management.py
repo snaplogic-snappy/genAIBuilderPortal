@@ -21,13 +21,13 @@ def fetch_svg_from_api(url, token):
         return None
 
 def main():
-    st.title("SE Management Dashboard (N.A.)")
+    <h3>st.title("SE Management Dashboard (N.A.)")<3>
         
     # Add a blinking subheading
     blinking_subheading = """
-    <h3 style="color:red; animation: blink 1s step-start 3;">
+    <h4 style="color:red; animation: blink 1s step-start 3;">
         Powered by AgentCreator
-    </h3>
+    </h4>
     <style>
     @keyframes blink {
         50% { opacity: 0; }
