@@ -46,6 +46,22 @@ def main():
         if st.session_state.svg_content:
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content, height=600, scrolling=True)
-
+    with col2:
+        reportType = "statsBySE"
+              # Initial load of SVG content
+        if 'svg_content' not in st.session_state:
+            st.session_state.svg_content = fetch_svg_from_api(api_url?reportType, bearer_token)
+        
+        if st.button('Refresh'):
+            with st.spinner('Refreshing data...'):
+                # First API call
+                refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
+            with st.spinner('Fetching Data'):  
+                # Second API call
+                st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
+        
+        if st.session_state.svg_content:
+            import streamlit.components.v1 as components
+            components.html(st.session_state.svg_content, height=600, scrolling=True)
 if __name__ == "__main__":
     main()
