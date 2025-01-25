@@ -71,10 +71,10 @@ def main():
         
         if st.button('Refresh'):
             with st.spinner('Refreshing data...'):
-              First API call
+              ########First API call
               refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
             with st.spinner('Fetching Data'):  
-              Second API call
+              ########Second API call
               st.session_state.svg_content_col2 = fetch_svg_from_api(api_url, bearer_token)
         
         if st.session_state.svg_content_col2:
