@@ -22,6 +22,19 @@ def fetch_svg_from_api(url, token):
 
 def main():
     st.title("SE Management Dashboard (N.A.)")
+        
+    # Add a blinking subheading
+    blinking_subheading = """
+    <h3 style="color:blue; animation: blink 1s step-start 3;">
+        Subheading (Blinks 3 Times)
+    </h3>
+    <style>
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+    </style>
+    """
+    st.markdown(blinking_subheading, unsafe_allow_html=True)
     st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     
     refresh_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/AgentDriverSEActivities%20Task"
