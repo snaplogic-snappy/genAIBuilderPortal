@@ -25,8 +25,8 @@ def main():
         
     # Add a blinking subheading
     blinking_subheading = """
-    <h3 style="color:blue; animation: blink 1s step-start 3;">
-        Subheading (Blinks 3 Times)
+    <h3 style="color:red; animation: blink 1s step-start 3;">
+        Powered by AgentCreator
     </h3>
     <style>
     @keyframes blink {
