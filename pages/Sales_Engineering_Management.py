@@ -23,7 +23,7 @@ def fetch_svg_from_api(url, token):
 def main():
     #st.title("SE Management Dashboard (N.A.)")
     st.markdown("<h2 style='font-size: 24px; color:#00A859; text-align: center;'>SE Management Dashboard (N.A.)</h2>", unsafe_allow_html=True)
-
+    st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     # Add a blinking subheading
     blinking_subheading = """
     <h4 style="color:#5F5F5F;text-align: center; animation: blink 1s step-start 3;">
@@ -36,7 +36,7 @@ def main():
     </style>
     """
     st.markdown(blinking_subheading, unsafe_allow_html=True)
-    st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
+    
     
     refresh_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/AgentDriverSEActivities%20Task"
     api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Matt%20Sager%27s%20Project%20Space/SE%20Team%20Mgmt/SEMonthlyActivitiesFetcher_Task"
