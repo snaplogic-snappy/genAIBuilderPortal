@@ -47,10 +47,11 @@ def main():
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content, height=600, scrolling=True)
     with col2:
-        reportType = "statsBySE"
+        params = {'reportType': 'statsBySE'}
+        api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
               # Initial load of SVG content
         if 'svg_content' not in st.session_state:
-            st.session_state.svg_content = fetch_svg_from_api(api_url?reportType, bearer_token)
+            st.session_state.svg_content = fetch_svg_from_api(api_url_with_params, bearer_token)
         
         if st.button('Refresh'):
             with st.spinner('Refreshing data...'):
