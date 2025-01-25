@@ -47,7 +47,7 @@ def main():
         
         if st.session_state.svg_content_col1:
             import streamlit.components.v1 as components
-            components.html(st.session_state.svg_content, height=600, scrolling=True)
+            components.html(st.session_state.svg_content_col1, height=600, scrolling=True)
     with col2:
         params = {'reportType': 'statsBySE'}
         api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
