@@ -26,7 +26,7 @@ def main():
 
     # Add a blinking subheading
     blinking_subheading = """
-    <h4 style="color:#006F8E;text-align: center; animation: blink 1s step-start 3;">
+    <h4 style="color:#5F5F5F;text-align: center; animation: blink 1s step-start 3;">
         Powered by AgentCreator
     </h4>
     <style>
