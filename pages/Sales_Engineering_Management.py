@@ -31,6 +31,8 @@ def main():
     col1, col2 = st.columns([.6,.4])
     
     with col1:
+        params = {'reportType': 'monthlyRollup'}
+        api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
         # Initial load of SVG content
         if 'svg_content' not in st.session_state:
             st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
