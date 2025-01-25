@@ -22,7 +22,7 @@ def fetch_svg_from_api(url, token):
 
 def main():
     #st.title("SE Management Dashboard (N.A.)")
-    st.markdown("<h4 style='font-size: 24px; color:#00A859'>SE Management Dashboard (N.A.)</h4>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-size: 24px; color:#00A859'>SE Management Dashboard (N.A.)</h3>", unsafe_allow_html=True)
 
     # Add a blinking subheading
     blinking_subheading = """
