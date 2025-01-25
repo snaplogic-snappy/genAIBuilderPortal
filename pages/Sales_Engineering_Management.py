@@ -34,8 +34,8 @@ def main():
         params = {'reportType': 'monthlyRollup'}
         api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
         # Initial load of SVG content
-        if 'svg_content' not in st.session_state:
-            st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
+        if 'svg_content_col1' not in st.session_state:
+            st.session_state.svg_content_col1 = fetch_svg_from_api(api_url, bearer_token)
         
         if st.button('Refresh'):
             with st.spinner('Refreshing data...'):
@@ -43,9 +43,9 @@ def main():
                 refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
             with st.spinner('Fetching Data'):  
                 # Second API call
-                st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
+                st.session_state.svg_content_col1 = fetch_svg_from_api(api_url, bearer_token)
         
-        if st.session_state.svg_content:
+        if st.session_state.svg_content_col1:
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content, height=600, scrolling=True)
     with col2:
@@ -54,15 +54,15 @@ def main():
               # Initial load of SVG content
         if 'svg_content' not in st.session_state:
             st.session_state.svg_content = fetch_svg_from_api(api_url_with_params, bearer_token)
-        """
-        if st.button('Refresh'):
-            with st.spinner('Refreshing data...'):
+        
+        #if st.button('Refresh'):
+         #####   with st.spinner('Refreshing data...'):
                 # First API call
-                refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
-            with st.spinner('Fetching Data'):  
+              #  refresh_response = requests.get(f"{refresh_url}?bearer_token={bearer_token}&reportType=monthly")
+            #with st.spinner('Fetching Data'):  
                 # Second API call
-                st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
-        """
+             #   st.session_state.svg_content = fetch_svg_from_api(api_url, bearer_token)
+        
         if st.session_state.svg_content:
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content, height=600, scrolling=True)
