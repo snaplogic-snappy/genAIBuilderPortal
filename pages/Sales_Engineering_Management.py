@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import urllib.parse
+import streamlit.components.v1 as components
 st.set_page_config(layout="wide")
 
 def fetch_svg_from_api(url, token):
@@ -60,7 +61,7 @@ def main():
                 st.session_state.svg_content_col1 = fetch_svg_from_api(api_url, bearer_token)
         
         if st.session_state.svg_content_col1:
-            import streamlit.components.v1 as components
+            #import streamlit.components.v1 as components
             components.html(st.session_state.svg_content_col1, height=800, scrolling=True)
     with col2:
         params = {'reportType': 'statsBySE'}
