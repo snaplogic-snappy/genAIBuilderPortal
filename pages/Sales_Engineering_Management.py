@@ -72,7 +72,7 @@ def main():
         params = {'reportType': 'monthlyProductPercentages'}
         api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
               # Initial load of SVG content
-        if 'svg_content_col2' not in st.session_state:
+        #if 'svg_content_col2' not in st.session_state:
             st.session_state.svg_content_col2 = fetch_svg_from_api(api_url_with_params, bearer_token)
         
         if st.button('Refreshx',disabled=True):
