@@ -21,7 +21,7 @@ def fetch_svg_from_api(url, token):
         return None
 
 def main():
-    #st.title("SE Management Dashboard (North America)")
+    #st.title("Sales Engineering Management Dashboard (North America)")
     st.markdown("<h2 style='font-size: 24px; color:#00A859; text-align: center;'>SE Management Dashboard (N.A.)</h2>", unsafe_allow_html=True)
     st.markdown('<p style="color:red;">Under Construction</p>', unsafe_allow_html=True)
     # Add a blinking subheading
