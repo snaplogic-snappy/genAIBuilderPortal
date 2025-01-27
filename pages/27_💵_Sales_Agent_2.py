@@ -2,27 +2,10 @@ import streamlit as st
 import requests
 import time
 import uuid
-import logging
 from dotenv import dotenv_values
 from streamlit_oauth import OAuth2Component
 import base64
 import json
-
-# Set up logging
-logging.basicConfig(level=logging.ERROR)
-
-# Disable insecure request warnings
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# Custom error handler for Streamlit
-class StreamlitErrorHandler(logging.Handler):
-    def emit(self, record):
-        st.error(f"Error: {record.getMessage()}")
-
-# Add custom error handler to root logger
-logging.getLogger().addHandler(StreamlitErrorHandler())
-
 
 # Load & Set environment variables 
 env = dotenv_values(".env")
@@ -44,12 +27,17 @@ timeout = 180
 oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, REVOKE_TOKEN_URL)
 
 def typewriter(text: str, speed: int):
-    tokens = text.split()
+    lines = text.split('\n')
     container = st.empty()
-    for index in range(len(tokens) + 1):
-        curr_full_text = " ".join(tokens[:index])
-        container.markdown(curr_full_text)
-        time.sleep(1 / speed)
+    full_text = ""
+    for line in lines:
+        tokens = line.split()
+        for index in range(len(tokens)):
+            full_text += " " + tokens[index]
+            container.markdown(full_text)
+            time.sleep(1 / speed)
+        full_text += "\n"
+    return full_text.strip()  # Return the full text, removing trailing newline
 
 def cleartoken():
     # Revoke Access Token in SF
@@ -76,7 +64,6 @@ st.markdown(
     - What's our pricing model for enterprise customers?
     - What ROI metrics can I share with prospects?
     - Find competitive analysis against Boomi for financial services
-    - What's our partner program structure?
  """)
 
 # Check for (Access) token in Sesion State
@@ -121,15 +108,6 @@ else:
         st.session_state.session_id = str(uuid.uuid4())
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    if "error" not in st.session_state:
-        st.session_state.error = None
-
-    # Display error message if there is one
-    if st.session_state.error:
-        st.error(st.session_state.error)
-        if st.button("Clear Error"):
-            st.session_state.error = None
-            st.rerun()
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -144,16 +122,16 @@ else:
         st.chat_message("user").markdown(prompt)
 
         with st.spinner("Working..."):
+            # Prepare the payload with session ID and messages
+            data = {
+                "session_id": st.session_state.session_id,
+                "messages": st.session_state.messages,
+            }
+            headers = {
+                'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
+                'Content-Type': 'application/json'
+            }
             try:
-                # Prepare the payload with session ID and messages
-                data = {
-                    "session_id": st.session_state.session_id,
-                    "messages": st.session_state.messages,
-                }
-                headers = {
-                    'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
-                    'Content-Type': 'application/json'
-                }
                 response = requests.post(
                     url=URL,
                     json=data,
@@ -161,39 +139,17 @@ else:
                     timeout=timeout,
                     verify=False
                 )
-                response.raise_for_status()  # Raises an HTTPError for bad responses
-
+                response.raise_for_status()
                 result = response.json()
                 if "response" in result:
                     assistant_response = result["response"]
                     # Add assistant response to chat history
                     st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                     with st.chat_message("assistant"):
-                        typewriter(text=assistant_response, speed=30)
+                        full_text = typewriter(text=assistant_response, speed=30)
+                        time.sleep(0.1)  # Small delay to ensure proper rendering
+                        st.markdown(full_text)  # Render the full text again to ensure it's displayed properly
                 else:
-                    error_msg = "Invalid response format from API"
-                    logging.error(error_msg)
-                    st.error(f"❌ {error_msg}")
-
-            except requests.exceptions.RequestException as e:
-                error_msg = f"Error while calling the SnapLogic API: {str(e)}"
-                logging.error(error_msg)
-                st.error(f"❌ {error_msg}")
-                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code == 401:
-                    st.warning("Your session may have expired. Please log out and log in again.")
-                    cleartoken()
-
-            except ValueError as e:
-                error_msg = f"Invalid JSON response from API: {str(e)}"
-                logging.error(error_msg)
-                st.error(f"❌ {error_msg}")
-
+                    st.error("Invalid response format from API")
             except Exception as e:
-                error_msg = f"An unexpected error occurred: {str(e)}"
-                logging.error(error_msg)
-                st.error(f"❌ {error_msg}")
-
-            # Log Streamlit connection errors
-            if not st.runtime.exists():
-                logging.error("Streamlit runtime does not exist. This may be due to connection issues.")
-                st.error("Unable to connect to Streamlit server. Please refresh the page or try again later.")
+                st.error(f"An error occurred: {str(e)}")
