@@ -11,6 +11,18 @@ import json
 # Set up logging
 logging.basicConfig(level=logging.ERROR)
 
+# Disable insecure request warnings
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# Custom error handler for Streamlit
+class StreamlitErrorHandler(logging.Handler):
+    def emit(self, record):
+        st.error(f"Error: {record.getMessage()}")
+
+# Add custom error handler to root logger
+logging.getLogger().addHandler(StreamlitErrorHandler())
+
 
 # Load & Set environment variables 
 env = dotenv_values(".env")
@@ -109,6 +121,15 @@ else:
         st.session_state.session_id = str(uuid.uuid4())
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    if "error" not in st.session_state:
+        st.session_state.error = None
+
+    # Display error message if there is one
+    if st.session_state.error:
+        st.error(st.session_state.error)
+        if st.button("Clear Error"):
+            st.session_state.error = None
+            st.rerun()
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -123,7 +144,6 @@ else:
         st.chat_message("user").markdown(prompt)
 
         with st.spinner("Working..."):
-            error_occurred = False
             try:
                 # Prepare the payload with session ID and messages
                 data = {
@@ -154,8 +174,7 @@ else:
                 else:
                     error_msg = "Invalid response format from API"
                     logging.error(error_msg)
-                    with st.chat_message("assistant"):
-                        st.error(f"❌ {error_msg}")
+                    st.error(f"❌ {error_msg}")
 
             except requests.exceptions.RequestException as e:
                 error_msg = f"Error while calling the SnapLogic API: {str(e)}"
@@ -175,7 +194,7 @@ else:
                 logging.error(error_msg)
                 st.error(f"❌ {error_msg}")
 
-            finally:
-                if error_occurred:
-                    time.sleep(5)  # Wait for 5 seconds to show the error message
-                st.rerun()
+            # Log Streamlit connection errors
+            if not st.runtime.exists():
+                logging.error("Streamlit runtime does not exist. This may be due to connection issues.")
+                st.error("Unable to connect to Streamlit server. Please refresh the page or try again later.")
