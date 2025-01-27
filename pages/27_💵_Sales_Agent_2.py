@@ -147,9 +147,8 @@ else:
             try:
                 # Prepare the payload with session ID and messages
                 data = {
-                    "sessionId": st.session_state.session_id,
+                    "session_id": st.session_state.session_id,
                     "messages": st.session_state.messages,
-                    "prompt": prompt
                 }
                 headers = {
                     'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
