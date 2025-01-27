@@ -32,7 +32,7 @@ def typewriter(text: str, speed: int):
     for char in text:
         full_text += char
         container.markdown(full_text)
-        time.sleep(1 / speed)
+        time.sleep(1 / (speed * 5))
 
 def cleartoken():
     # Revoke Access Token in SF
