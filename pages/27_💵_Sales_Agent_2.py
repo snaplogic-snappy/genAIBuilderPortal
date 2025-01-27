@@ -51,7 +51,7 @@ def cleartoken():
 
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
-st.title("SnapLogic Sales Agent")
+st.title("SnapLogic Sales Assistant")
 st.markdown(
     """  
    
@@ -123,6 +123,7 @@ else:
         st.chat_message("user").markdown(prompt)
 
         with st.spinner("Working..."):
+            error_occurred = False
             try:
                 # Prepare the payload with session ID and messages
                 data = {
@@ -159,8 +160,7 @@ else:
             except requests.exceptions.RequestException as e:
                 error_msg = f"Error while calling the SnapLogic API: {str(e)}"
                 logging.error(error_msg)
-                with st.chat_message("assistant"):
-                    st.error(f"❌ {error_msg}")
+                st.error(f"❌ {error_msg}")
                 if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code == 401:
                     st.warning("Your session may have expired. Please log out and log in again.")
                     cleartoken()
@@ -168,14 +168,14 @@ else:
             except ValueError as e:
                 error_msg = f"Invalid JSON response from API: {str(e)}"
                 logging.error(error_msg)
-                with st.chat_message("assistant"):
-                    st.error(f"❌ {error_msg}")
+                st.error(f"❌ {error_msg}")
 
             except Exception as e:
                 error_msg = f"An unexpected error occurred: {str(e)}"
                 logging.error(error_msg)
-                with st.chat_message("assistant"):
-                    st.error(f"❌ {error_msg}")
+                st.error(f"❌ {error_msg}")
 
             finally:
+                if error_occurred:
+                    time.sleep(5)  # Wait for 5 seconds to show the error message
                 st.rerun()
