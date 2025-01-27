@@ -2,11 +2,15 @@ import streamlit as st
 import requests
 import time
 import uuid
+import logging
 from dotenv import dotenv_values
 from streamlit_oauth import OAuth2Component
 import requests
 import base64
 import json
+
+# Set up basic logging configuration
+logging.basicConfig(level=logging.ERROR)
 
 
 # Load & Set environment variables 
@@ -147,12 +151,18 @@ else:
                         with st.chat_message("assistant"):
                             typewriter(text=assistant_response, speed=30)
                     else:
+                        error_msg = "Invalid response format from API"
+                        logging.error(error_msg)
                         with st.chat_message("assistant"):
-                            st.error("❌ Invalid response format from API")
-                except ValueError:
+                            st.error(f"❌ {error_msg}")
+                except ValueError as e:
+                    error_msg = f"Invalid JSON response from API: {str(e)}"
+                    logging.error(error_msg)
                     with st.chat_message("assistant"):
-                        st.error("❌ Invalid JSON response from API")
+                        st.error(f"❌ {error_msg}")
             else:
-                st.error(f"❌ Error while calling the SnapLogic API")
+                error_msg = f"Error while calling the SnapLogic API. Status code: {response.status_code}"
+                logging.error(error_msg)
+                st.error(f"❌ {error_msg}")
                 cleartoken()
             st.rerun()
