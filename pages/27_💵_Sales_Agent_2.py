@@ -5,11 +5,10 @@ import uuid
 import logging
 from dotenv import dotenv_values
 from streamlit_oauth import OAuth2Component
-import requests
 import base64
 import json
 
-# Set up basic logging configuration
+# Set up logging
 logging.basicConfig(level=logging.ERROR)
 
 
@@ -52,7 +51,7 @@ def cleartoken():
 
 
 st.set_page_config(page_title="SnapLogic Sales Assistant")
-st.title("SnapLogic Sales Assistant")
+st.title("SnapLogic Sales Agent")
 st.markdown(
     """  
    
@@ -124,45 +123,59 @@ else:
         st.chat_message("user").markdown(prompt)
 
         with st.spinner("Working..."):
-            # Prepare the payload with session ID and messages
-            data = {
-                "sessionId": st.session_state.session_id,
-                "messages": st.session_state.messages,
-                "prompt": prompt
-            }
-            headers = {
-                'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
-                'Content-Type': 'application/json'
-            }
-            response = requests.post(
-                url=URL,
-                json=data,
-                headers=headers,
-                timeout=timeout,
-                verify=False
-            )
-            if response.status_code == 200:
-                try:
-                    result = response.json()
-                    if "response" in result:
-                        assistant_response = result["response"]
-                        # Add assistant response to chat history
-                        st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-                        with st.chat_message("assistant"):
-                            typewriter(text=assistant_response, speed=30)
-                    else:
-                        error_msg = "Invalid response format from API"
-                        logging.error(error_msg)
-                        with st.chat_message("assistant"):
-                            st.error(f"❌ {error_msg}")
-                except ValueError as e:
-                    error_msg = f"Invalid JSON response from API: {str(e)}"
+            try:
+                # Prepare the payload with session ID and messages
+                data = {
+                    "sessionId": st.session_state.session_id,
+                    "messages": st.session_state.messages,
+                    "prompt": prompt
+                }
+                headers = {
+                    'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
+                    'Content-Type': 'application/json'
+                }
+                response = requests.post(
+                    url=URL,
+                    json=data,
+                    headers=headers,
+                    timeout=timeout,
+                    verify=False
+                )
+                response.raise_for_status()  # Raises an HTTPError for bad responses
+
+                result = response.json()
+                if "response" in result:
+                    assistant_response = result["response"]
+                    # Add assistant response to chat history
+                    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+                    with st.chat_message("assistant"):
+                        typewriter(text=assistant_response, speed=30)
+                else:
+                    error_msg = "Invalid response format from API"
                     logging.error(error_msg)
                     with st.chat_message("assistant"):
                         st.error(f"❌ {error_msg}")
-            else:
-                error_msg = f"Error while calling the SnapLogic API. Status code: {response.status_code}"
+
+            except requests.exceptions.RequestException as e:
+                error_msg = f"Error while calling the SnapLogic API: {str(e)}"
                 logging.error(error_msg)
-                st.error(f"❌ {error_msg}")
-                cleartoken()
-            st.rerun()
+                with st.chat_message("assistant"):
+                    st.error(f"❌ {error_msg}")
+                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code == 401:
+                    st.warning("Your session may have expired. Please log out and log in again.")
+                    cleartoken()
+
+            except ValueError as e:
+                error_msg = f"Invalid JSON response from API: {str(e)}"
+                logging.error(error_msg)
+                with st.chat_message("assistant"):
+                    st.error(f"❌ {error_msg}")
+
+            except Exception as e:
+                error_msg = f"An unexpected error occurred: {str(e)}"
+                logging.error(error_msg)
+                with st.chat_message("assistant"):
+                    st.error(f"❌ {error_msg}")
+
+            finally:
+                st.rerun()
