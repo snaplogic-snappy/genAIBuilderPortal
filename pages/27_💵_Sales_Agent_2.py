@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import uuid
 from dotenv import dotenv_values
 from streamlit_oauth import OAuth2Component
 import requests
@@ -100,28 +101,38 @@ else:
         cleartoken()
         st.rerun()
 
-    # Initialize chat history
-    if "sales_assistant" not in st.session_state:
-        st.session_state.sales_assistant = []
+    # Initialize session state
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
     # Display chat messages from history on app rerun
-    for message in st.session_state.sales_assistant:
+    for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
     # React to user input
     prompt = st.chat_input("Ask me anything about SnapLogic sales")
     if prompt:
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").markdown(prompt)
-        st.session_state.sales_assistant.append({"role": "user", "content": prompt})
+
         with st.spinner("Working..."):
-            data = {"prompt" : prompt}
+            # Prepare the payload with session ID and messages
+            data = {
+                "sessionId": st.session_state.session_id,
+                "messages": st.session_state.messages,
+                "prompt": prompt
+            }
             headers = {
-                'Authorization': f'Bearer {st.session_state["SF_access_token"]}'
+                'Authorization': f'Bearer {st.session_state["SF_access_token"]}',
+                'Content-Type': 'application/json'
             }
             response = requests.post(
                 url=URL,
-                data=data,
+                json=data,
                 headers=headers,
                 timeout=timeout,
                 verify=False
@@ -131,9 +142,10 @@ else:
                     result = response.json()
                     if "response" in result:
                         assistant_response = result["response"]
+                        # Add assistant response to chat history
+                        st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                         with st.chat_message("assistant"):
                             typewriter(text=assistant_response, speed=30)
-                        st.session_state.sales_assistant.append({"role": "assistant", "content": assistant_response})
                     else:
                         with st.chat_message("assistant"):
                             st.error("❌ Invalid response format from API")
