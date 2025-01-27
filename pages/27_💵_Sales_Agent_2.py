@@ -27,17 +27,12 @@ timeout = 180
 oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, REVOKE_TOKEN_URL)
 
 def typewriter(text: str, speed: int):
-    lines = text.split('\n')
     container = st.empty()
     full_text = ""
-    for line in lines:
-        tokens = line.split()
-        for index in range(len(tokens)):
-            full_text += " " + tokens[index]
-            container.markdown(full_text)
-            time.sleep(1 / speed)
-        full_text += "\n"
-    return full_text.strip()  # Return the full text, removing trailing newline
+    for char in text:
+        full_text += char
+        container.markdown(full_text)
+        time.sleep(1 / speed)
 
 def cleartoken():
     # Revoke Access Token in SF
@@ -146,9 +141,7 @@ else:
                     # Add assistant response to chat history
                     st.session_state.messages.append({"role": "assistant", "content": assistant_response})
                     with st.chat_message("assistant"):
-                        full_text = typewriter(text=assistant_response, speed=30)
-                        time.sleep(0.1)  # Small delay to ensure proper rendering
-                        st.markdown(full_text)  # Render the full text again to ensure it's displayed properly
+                        typewriter(text=assistant_response, speed=30)
                 else:
                     st.error("Invalid response format from API")
             except Exception as e:
