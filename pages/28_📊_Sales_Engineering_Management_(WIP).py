@@ -81,12 +81,7 @@ def main():
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content_col2, height=600, scrolling=True)
 
-              # Second API call
-              st.session_state.svg_content_col2 = fetch_svg_from_api(api_url, bearer_token)
-        
-        if st.session_state.svg_content_col2_first:
-            #import streamlit.components.v1 as components
-            components.html(st.session_state.svg_content_col2_first, height=600, scrolling=True)
+
         #2nd api call    
         params = {'reportType': 'monthlyProductPercentages'}
         api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
