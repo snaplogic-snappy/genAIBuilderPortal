@@ -1,7 +1,9 @@
 import streamlit as st
 import requests
 from typing import Optional
+from dotenv import dotenv_values
 import json
+import os
 import re
 
 def call_api(text: str, api_url: str, bearer_token: str, request_type: str, scipab_notes: Optional[dict] = None) -> Optional[str]:
@@ -94,12 +96,13 @@ def process_request(request_type: str, text_input: str, api_url: str, bearer_tok
             st.text(result)
 
 def main():
+    st.set_page_config(page_title="Blog Post Generator")
     st.title("Blog Post Generator") # Changed header
 
-    # Configuration inputs
-    with st.sidebar:
-        api_url = st.text_input("API URL", "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/BlogWriterAgent/AgentBlogWriterTask")
-        bearer_token = st.text_input("Bearer Token", "fY4hcH59Xy7FQbrjXiycPxch6PsmPADw", type="password")
+    env = dotenv_values(".env")  # Load environment variables from .env file
+    api_url = env["BR_TASK_URL"]
+    bearer_token = env.get("BR_TASK_URL_TOKEN") #Use .get to handle missing keys gracefully
+    
 
     # Main interface
     st.write("")
