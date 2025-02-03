@@ -14,6 +14,8 @@ The app allows users to:
 
 For more information about the SCIPAB methodology, visit:
 https://findthethread.blog/Let-Me-Tell-You-A-Story/
+
+This Agent is built and maintained by Allot, for more information about Allot visit: https://www.allotltd.com/
 """
 
 import streamlit as st
@@ -40,7 +42,7 @@ def add_logo():
         }
         </style>
         <div class="container">
-            <img src="https://www.allotltd.com/wp-content/uploads/2018/12/logo-2.png" alt="Blog Writer Logo" class="logo-img"/>
+            <img src="/api/placeholder/200/80" alt="Blog Writer Logo" class="logo-img"/>
         </div>
         """,
         unsafe_allow_html=True
