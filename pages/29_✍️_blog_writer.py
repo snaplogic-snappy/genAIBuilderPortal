@@ -40,7 +40,7 @@ def add_logo():
         }
         </style>
         <div class="container">
-            <img src="/api/placeholder/200/80" alt="Blog Writer Logo" class="logo-img"/>
+            <img src="https://www.allotltd.com/wp-content/uploads/2018/12/logo-2.png" alt="Blog Writer Logo" class="logo-img"/>
         </div>
         """,
         unsafe_allow_html=True
