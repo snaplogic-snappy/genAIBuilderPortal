@@ -90,13 +90,5 @@ def main():
             components.html(st.session_state.svg_content_col2, height=600, scrolling=True)
 
 
-        #2nd api call    
-        params = {'reportType': 'monthlyProductPercentages'}
-        api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
-              # Initial load of SVG content
-        if 'svg_content_col2_second' not in st.session_state:
-            st.session_state.svg_content_col2_second = fetch_svg_from_api(api_url_with_params, bearer_token)     
-        if st.session_state.svg_content_col2_second:
-            components.html(st.session_state.svg_content_col2_second, height=600, scrolling=True)
 if __name__ == "__main__":
     main()
