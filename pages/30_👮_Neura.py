@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CHAT_HISTORY_FILE = '../neura_chat_history.json'
+CHAT_HISTORY_FILE = 'chat_history.json'
 API_URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_AgentDriver_Triggered_NEW'
 BEARER_TOKEN = '4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'
 
@@ -88,7 +88,7 @@ is_processing = any(session.get("status") == "processing" for session in st.sess
 
 # ------------------ Sidebar ------------------
 with st.sidebar:
-    st.logo('../Logocombo_SnapLogic_RGB.png', size="large")
+    st.logo('Logocombo_SnapLogic_RGB.png', size="large")
 
     # Button to start a new chat
     if st.button("New chat", disabled=is_processing, icon=":material/chat_add_on:"):
