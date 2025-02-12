@@ -38,7 +38,7 @@ with col1:
         <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     </div>
     """
-    st.components.v1.html(elevenlabs_html, height=200, width=None)
+    st.components.v1.html(elevenlabs_html, height=200, width=500)
 
 st.markdown("""
 💡 **Voice Interaction Available**
