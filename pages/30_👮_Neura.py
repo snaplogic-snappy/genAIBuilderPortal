@@ -11,7 +11,7 @@ load_dotenv()
 
 CHAT_HISTORY_FILE = 'chat_history.json'
 API_URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_AgentDriver_Triggered_NEW'
-#BEARER_TOKEN = '4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'
+BEARER_TOKEN = 'disabled' #'4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'
 
 GENERATE_CHAT_TITLE_API = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_GenerateTitle_Triggered'
 GENERATE_CHAT_TITLE_API_BEARER_TOKEN = 'P7Tw6mHdZmDVP9JK8IxoPqwJ7duVgXYF'
