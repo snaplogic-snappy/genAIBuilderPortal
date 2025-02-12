@@ -18,22 +18,37 @@ def typewriter(text: str, speed: int):
         time.sleep(1 / speed)
 
 st.set_page_config(page_title="SnapLogic Expert Assistant")
+
+# Use custom CSS to fix the widget alignment
+st.markdown("""
+    <style>
+    .main > div {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .stMarkdown {
+        max-width: 100%;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("SnapLogic Expert Assistant")
 
 st.markdown("""
 ### AI-powered RFP and technical expert assistant with Voice Interface
+
 Get detailed answers to RFP questions and technical inquiries, with information sourced from official documentation, 
 Slack discussions, and various other SnapLogic resources.
 """)
 
-# Embed ElevenLabs widget using Streamlit's components
+# Embed ElevenLabs widget with better positioning
 elevenlabs_html = """
-<div style="width: 100%; margin: 0 auto;">
-    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai>
+<div style="padding: 1rem 0;">
+    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C" style="max-width: 400px; margin-left: 0;"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
 </div>
 """
-st.components.v1.html(elevenlabs_html, height=200)
+st.components.v1.html(elevenlabs_html, height=150)
 
 st.markdown("""
 💡 **Voice Interaction Available**
