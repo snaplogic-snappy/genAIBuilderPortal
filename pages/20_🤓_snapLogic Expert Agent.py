@@ -18,20 +18,6 @@ def typewriter(text: str, speed: int):
         time.sleep(1 / speed)
 
 st.set_page_config(page_title="SnapLogic Expert Assistant")
-
-# Use custom CSS to fix the widget alignment
-st.markdown("""
-    <style>
-    .main > div {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    .stMarkdown {
-        max-width: 100%;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 st.title("SnapLogic Expert Assistant")
 
 st.markdown("""
@@ -41,14 +27,18 @@ Get detailed answers to RFP questions and technical inquiries, with information 
 Slack discussions, and various other SnapLogic resources.
 """)
 
-# Embed ElevenLabs widget with better positioning
-elevenlabs_html = """
-<div style="padding: 1rem 0;">
-    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C" style="max-width: 400px; margin-left: 0;"></elevenlabs-convai>
-    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
-</div>
-"""
-st.components.v1.html(elevenlabs_html, height=150)
+# Create two columns: one for the widget, one empty for spacing
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    # Embed ElevenLabs widget
+    elevenlabs_html = """
+    <div>
+        <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai>
+        <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    </div>
+    """
+    st.components.v1.html(elevenlabs_html, height=150)
 
 st.markdown("""
 💡 **Voice Interaction Available**
