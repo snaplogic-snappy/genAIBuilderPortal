@@ -27,18 +27,18 @@ Get detailed answers to RFP questions and technical inquiries, with information 
 Slack discussions, and various other SnapLogic resources.
 """)
 
-# Create two columns: one for the widget, one empty for spacing
-col1, col2 = st.columns([1, 2])
+# Create columns with adjusted ratios for better widget display
+col1, col2 = st.columns([1.2, 1.8])
 
 with col1:
-    # Embed ElevenLabs widget
+    # Embed ElevenLabs widget with adjusted container
     elevenlabs_html = """
-    <div>
-        <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai>
+    <div style="min-width: 300px; padding: 10px;">
+        <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C" style="width: 100%;"></elevenlabs-convai>
         <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     </div>
     """
-    st.components.v1.html(elevenlabs_html, height=150)
+    st.components.v1.html(elevenlabs_html, height=200, width=None)
 
 st.markdown("""
 💡 **Voice Interaction Available**
