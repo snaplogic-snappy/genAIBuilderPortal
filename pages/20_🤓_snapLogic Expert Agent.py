@@ -20,16 +20,26 @@ def typewriter(text: str, speed: int):
 st.set_page_config(page_title="SnapLogic Expert Assistant")
 st.title("SnapLogic Expert Assistant")
 
-# Add audio widget explanation
 st.markdown("""
 ### AI-powered RFP and technical expert assistant with Voice Interface
 Get detailed answers to RFP questions and technical inquiries, with information sourced from official documentation, 
 Slack discussions, and various other SnapLogic resources.
+""")
 
-💡 **New Feature - Voice Interaction**
-- Click the microphone icon in the widget below to speak your questions
-- Listen to AI-generated voice responses for a more interactive experience
-- Perfect for users who prefer audio communication or need hands-free operation
+# Embed ElevenLabs widget using Streamlit's components
+elevenlabs_html = """
+<div style="width: 100%; margin: 0 auto;">
+    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai>
+    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+</div>
+"""
+st.components.v1.html(elevenlabs_html, height=200)
+
+st.markdown("""
+💡 **Voice Interaction Available**
+- Use the voice widget above to speak your questions
+- Listen to AI-generated voice responses
+- Perfect for hands-free operation
 
 Sample queries:
 - What security certifications does SnapLogic maintain?
@@ -39,12 +49,6 @@ Sample queries:
 - What monitoring capabilities are available in the platform?
 - Explain SnapLogic's integration with identity providers
 """)
-
-# Add the ElevenLabs ConvAI widget
-st.markdown("""
-<elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai>
-<script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
-""", unsafe_allow_html=True)
 
 # Initialize chat history
 if "expert_assistant" not in st.session_state:
