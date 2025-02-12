@@ -16,7 +16,7 @@ BEARER_TOKEN = 'disabled' #'4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'
 GENERATE_CHAT_TITLE_API = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_GenerateTitle_Triggered'
 GENERATE_CHAT_TITLE_API_BEARER_TOKEN = 'P7Tw6mHdZmDVP9JK8IxoPqwJ7duVgXYF'
 
-st.warning("This application is currently disabled.")
+#st.warning("This application is currently disabled.")
 
 def parse_email_template_ordered(response: str):
     """
