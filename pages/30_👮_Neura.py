@@ -16,6 +16,8 @@ BEARER_TOKEN = '4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'
 GENERATE_CHAT_TITLE_API = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_GenerateTitle_Triggered'
 GENERATE_CHAT_TITLE_API_BEARER_TOKEN = 'P7Tw6mHdZmDVP9JK8IxoPqwJ7duVgXYF'
 
+st.warning("This application is currently disabled.")
+
 def parse_email_template_ordered(response: str):
     """
     Parses the response and returns a list of segments preserving the order.
@@ -313,9 +315,13 @@ if prompt and len(prompt) > 0 and not is_processing:
     st.rerun()
 
 # ------------------ API Processing ------------------
+# ------------------ API Processing ------------------
 if st.session_state.sessions:
+    return  # Add this line to disable all API processing
     for session in st.session_state.sessions:
-        if session["status"] == "processing":
+#if st.session_state.sessions:
+#    for session in st.session_state.sessions:
+#        if session["status"] == "processing":
             # --- First, if no title is set, generate a title using the first user prompt ---
             if not session.get("title"):
                 first_user_prompt = next((m["content"] for m in session["messages"] if m["role"] == "user"), "")
