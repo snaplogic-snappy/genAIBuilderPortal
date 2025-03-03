@@ -22,8 +22,8 @@ st.markdown(
     
     ### **👈 Select a demo from the sidebar** to see some examples of what Agent Creator can do!
     ## Want to learn more?
-    - Check out [Agent Creator](https://www.snaplogic.com/products/agent-creator)
-    - Jump into our [documentation](https://docs-snaplogic.atlassian.net/wiki/spaces/SD/overview?homepageId=34537)
+    - Check out [Agent Creator](https://docs.snaplogic.com/agentcreator/agentcreator-about.html)
+    - Jump into our [documentation](https://docs.snaplogic.com)
     - Ask a question in our [community](https://community.snaplogic.com)
 """
 )
