@@ -4,8 +4,8 @@ import time
 import json
 
 # Constants for the API
-URL = "https://endpoint-url-here.com/api/generate-email"  # Replace with your actual endpoint URL
-BEARER_TOKEN = "your-bearer-token-here"  # Replace with your actual bearer token
+URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/EventFollowUpAgent/EventFollowUpAgent"
+BEARER_TOKEN = "2xKsMjjAGTwRJp4I4dltIiZQfUCL43Sv"
 timeout = 300
 
 st.set_page_config(page_title="Email Generator Assistant")
