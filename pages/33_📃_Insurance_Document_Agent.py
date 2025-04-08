@@ -63,7 +63,7 @@ if uploaded_file is not None:
                 'Content-Type': 'application/octet-stream'
             }
             response = requests.post(
-                url='https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc',
+                url=URL,
                 data=file_bytes,
                 headers=headers,
                 timeout=180,
