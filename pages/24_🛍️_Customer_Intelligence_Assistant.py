@@ -13,11 +13,11 @@ BEARER_TOKEN = "vSOLUL58nAc0Yaq2YaADIxgORNpSf98b"
 timeout = 300
 
 def typewriter(text: str, speed: int):
-    tokens = text.split()
+    tokens = text.split("\n")
     container = st.empty()
     for index in range(len(tokens) + 1):
         curr_full_text = " ".join(tokens[:index])
-        container.markdown(curr_full_text)
+        container.markdown("\n" + curr_full_text)
         time.sleep(1 / speed)
 
 st.set_page_config(
