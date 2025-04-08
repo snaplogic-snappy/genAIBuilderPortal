@@ -10,7 +10,7 @@ URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00
 BEARER_TOKEN = '123456'
 timeout = 90
 # Streamlit Page Properties
-page_title = 'Insurance Form/Document Agent'
+page_title = 'Insurance Document Agent'
 title = 'Insurance Document Agent'
 
 def typewriter(text: str, speed: int):
