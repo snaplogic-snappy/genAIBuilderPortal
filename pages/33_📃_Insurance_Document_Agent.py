@@ -6,8 +6,7 @@ from dotenv import dotenv_values
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic pipeline
-URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc'
-BEARER_TOKEN = '123456'
+
 timeout = 90
 # Streamlit Page Properties
 page_title = 'Insurance Document Agent'
@@ -58,6 +57,8 @@ if uploaded_file is not None:
     time.sleep(0.5)
     if st.button(":blue[Extract!]"):
         with st.spinner("Parsing and Extracting Policy Info from PDF ..."):
+            URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc'
+            BEARER_TOKEN = '123456'
             headers = {
                 'Authorization': f'Bearer {BEARER_TOKEN}',
                 'Content-Type': 'application/octet-stream'
