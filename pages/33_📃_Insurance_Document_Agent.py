@@ -70,4 +70,12 @@ if uploaded_file is not None:
                 timeout=180,
                 verify=False
             )
+            print(response)
+            result = response.json()
+            response = result[0]['response']
+            # Display assistant response in chat message container
+            with st.chat_message("assistant"):
+                typewriter(text=response, speed=10)
+            # Add assistant response to chat history
+            st.session_state.Binder_Extraction_messages.append({"role": "assistant", "content": response.replace("{", "").replace("}", "").replace(",", " ")})
 
