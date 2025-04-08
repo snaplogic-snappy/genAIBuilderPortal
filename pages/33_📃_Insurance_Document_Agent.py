@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 
 # Load environment
 env = dotenv_values(".env")
-# SnapLogic RAG pipeline
+# SnapLogic pipeline
 URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc'
 BEARER_TOKEN = '123456'
 timeout = 90
@@ -14,12 +14,12 @@ page_title = 'Insurance Form/Document Agent'
 title = 'Insurance Form/Document Agent'
 
 def typewriter(text: str, speed: int):
-    text = "Extracted Policy Information :," + text + ",-------------------------------------------------------------"
-    tokens = text.replace("{", "").replace("}", "").split(",")
+    #text = "Insurance Form/Document Information : " + text + ",-------------------------------------------------------------"
+    tokens = text.split()
     container = st.empty()
     for index in range(len(tokens) + 1):
-        curr_full_text = "\n\n ".join(tokens[:index])
-        container.markdown(curr_full_text + "\n\n")
+        #curr_full_text = " ".join(tokens[:index])
+        container.markdown(text)
         time.sleep(1 / speed)
 
 st.set_page_config(page_title=page_title, layout="wide")
