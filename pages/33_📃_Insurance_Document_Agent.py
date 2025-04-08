@@ -63,4 +63,11 @@ if uploaded_file is not None:
                 'Authorization': f'Bearer {BEARER_TOKEN}',
                 'Content-Type': 'application/octet-stream'
             }
+            response = requests.post(
+                url=URL,
+                data=file_bytes,
+                headers=headers,
+                timeout=180,
+                verify=False
+            )
 
