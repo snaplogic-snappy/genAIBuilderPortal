@@ -11,7 +11,7 @@ BEARER_TOKEN = '123456'
 timeout = 90
 # Streamlit Page Properties
 page_title = 'Insurance Form/Document Agent'
-title = 'Insurance Form/Document Agent'
+title = 'Insurance Document Agent'
 
 def typewriter(text: str, speed: int):
     #text = "Insurance Form/Document Information : " + text + ",-------------------------------------------------------------"
