@@ -7,8 +7,8 @@ from dotenv import dotenv_values
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic pipeline
-URL = 'https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc'
-BEARER_TOKEN = '123456'
+URL = "https://demo-fm.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/00_Bhavin%20Patel/GenAI/ExtractInsuranceDoc"
+BEARER_TOKEN = "123456"
 timeout = 90
 # Streamlit Page Properties
 page_title = 'Insurance Form/Document Agent'
