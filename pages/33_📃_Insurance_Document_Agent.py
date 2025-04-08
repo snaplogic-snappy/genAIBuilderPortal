@@ -67,8 +67,7 @@ if uploaded_file is not None:
                 url=URL,
                 data=file_bytes,
                 headers=headers,
-                timeout=180,
-                verify=False
+                timeout=180
             )
         print(response)
         result = response.json()
