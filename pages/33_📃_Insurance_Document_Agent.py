@@ -59,4 +59,8 @@ if uploaded_file is not None:
     time.sleep(0.5)
     if st.button(":blue[Extract!]"):
         with st.spinner("Parsing and Extracting Policy Info from PDF ..."):
+            headers = {
+                'Authorization': f'Bearer {BEARER_TOKEN}',
+                'Content-Type': 'application/octet-stream'
+            }
 
