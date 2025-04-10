@@ -88,7 +88,15 @@ def main():
         if st.session_state.svg_content_col2:
             import streamlit.components.v1 as components
             components.html(st.session_state.svg_content_col2, height=600, scrolling=True)
-
+        #2nd api call
+        params = {'reportType': 'agentCreatorMonthlyDemos'}
+        api_url_with_params = f"{api_url}?{urllib.parse.urlencode(params)}"
+              # Initial load of SVG content
+        if 'svg_content_col2_second' not in st.session_state:
+            st.session_state.svg_content_col2_second = fetch_svg_from_api(api_url_with_params, bearer_token)  
+        if st.session_state.svg_content_col2_second:
+            import streamlit.components.v1 as components
+            components.html(st.session_state.svg_content_col2_second, height=600, scrolling=True)
 
 if __name__ == "__main__":
     main()
