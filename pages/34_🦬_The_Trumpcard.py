@@ -106,7 +106,7 @@ if prompt:
                     
                     # Display assistant response with typewriter effect
                     with st.chat_message("assistant"):
-                        typewriter(text=assistant_response, speed=90)
+                        typewriter(text=assistant_response, speed=60)
                         
                     # Add assistant response to chat history
                     st.session_state.tribal_knowledge_chat.append({"role": "assistant", "content": assistant_response})
