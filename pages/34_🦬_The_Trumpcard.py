@@ -83,7 +83,7 @@ if prompt:
         question_type_selected = st.session_state.question_type.lower() # Convert to lowercase for API
 
         # Prepare data payload according to API specification
-        data_payload = [{"Prompt": prompt, "type": question_type_selected}]
+        data_payload = {"Prompt": prompt, "type": question_type_selected}
 
         # Prepare headers with Bearer token authentication
         headers = {
