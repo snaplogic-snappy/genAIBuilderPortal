@@ -7,7 +7,7 @@ import json # Keep json import for handling potential complex responses if neede
 
 # Load Secrets (Ensure you have .streamlit/secrets.toml with SNAPLOGIC_API_BEARER_TOKEN)
 try:
-    BEARER_TOKEN = st.secrets["SNAPLOGIC_API_BEARER_TOKEN"]
+    BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
 except KeyError:
     st.error("❗️ Error: SNAPLOGIC_API_BEARER_TOKEN not found in Streamlit Secrets. Please configure secrets.toml")
     st.stop() # Stop execution if the token is missing
