@@ -34,29 +34,41 @@ st.title("🧠 SnapLogic Tribal Knowledge Assistant")
 st.markdown(
     """
     ### AI-powered assistant using SnapLogic's tribal knowledge (from Slack)
-    Get answers to your technical SnapLogic questions based on internal discussions and expertise.
+    Select the question type (Technical or Sales) and get answers based on internal discussions and expertise.
 
     **Sample Queries:**
-    * *Technical:* How do you configure dynamic account credentials in a REST GET Snap?
-    * *Technical:* What is the best practice for handling large file processing without memory issues?
-    * *Technical:* Can you provide an example of using the Script Snap for complex JSON transformation?
-    * *Technical:* Explain the difference between a Triggered Task and an Ultra Task pipeline.
-    * *Sales:* What are SnapLogic's key differentiators for ETL modernization projects? (Example assuming the API might handle other types too)
-    * *Sales:* Provide a summary of recent customer wins in the retail sector. (Example assuming the API might handle other types too)
+    * *(Technical):* How do you configure dynamic account credentials in a REST GET Snap?
+    * *(Technical):* What is the best practice for handling large file processing without memory issues?
+    * *(Sales):* What are SnapLogic's key differentiators for ETL modernization projects?
+    * *(Sales):* Provide a summary of recent customer wins in the retail sector.
     """
 )
 
-# Initialize chat history in session state if it doesn't exist
+# Initialize chat history and question type in session state if they don't exist
 if "tribal_knowledge_chat" not in st.session_state:
     st.session_state.tribal_knowledge_chat = []
+if "question_type" not in st.session_state:
+    st.session_state.question_type = "Technical" # Default selection
 
 # Display chat messages from history on app rerun
 for message in st.session_state.tribal_knowledge_chat:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# React to user input
-prompt = st.chat_input("Ask a technical or sales question about SnapLogic...")
+# --- User Input Area ---
+
+# Selector for question type - Added Radio Button
+st.radio(
+    "Select Question Type:",
+    ("Technical", "Sales"),
+    key="question_type", # Links widget to session state key
+    horizontal=True,
+    # index=0 is implicit default if key not in session_state, but we initialize above
+    help="Choose the category your question falls into."
+)
+
+# React to user input - Updated placeholder text
+prompt = st.chat_input(f"Ask a {st.session_state.question_type} question about SnapLogic...")
 
 if prompt:
     # Display user message in chat message container
@@ -66,16 +78,12 @@ if prompt:
     st.session_state.tribal_knowledge_chat.append({"role": "user", "content": prompt})
 
     # --- API Call ---
-    with st.spinner("Searching tribal knowledge..."):
-        # Determine question type (simple heuristic, adjust as needed or make explicit)
-        # For now, default to 'technical' as per the new API spec, but allow for others
-        # You could add logic here or a UI element (like a dropdown) to select the type
-        question_type = "technical" # Default based on API example
-        if any(keyword in prompt.lower() for keyword in ["sales", "customer", "pricing", "roi", "partner", "differentiator", "wins"]):
-             question_type = "sales" # Example heuristic, refine as needed
+    with st.spinner(f"Searching {st.session_state.question_type.lower()} knowledge..."):
+        # Get question type from the radio button selection (stored in session state) - Updated logic
+        question_type_selected = st.session_state.question_type.lower() # Convert to lowercase for API
 
         # Prepare data payload according to API specification
-        data_payload = [{"Prompt": prompt, "type": question_type}]
+        data_payload = [{"Prompt": prompt, "type": question_type_selected}]
 
         # Prepare headers with Bearer token authentication
         headers = {
@@ -89,7 +97,6 @@ if prompt:
                 json=data_payload, # Use json parameter for automatic JSON serialization and Content-Type header
                 headers=headers,
                 timeout=API_TIMEOUT
-                # Removed verify=False, relies on system cert store. Set to False only if needed for specific SSL issues.
             )
 
             # Check response status
@@ -97,15 +104,15 @@ if prompt:
                 try:
                     result = response.json()
                     # Extract the response text - adjust based on actual API response structure
-                    # The sample showed {"response": "..."} but it might be nested in a list [{...}]
-                    assistant_response = "Sorry, I couldn't find an answer in the knowledge base for that." # Default message
+                    assistant_response = f"Sorry, I couldn't find an answer in the {st.session_state.question_type.lower()} knowledge base for that." # Default message
                     if isinstance(result, list) and len(result) > 0 and isinstance(result[0], dict) and "response" in result[0]:
                          assistant_response = result[0]["response"]
                     elif isinstance(result, dict) and "response" in result: # Handles direct dictionary response
                          assistant_response = result["response"]
+                    elif isinstance(result, dict) and result.get("response") is None: # Handle case where key exists but value is null/None
+                         assistant_response = f"The {st.session_state.question_type.lower()} knowledge base acknowledged the query but didn't provide a specific answer. Perhaps rephrase?"
                     else:
                         st.warning(f"⚠️ Unexpected API response format received: {result}") # Log unexpected format
-
 
                     # Display assistant response in chat message container with typewriter effect
                     with st.chat_message("assistant"):
@@ -138,4 +145,3 @@ if prompt:
                 st.error(f"❌ Error: A network or connection error occurred: {e}")
             st.session_state.tribal_knowledge_chat.append({"role": "assistant", "content": "Sorry, I couldn't connect to the knowledge base. Please check the connection or try again later."})
 
-# No explicit st.rerun() needed here usually, Streamlit manages reruns on interactions.
