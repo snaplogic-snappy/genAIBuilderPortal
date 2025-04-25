@@ -360,6 +360,8 @@ with st.sidebar:
 # Use text header instead of logo
 st.markdown("<div class='header'><h1>AgentCreator</h1></div>", unsafe_allow_html=True)
 
+# We'll add the tool description in the welcome message instead
+
 if st.session_state.document_id is not None:
     # No message about files or session name - clean UI
     
@@ -398,18 +400,21 @@ if st.session_state.document_id is not None:
                 # Add assistant response to chat history
                 st.session_state.ragbot_messages.append({"role": "assistant", "content": response})
 else:
-    # No document selected
-    st.markdown(
-        """
-        <div style="background: white; border-radius: 10px; padding: 2rem; text-align: center; margin-top: 2rem;">
-            <h2>Welcome to AgentCreator</h2>
-            <p style="font-size: 1.2rem; color: #666;">Upload documents to start chatting with our AI</p>
-            <div style="margin: 2rem 0;">
-            </div>
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+    # No document selected - use Streamlit native components instead of HTML
+    # Only show the tool description without welcome messages
+    st.markdown("### How Our Tool Works")
+    
+    st.subheader("Document Upload")
+    st.markdown("- Upload PDF files (PDF only for now)")
+    st.markdown("- Files are saved in an S3 bucket")
+    st.markdown("- Document content becomes available to the AI")
+    
+    st.subheader("Advanced Context")
+    st.markdown("- The AI remembers what's in your documents during the current session")
+    st.markdown("- The AI saves your conversation history from the current session only")
+    st.markdown("- Both document content and conversation history reset when you refresh the page")
+    
+    st.markdown("*You'll need to re-upload documents if you refresh the page or start a new session.*")
 
 # Footer
 st.markdown(
