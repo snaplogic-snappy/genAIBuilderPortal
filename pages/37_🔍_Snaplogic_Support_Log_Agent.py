@@ -33,8 +33,8 @@ with st.form("agent_form"):
     submitted = st.form_submit_button(label="Submit",type="primary",icon=":material/check_circle:")
 
 if submitted:
-    URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/SnapLogicSupportAgent/GetExecutionLogDataTask'
-    BEARER_TOKEN ='lgle9VfbVi5GE7VY8MkgOk2tkQLfrQ7e'
+    URL = 'https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/SnapLogicSupportAgent/GetExecutionLogDataUltra'
+    BEARER_TOKEN ='5Mswx498pUh1B4rNVk3gUpLhiJmDYn5D'
 
     headers = {
         'Authorization': f'Bearer {BEARER_TOKEN}'
@@ -48,7 +48,7 @@ if submitted:
     )
     if response.status_code == 200:
         result = response.json()
-        post_content = result[0]["response"]
+        post_content = result["response"]
                         
         # Display the generated post in a nice format
         with st.chat_message("assistant"):
