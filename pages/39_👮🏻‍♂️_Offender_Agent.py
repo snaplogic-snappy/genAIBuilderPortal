@@ -27,7 +27,6 @@ st.markdown("""
     Sample queries:
     - Are there patterns in meeting frequency and behavior improvement (as noted by case workers)?
     - Is there any trend in repeated violence or threats across meetings for the same offender?
-    - What is the average duration between the first offense and the case resolution, and what factors influence this duration?
     - Do certain case workers or prisons have consistently different outcomes or notes in terms of progress?
     - How do discussion topics relate to outcomes for young offenders?
 """)
