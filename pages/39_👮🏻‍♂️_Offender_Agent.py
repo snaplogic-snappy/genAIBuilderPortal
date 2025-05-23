@@ -29,6 +29,8 @@ st.markdown("""
     - Is there any trend in repeated violence or threats across meetings for the same offender?
     - Do certain case workers or prisons have consistently different outcomes or notes in terms of progress?
     - How do discussion topics relate to outcomes for young offenders?
+    - Is there any trend in repeated violence or threats across meetings for the same case worker?
+    - Tell me about the case history for offender Parmar
 """)
 
 # Initialize chat history and toggle states
