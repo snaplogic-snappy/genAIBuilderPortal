@@ -6,7 +6,7 @@ import json # Import json for formatting the request data
 # API Configuration - Updated for SnapLogic Analyzer
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/SKO/snapLogicAnalyzer"
 BEARER_TOKEN = "XB9BTnDJ9gJW7OVjSID2hH4vEDu5JiE8" # New Bearer Token
-timeout = 300
+timeout = 3000
 
 def typewriter(text: str, speed: int):
     """Displays text with a typewriter effect."""
@@ -75,7 +75,7 @@ if prompt:
                     if "response" in result:
                         assistant_response = result["response"]
                         with st.chat_message("assistant"):
-                            typewriter(text=assistant_response, speed=50) # Adjusted speed for potentially longer/formatted responses
+                            typewriter(text=assistant_response, speed=90) # Adjusted speed for potentially longer/formatted responses
                         st.session_state.analyzer_chat.append({"role": "assistant", "content": assistant_response})
                     else:
                         # Handle cases where 'response' key might be missing even with a 200
