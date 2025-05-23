@@ -30,6 +30,7 @@ st.markdown("""
     - Do certain case workers or prisons have consistently different outcomes or notes in terms of progress?
     - How do discussion topics relate to outcomes for young offenders?
     - Is there any trend in repeated violence or threats across meetings for the same case worker?
+    - What are the most common crimes for the age group 20-24?
     - Tell me about the case history for offender Parmar
 """)
 
