@@ -28,7 +28,7 @@ Slack discussions, and various other SnapLogic resources.
 """)
 
 # Create columns with adjusted ratios for better widget display
-col1, col2 = st.columns([1.2, 1.32])
+col1, col2 = st.columns([1.2, 1.22])
 
 with col1:
     # Embed ElevenLabs widget with adjusted container
