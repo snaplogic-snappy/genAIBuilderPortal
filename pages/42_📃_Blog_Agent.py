@@ -1,91 +1,79 @@
 import streamlit as st
 import requests
-import time
-from dotenv import dotenv_values
+import json
 
-# Load environment
-env = dotenv_values(".env")
-# SnapLogic RAG pipeline
-URL = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/SLoS_Dev/Blog_Agent/orchestration/proxy_agent%20Task"
-BEARER_TOKEN = "OzFfTJzroC5O4sKFUBZ48FUqdVqgmd1k"
-timeout = 300
+# Initialize chat history with welcome message
+def init_session_state():
+    if "messages" not in st.session_state:
+        welcome_message = """👋 **Welcome to the Blog Agent !**"""
 
-def typewriter(text: str, speed: int):
-    tokens = text.split()
-    container = st.empty()
-    for index in range(len(tokens) + 1):
-        curr_full_text = " ".join(tokens[:index])
-        container.markdown(curr_full_text)
-        time.sleep(1 / speed)
+        st.session_state.messages = [{"role": "assistant", "content": welcome_message}]
 
-st.set_page_config(page_title="Blog Generator Agent")
-st.title("Blog Generator Agent")
-st.markdown("""
-    ### Blog Generator Agent
-    Ask questions in natural language - the assistant will automatically refine queries to find accurate insights.
-""")
+# Initialize session state
+init_session_state()
 
-# Initialize chat history and toggle states
-if "data_analytics" not in st.session_state:
-    st.session_state.data_analytics = []
-if "toggle_states" not in st.session_state:
-    st.session_state.toggle_states = {}
-
-# Display chat messages from history
-for idx, message in enumerate(st.session_state.data_analytics):
+# Display chat messages
+for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        if message["role"] == "assistant":
-            st.markdown(message.get("answer", message.get("content", "")))
-            if message.get("summary"):
-                toggle_key = f"toggle_{idx}"
-                if st.toggle("Show thinking process", False, key=toggle_key):
-                    st.markdown("### Agent's Thought Process")
-                    st.markdown(message["summary"])
-        else:
-            st.markdown(message["content"])
+        st.markdown(message["content"])
 
-# React to user input
-prompt = st.chat_input("Ask me anything about blog article wirting")
+# Handle user input
+prompt = st.chat_input("What is your question?")
+
 if prompt:
-    st.chat_message("user").markdown(prompt)
-    st.session_state.data_analytics.append({"role": "user", "content": prompt})
-    with st.spinner("Working..."):
-        data = {"messages": st.session_state.data_analytics}
-        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
-        response = requests.post(
-            url=URL,
-            data=data,
-            headers=headers,
-            timeout=timeout,
-            verify=False
-        )
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if len(result) > 0 and isinstance(result[0], dict):
-                    response_data = result[0]
-                    answer = response_data.get("answer", "")
-                    summary = response_data.get("summary", "")
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-                    with st.chat_message("assistant"):
-                        typewriter(text=answer, speed=10)
-                        if summary:
-                            toggle_key = f"toggle_{len(st.session_state.data_analytics)}"
-                            if st.toggle("Show thinking process", False, key=toggle_key):
-                                st.markdown("### Agent's Thought Process")
-                                st.markdown(summary)
+    # Add user message to history
+    st.session_state.messages.append({"role": "user", "content": prompt})
 
-                    st.session_state.data_analytics.append({
-                        "role": "assistant",
-                        "answer": answer,
-                        "summary": summary
-                    })
-                else:
-                    with st.chat_message("assistant"):
-                        st.error("❌ Invalid response format from API")
-            except ValueError:
-                with st.chat_message("assistant"):
-                    st.error("❌ Invalid JSON response from API")
-        else:
-            st.error("❌ Error while calling the SnapLogic API")
-        st.rerun()
+    # Process the request
+    api_url = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/SLoS_Dev/Blog_Agent/orchestration/proxy_agent%20Task?bearer_token=OzFfTJzroC5O4sKFUBZ48FUqdVqgmd1k"
+
+    # Prepare payload
+    payload = {
+        "messages": st.session_state.messages,
+        "current_message": prompt
+    }
+
+    # Add uploaded file data if available
+    if "uploaded_file_data" in st.session_state:
+        payload["file"] = st.session_state.uploaded_file_data
+
+    # Show thinking message and process request
+    with st.chat_message("assistant"):
+        thinking_placeholder = st.empty()
+        thinking_placeholder.markdown("Thinking...")
+
+        try:
+            # Make API call
+            response = requests.post(api_url, json=payload, timeout=300)
+
+            if response.status_code == 200:
+                try:
+                    api_response = response.json()
+                    if isinstance(api_response, list) and len(api_response) > 0:
+                        first_item = api_response[0]
+                        if isinstance(first_item, dict):
+                            bot_response = first_item.get("response", str(first_item))
+                        else:
+                            bot_response = str(first_item)
+                    elif isinstance(api_response, dict):
+                        bot_response = api_response.get("response", str(api_response))
+                    else:
+                        bot_response = str(api_response)
+                except json.JSONDecodeError:
+                    bot_response = response.text
+            else:
+                bot_response = f"Sorry, I encountered an error (Status: {response.status_code}). Please try again."
+
+        except requests.exceptions.Timeout:
+            bot_response = "Sorry, the request timed out. Please try again."
+        except requests.exceptions.RequestException as e:
+            bot_response = f"Sorry, I couldn't connect to the service. Error: {str(e)}"
+        except Exception as e:
+            bot_response = f"An unexpected error occurred: {str(e)}"
+
+        # Replace thinking message with actual response
+        thinking_placeholder.markdown(bot_response)
