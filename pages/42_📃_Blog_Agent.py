@@ -50,7 +50,7 @@ if prompt:
     st.chat_message("user").markdown(prompt)
     st.session_state.data_analytics.append({"role": "user", "content": prompt})
     with st.spinner("Working..."):
-        data = {"prompt": prompt}
+        data = {"messages": st.session_state.data_analytics}
         headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
         response = requests.post(
             url=URL,
