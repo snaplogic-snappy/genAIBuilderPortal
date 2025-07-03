@@ -3,4 +3,4 @@ primaryColor = "#003399"       # Example: SnapLogic orange
 backgroundColor = "#FFFFFF"    # White background
 secondaryBackgroundColor = "#e7f5ff"
 textColor = "#262730"
-font = "sans serif"
+font = "roboto"
