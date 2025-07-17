@@ -39,10 +39,23 @@ CHAT_HISTORY_KEY = "cognism_agent_chat_history"
 if CHAT_HISTORY_KEY not in st.session_state:
     st.session_state[CHAT_HISTORY_KEY] = []
 
-# --- Display Past Chat Messages ---
-for message in st.session_state[CHAT_HISTORY_KEY]:
+# --- Display Past Chat Messages (with Summary Toggle) ---
+for idx, message in enumerate(st.session_state[CHAT_HISTORY_KEY]):
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        # Display the main response content
+        st.markdown(message.get("answer") or message.get("content", ""))
+
+        # If the message is from the assistant and has a summary, show a toggle
+        if message["role"] == "assistant" and message.get("summary"):
+            toggle_key = f"summary_toggle_{idx}"
+            show_summary = st.toggle(
+                "Show agent's process",
+                key=toggle_key,
+            )
+            if show_summary:
+                st.markdown("--- \n**Agent's Process:**")
+                st.markdown(message["summary"])
+
 
 # --- Handle User Input ---
 user_prompt = st.chat_input("How can I help you find accounts today?")
@@ -54,7 +67,6 @@ if user_prompt:
 
     with st.chat_message("assistant"):
         with st.spinner("Searching for accounts... 🕵️‍♂️"):
-            # --- MODIFIED PAYLOAD ---
             # The API expects a list containing a dictionary.
             api_payload = [{"prompt": user_prompt}]
             api_headers = {"Authorization": f"Bearer {SNAPLOGIC_BEARER_TOKEN}"}
@@ -72,16 +84,20 @@ if user_prompt:
 
                 api_response_json = response.json()
 
-                # --- MODIFIED RESPONSE HANDLING ---
-                # The API returns a list, we need the 'response' field from the first item.
+                # --- UPDATED RESPONSE HANDLING ---
+                # The API returns a list, we need 'response' and 'summary' from the first item.
                 if isinstance(api_response_json, list) and api_response_json:
                     assistant_response_data = api_response_json[0]
                     answer_from_api = assistant_response_data.get("response", "Sorry, I received an empty response from the service.")
+                    summary_from_api = assistant_response_data.get("summary", "") # Extract the summary
                 else:
                     raise ValueError("Unexpected API response format. Expected a list.")
 
                 typewriter_effect(answer_from_api)
-                assistant_message_content = {"role": "assistant", "content": answer_from_api}
+                
+                # --- UPDATED MESSAGE STORAGE ---
+                # Store both the answer and the summary in the session state
+                assistant_message_content = {"role": "assistant", "answer": answer_from_api, "summary": summary_from_api}
 
             except requests.exceptions.HTTPError as http_err:
                 error_message_detail = response.text if 'response' in locals() else 'No response details'
