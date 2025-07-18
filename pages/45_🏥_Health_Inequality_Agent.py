@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import time
+import threading
 
 # API details
 API_URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/Bootcamp_EMEA_June_2025/story_clch_twoFiles%20Task"
@@ -44,35 +46,112 @@ The data presented in this application centre on total patients, asthma patients
 """)
 
 
-# User question input
-user_input = st.text_input("Ask a question:", "What is the prevalence of asthma in a inner north west region, and how is it influenced by local healthcare access and air quality conditions?")
 
 # Warning about the processing time
 st.warning("""
-⚠️ This process may take **up to 5 minutes** to return a result.
+⚠️ This process will take **up to 5 minutes** to return a result.
 
 Why it takes time:
 - Queries **external data sources** and applies **logic and analysis** on asthma prevalence and contributing factors like air quality and healthcare access.
-- **Heavy processing and data integration** are handled by the Large Language Model behind the scenes for experimental purposes, which can take a few minutes.
+- **Heavy processing and data integration** are handled by the Large Language Model behind the scenes for experimental purposes, which will take several minutes.
 """)
 
+# Initialize session state
+if 'processing' not in st.session_state:
+    st.session_state.processing = False
+if 'result' not in st.session_state:
+    st.session_state.result = None
+
+# User question input
+user_input = st.text_input("Ask a question:", placeholder="e.g., What are the asthma prevalence rates in different regions?")
+
 # Button interaction
-if st.button("Ask"):
+if st.button("Ask", disabled=st.session_state.processing):
     if not user_input.strip():
         st.warning("Please enter a question.")
     else:
-        payload = {"Prompt": user_input}
+        st.session_state.processing = True
+        st.session_state.result = None
+        st.rerun()
+
+# Show loading indicator when processing
+if st.session_state.processing:
+    # Define cycling activities
+    activities = [
+        "🔍 Analyzing your question...",
+        "📊 Connecting to health databases...",
+        "🏥 Retrieving GP practice data...",
+        "🌍 Fetching air quality measurements...",
+        "📈 Calculating asthma prevalence rates...",
+        "🗺️ Mapping regional disparities...",
+        "🧠 Processing with AI models...",
+        "📋 Cross-referencing healthcare access...",
+        "🔬 Analyzing environmental factors...",
+        "📝 Generating comprehensive insights...",
+        "🎯 Formulating recommendations...",
+        "✨ Finalizing your personalized report..."
+    ]
+    
+    # Create centered loading indicator
+    with st.container():
+        # Center everything
+        st.markdown("""
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px;">
+                <div style="
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #ff6b6b;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    animation: spin 1s linear infinite;
+                    margin-bottom: 20px;
+                "></div>
+            </div>
+            <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        
+        status_placeholder = st.empty()
+        
+        # Show initial message and make API call
+        import random
+        current_activity = random.choice(activities)
+        status_placeholder.markdown(f"<div style='text-align: center;'><h3>{current_activity}</h3><em>This may take 5-10 minutes...</em></div>", unsafe_allow_html=True)
+        
+        # Make the API call
         try:
+            payload = {"Prompt": user_input}
             response = requests.post(API_URL, headers=HEADERS, json=payload)
+            
             if response.status_code == 200:
                 data = response.json()
                 if isinstance(data, list) and len(data) > 0:
                     answer = data[0].get("Customer_Story", "No answer received.")
                 else:
                     answer = "No answer received."
-                st.success("Answer:")
-                st.markdown(answer)
+                st.session_state.result = answer
+                st.session_state.processing = False
+                st.rerun()
             else:
                 st.error(f"API returned status code {response.status_code}")
+                st.session_state.processing = False
+                st.rerun()
         except Exception as e:
             st.error(f"An error occurred: {e}")
+            st.session_state.processing = False
+            st.rerun()
+
+# Display result if available
+if st.session_state.result:
+    st.success("✅ Analysis Complete!")
+    st.markdown("### Your Health Inequality Report")
+    st.markdown(st.session_state.result)
+    
+    # Add a button to ask another question
+    if st.button("Ask Another Question"):
+        st.session_state.result = None
+        st.rerun()
