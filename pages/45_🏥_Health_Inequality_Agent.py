@@ -53,7 +53,7 @@ st.warning("""
 
 Why it takes time:
 - Queries **external data sources** and applies **logic and analysis** on asthma prevalence and contributing factors like air quality and healthcare access.
-- **Heavy processing and data integration** are handled on the SnapLogic platform, which can take a few minutes.
+- **Heavy processing and data integration** are handled by the Large Language Model behind the scenes for experimental purposes, which can take a few minutes.
 """)
 
 # Button interaction
