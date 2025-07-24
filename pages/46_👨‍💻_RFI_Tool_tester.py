@@ -108,18 +108,3 @@ if prompt := st.chat_input("Ask a question about SnapLogic's capabilities..."):
                 st.error(f"❌ Error calling the SnapLogic API: {e}")
             except ValueError:
                 st.error("❌ Could not decode the JSON response from the API.")
-
----
-## Key Changes Explained
-
-Here’s a summary of the modifications made to adapt your script:
-
-### 1. Agent Description & UI
-The title, description, and sample questions in the Streamlit interface were updated to match the new purpose of the chatbot, which is now an **RFI Analyst Assistant** for querying information about SnapLogic's platform.
-
-### 2. API Endpoint and Token
-The `URL` and `BEARER_TOKEN` constants were updated to point to the new SnapLogic RFI endpoint and use its specific authorization token.
-
-```python
-URL = "[https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi](https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi)"
-BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
