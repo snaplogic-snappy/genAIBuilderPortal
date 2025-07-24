@@ -33,11 +33,13 @@ st.markdown("""
     - What reporting and analytics capabilities does your platform offer?
 """)
 
-# Initialize chat history and toggle states
+# Initialize chat history, toggle states, and error message state
 if "rfi_responses" not in st.session_state:
     st.session_state.rfi_responses = []
 if "toggle_states" not in st.session_state:
     st.session_state.toggle_states = {}
+if "error_message" not in st.session_state:
+    st.session_state.error_message = None # To store persistent error messages
 
 # Display chat messages from history
 for idx, message in enumerate(st.session_state.rfi_responses):
@@ -52,11 +54,22 @@ for idx, message in enumerate(st.session_state.rfi_responses):
         else:
             st.markdown(message["content"])
 
+# Display persistent error message if one exists
+if st.session_state.error_message:
+    st.error(st.session_state.error_message)
+    # Optionally clear the error after displaying, or leave it until next successful interaction
+    # For this case, we'll clear it after the next user input
+    # If you want it to stay until a new *successful* interaction, you'd clear it only after a successful API call.
+
 # React to user input
 prompt = st.chat_input("Ask me anything about RFI requirements...")
 if prompt:
+    # Clear any previous error messages when a new prompt is entered
+    st.session_state.error_message = None
+
     st.chat_message("user").markdown(prompt)
     st.session_state.rfi_responses.append({"role": "user", "content": prompt})
+
     with st.spinner("Retrieving information..."):
         # Construct the payload as expected by the new API
         payload = [{"content": {"Requirement": prompt}}]
@@ -96,41 +109,48 @@ if prompt:
                             "answer": answer,
                             "source": source
                         })
+                        # Clear error message on successful response
+                        st.session_state.error_message = None
                     else:
-                        with st.chat_message("assistant"):
-                            st.error("❌ Invalid response format from API. Expected a dictionary with a 'response' key.")
-                            st.markdown(f"**Raw API Response:** ```json\n{response.text}\n```") # Show raw response
+                        error_msg = ("❌ Invalid response format from API. "
+                                     "Expected a dictionary with a 'response' key.\n"
+                                     f"**Raw API Response:** ```json\n{response.text}\n```")
+                        st.session_state.error_message = error_msg
+
                 except ValueError:
-                    with st.chat_message("assistant"):
-                        st.error("❌ Invalid JSON response from API. The response could not be parsed as JSON.")
-                        st.markdown(f"**Raw API Response:** ```\n{response.text}\n```") # Show raw response
+                    error_msg = ("❌ Invalid JSON response from API. "
+                                 "The response could not be parsed as JSON.\n"
+                                 f"**Raw API Response:** ```\n{response.text}\n```")
+                    st.session_state.error_message = error_msg
+
             else:
                 # Handle non-200 HTTP status codes
                 error_message = f"❌ Error from API: Status Code {response.status_code}"
                 try:
-                    # Attempt to parse error message from JSON response
                     error_details = response.json()
-                    if "error" in error_details: # Common pattern for API errors
+                    if "error" in error_details:
                         error_message += f"\nDetails: {error_details['error']}"
-                    elif "message" in error_details: # Another common pattern
+                    elif "message" in error_details:
                         error_message += f"\nDetails: {error_details['message']}"
-                    else: # If a JSON response, but no clear error key
+                    else:
                         error_message += f"\nResponse Body: ```json\n{response.text}\n```"
                 except ValueError:
-                    # If response is not JSON, just show the raw text
                     error_message += f"\nResponse Body: ```\n{response.text}\n```"
 
-                with st.chat_message("assistant"):
-                    st.error(error_message)
+                st.session_state.error_message = error_message
 
         except requests.exceptions.Timeout:
-            with st.chat_message("assistant"):
-                st.error(f"❌ The API request timed out after {timeout} seconds. Please try again.")
+            st.session_state.error_message = (
+                f"❌ The API request timed out after {timeout} seconds. Please try again."
+            )
         except requests.exceptions.ConnectionError as e:
-            with st.chat_message("assistant"):
-                st.error(f"❌ Connection Error: Could not connect to the API endpoint. Please check your network and the API URL. Details: {e}")
+            st.session_state.error_message = (
+                f"❌ Connection Error: Could not connect to the API endpoint. "
+                f"Please check your network and the API URL. Details: {e}"
+            )
         except requests.exceptions.RequestException as e:
-            with st.chat_message("assistant"):
-                st.error(f"❌ An unexpected error occurred during the API request: {e}")
+            st.session_state.error_message = (
+                f"❌ An unexpected error occurred during the API request: {e}"
+            )
         finally:
-            st.rerun()
+            st.rerun() # Rerun to display the stored error message or new content
