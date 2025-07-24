@@ -4,7 +4,6 @@ import json
 import time
 
 # --- CONFIGURATION ---
-# CHANGED: Updated API endpoint and Bearer Token for the RFI Analyst API
 URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi"
 BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
 TIMEOUT = 300
@@ -20,7 +19,6 @@ def typewriter(text: str, speed: int = 50):
         time.sleep(1 / speed)
 
 # --- PAGE SETUP ---
-# CHANGED: Updated page title and header to reflect the new RFI Analyst agent
 st.set_page_config(page_title="RFI Analyst Assistant")
 st.title("🤖 RFI Analyst Assistant")
 st.markdown("""
@@ -35,7 +33,6 @@ st.markdown("""
 """)
 
 # --- CHAT INITIALIZATION ---
-# CHANGED: Renamed session_state for clarity
 if "rfi_chat" not in st.session_state:
     st.session_state.rfi_chat = []
 
@@ -43,7 +40,6 @@ if "rfi_chat" not in st.session_state:
 for idx, message in enumerate(st.session_state.rfi_chat):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        # CHANGED: Adapted toggle to show "source" instead of "summary"
         if message.get("source"):
             toggle_key = f"toggle_{idx}"
             if st.toggle("Show Sources", key=toggle_key):
@@ -59,15 +55,13 @@ if prompt := st.chat_input("Ask a question about SnapLogic's capabilities..."):
     # Display assistant response
     with st.chat_message("assistant"):
         with st.spinner("Analyzing documents..."):
-            # CHANGED: Payload structure to match the new API requirement
+            # CORRECTED: Simplified payload structure as per your new instruction.
             payload = {
-                "content": {
-                    "Requirement": prompt
-                }
+                "Requirement": prompt
             }
             headers = {
                 'Authorization': f'Bearer {BEARER_TOKEN}',
-                'Content-Type': 'application/json' # Recommended for JSON payloads
+                'Content-Type': 'application/json'
             }
 
             try:
@@ -80,7 +74,7 @@ if prompt := st.chat_input("Ask a question about SnapLogic's capabilities..."):
                 )
                 response.raise_for_status() # Raise an exception for bad status codes (4xx or 5xx)
 
-                # CHANGED: Response parsing logic for the new API's JSON structure
+                # Response parsing logic remains the same
                 result = response.json()
                 api_response = result.get("response", {})
                 answer = api_response.get("answer")
