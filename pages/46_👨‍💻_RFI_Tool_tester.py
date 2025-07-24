@@ -1,17 +1,17 @@
 import streamlit as st
 import requests
+import json
 import time
-from dotenv import dotenv_values
 
-# Load environment variables (if you have them, otherwise remove this line)
-# env = dotenv_values(".env")
-
-# SnapLogic RAG pipeline - Updated API details
+# --- CONFIGURATION ---
+# CHANGED: Updated API endpoint and Bearer Token for the RFI Analyst API
 URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi"
-BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo" # Updated Authorization token
-timeout = 300
+BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
+TIMEOUT = 300
 
-def typewriter(text: str, speed: int):
+# --- HELPER FUNCTION ---
+def typewriter(text: str, speed: int = 50):
+    """Displays text with a typewriter effect."""
     tokens = text.split()
     container = st.empty()
     for index in range(len(tokens) + 1):
@@ -19,136 +19,107 @@ def typewriter(text: str, speed: int):
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
 
-st.set_page_config(page_title="RFI Assistant")
-st.title("Intelligent RFI Assistant")
+# --- PAGE SETUP ---
+# CHANGED: Updated page title and header to reflect the new RFI Analyst agent
+st.set_page_config(page_title="RFI Analyst Assistant")
+st.title("🤖 RFI Analyst Assistant")
 st.markdown("""
-    ### AI-powered assistant for responding to Requests for Information (RFIs)
-    Ask questions about your platform's capabilities – the assistant will retrieve relevant information from your knowledge base to help you craft accurate and comprehensive RFI responses.
+    ### AI-powered assistant for exploring RFI documents
+    Ask questions in natural language about SnapLogic's platform capabilities.
 
-    Sample queries:
+    **Sample questions:**
     - Describe the elements of your platform that support the software development life cycle (SDLC), continuous integration and continuous delivery (CI/CD), and versioning.
-    - How does your platform handle data governance and compliance?
-    - What are the key security features of your platform?
-    - Can you explain your platform's scalability options?
-    - What reporting and analytics capabilities does your platform offer?
+    - How does SnapLogic support data governance?
+    - What are the platform's collaboration features for development teams?
+    - Explain SnapLogic's integration with version control systems like Git.
 """)
 
-# Initialize chat history, toggle states, and error message state
-if "rfi_responses" not in st.session_state:
-    st.session_state.rfi_responses = []
-if "toggle_states" not in st.session_state:
-    st.session_state.toggle_states = {}
-if "error_message" not in st.session_state:
-    st.session_state.error_message = None # To store persistent error messages
+# --- CHAT INITIALIZATION ---
+# CHANGED: Renamed session_state for clarity
+if "rfi_chat" not in st.session_state:
+    st.session_state.rfi_chat = []
 
-# Display chat messages from history
-for idx, message in enumerate(st.session_state.rfi_responses):
+# --- DISPLAY CHAT HISTORY ---
+for idx, message in enumerate(st.session_state.rfi_chat):
     with st.chat_message(message["role"]):
-        if message["role"] == "assistant":
-            st.markdown(message.get("answer", message.get("content", "")))
-            if message.get("source"): # Display source if available
-                toggle_key = f"toggle_{idx}"
-                if st.toggle("Show Source", False, key=toggle_key):
-                    st.markdown("### Source Information")
-                    st.markdown(message["source"])
-        else:
-            st.markdown(message["content"])
+        st.markdown(message["content"])
+        # CHANGED: Adapted toggle to show "source" instead of "summary"
+        if message.get("source"):
+            toggle_key = f"toggle_{idx}"
+            if st.toggle("Show Sources", key=toggle_key):
+                st.info(f"**Sources:** {message['source']}")
 
-# Display persistent error message if one exists
-if st.session_state.error_message:
-    st.error(st.session_state.error_message)
+# --- USER INPUT AND API CALL ---
+if prompt := st.chat_input("Ask a question about SnapLogic's capabilities..."):
+    # Add user message to chat history
+    st.session_state.rfi_chat.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-# React to user input
-prompt = st.chat_input("Ask me anything about RFI requirements...")
-if prompt:
-    # Clear any previous error messages when a new prompt is entered
-    st.session_state.error_message = None
+    # Display assistant response
+    with st.chat_message("assistant"):
+        with st.spinner("Analyzing documents..."):
+            # CHANGED: Payload structure to match the new API requirement
+            payload = {
+                "content": {
+                    "Requirement": prompt
+                }
+            }
+            headers = {
+                'Authorization': f'Bearer {BEARER_TOKEN}',
+                'Content-Type': 'application/json' # Recommended for JSON payloads
+            }
 
-    st.chat_message("user").markdown(prompt)
-    st.session_state.rfi_responses.append({"role": "user", "content": prompt})
+            try:
+                response = requests.post(
+                    url=URL,
+                    json=payload, # Use `json` parameter to send JSON payload
+                    headers=headers,
+                    timeout=TIMEOUT,
+                    verify=False # Note: Disabling SSL verification is not recommended for production
+                )
+                response.raise_for_status() # Raise an exception for bad status codes (4xx or 5xx)
 
-    with st.spinner("Retrieving information..."):
-        # Construct the payload as expected by the new API
-        # THIS IS THE KEY CHANGE: Payload is now a dictionary, not a list containing a dictionary
-        payload = {"content": {"Requirement": prompt}}
-        headers = {
-            'Authorization': f'Bearer {BEARER_TOKEN}',
-            'Content-Type': 'application/json' # Specify content type for JSON payload
-        }
-        try:
-            response = requests.post(
-                url=URL,
-                json=payload, # Use json parameter for automatic JSON serialization
-                headers=headers,
-                timeout=timeout,
-                verify=False
-            )
+                # CHANGED: Response parsing logic for the new API's JSON structure
+                result = response.json()
+                api_response = result.get("response", {})
+                answer = api_response.get("answer")
+                source = api_response.get("source")
 
-            # Check for successful HTTP status code (200 OK)
-            if response.status_code == 200:
-                try:
-                    result = response.json()
-                    # Check if the result is a dictionary and contains the 'response' key
-                    if isinstance(result, dict) and "response" in result:
-                        response_data = result["response"] # Access the nested 'response' dictionary directly
-                        answer = response_data.get("answer", "")
-                        source = response_data.get("source", "") # Extract source from response
+                if answer:
+                    typewriter(text=answer)
+                    if source:
+                        toggle_key = f"toggle_{len(st.session_state.rfi_chat)}"
+                        if st.toggle("Show Sources", key=toggle_key):
+                             st.info(f"**Sources:** {source}")
 
-                        with st.chat_message("assistant"):
-                            typewriter(text=answer, speed=10)
-                            if source:
-                                toggle_key = f"toggle_{len(st.session_state.rfi_responses)}"
-                                if st.toggle("Show Source", False, key=toggle_key):
-                                    st.markdown("### Source Information")
-                                    st.markdown(source)
+                    # Add assistant response to chat history
+                    st.session_state.rfi_chat.append({
+                        "role": "assistant",
+                        "content": answer,
+                        "source": source
+                    })
+                else:
+                    st.error("❌ The API returned a response, but it did not contain an answer.")
 
-                        st.session_state.rfi_responses.append({
-                            "role": "assistant",
-                            "answer": answer,
-                            "source": source
-                        })
-                        # Clear error message on successful response
-                        st.session_state.error_message = None
-                    else:
-                        error_msg = ("❌ Invalid response format from API. "
-                                     "Expected a dictionary with a 'response' key.\n"
-                                     f"**Raw API Response:** ```json\n{response.text}\n```")
-                        st.session_state.error_message = error_msg
+            except requests.exceptions.HTTPError as http_err:
+                st.error(f"❌ HTTP Error: {http_err} - {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"❌ Error calling the SnapLogic API: {e}")
+            except ValueError:
+                st.error("❌ Could not decode the JSON response from the API.")
 
-                except ValueError:
-                    error_msg = ("❌ Invalid JSON response from API. "
-                                 "The response could not be parsed as JSON.\n"
-                                 f"**Raw API Response:** ```\n{response.text}\n```")
-                    st.session_state.error_message = error_msg
+---
+## Key Changes Explained
 
-            else:
-                # Handle non-200 HTTP status codes
-                error_message = f"❌ Error from API: Status Code {response.status_code}"
-                try:
-                    error_details = response.json()
-                    if "error" in error_details:
-                        error_message += f"\nDetails: {error_details['error']}"
-                    elif "message" in error_details:
-                        error_message += f"\nDetails: {error_details['message']}"
-                    else:
-                        error_message += f"\nResponse Body: ```json\n{response.text}\n```"
-                except ValueError:
-                    error_message += f"\nResponse Body: ```\n{response.text}\n```"
+Here’s a summary of the modifications made to adapt your script:
 
-                st.session_state.error_message = error_message
+### 1. Agent Description & UI
+The title, description, and sample questions in the Streamlit interface were updated to match the new purpose of the chatbot, which is now an **RFI Analyst Assistant** for querying information about SnapLogic's platform.
 
-        except requests.exceptions.Timeout:
-            st.session_state.error_message = (
-                f"❌ The API request timed out after {timeout} seconds. Please try again."
-            )
-        except requests.exceptions.ConnectionError as e:
-            st.session_state.error_message = (
-                f"❌ Connection Error: Could not connect to the API endpoint. "
-                f"Please check your network and the API URL. Details: {e}"
-            )
-        except requests.exceptions.RequestException as e:
-            st.session_state.error_message = (
-                f"❌ An unexpected error occurred during the API request: {e}"
-            )
-        finally:
-            st.rerun() # Rerun to display the stored error message or new content
+### 2. API Endpoint and Token
+The `URL` and `BEARER_TOKEN` constants were updated to point to the new SnapLogic RFI endpoint and use its specific authorization token.
+
+```python
+URL = "[https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi](https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi)"
+BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
