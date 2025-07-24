@@ -4,7 +4,7 @@ import time
 from dotenv import dotenv_values
 
 # Load environment variables (if you have them, otherwise remove this line)
-env = dotenv_values(".env")
+# env = dotenv_values(".env") # Keeping this commented out as per previous context if not needed
 
 # SnapLogic RAG pipeline - Updated API details
 URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi"
@@ -74,8 +74,9 @@ if prompt:
         if response.status_code == 200:
             try:
                 result = response.json()
-                if len(result) > 0 and isinstance(result[0], dict) and "response" in result[0]:
-                    response_data = result[0]["response"]
+                # Check if the result is a dictionary and contains the 'response' key
+                if isinstance(result, dict) and "response" in result:
+                    response_data = result["response"] # Access the nested 'response' dictionary directly
                     answer = response_data.get("answer", "")
                     source = response_data.get("source", "") # Extract source from response
 
@@ -94,7 +95,7 @@ if prompt:
                     })
                 else:
                     with st.chat_message("assistant"):
-                        st.error("❌ Invalid response format from API. Expected a 'response' key in the first element.")
+                        st.error("❌ Invalid response format from API. Expected a dictionary with a 'response' key.")
             except ValueError:
                 with st.chat_message("assistant"):
                     st.error("❌ Invalid JSON response from API")
