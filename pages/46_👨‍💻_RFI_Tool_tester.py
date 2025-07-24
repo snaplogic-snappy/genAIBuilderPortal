@@ -57,9 +57,6 @@ for idx, message in enumerate(st.session_state.rfi_responses):
 # Display persistent error message if one exists
 if st.session_state.error_message:
     st.error(st.session_state.error_message)
-    # Optionally clear the error after displaying, or leave it until next successful interaction
-    # For this case, we'll clear it after the next user input
-    # If you want it to stay until a new *successful* interaction, you'd clear it only after a successful API call.
 
 # React to user input
 prompt = st.chat_input("Ask me anything about RFI requirements...")
@@ -72,7 +69,8 @@ if prompt:
 
     with st.spinner("Retrieving information..."):
         # Construct the payload as expected by the new API
-        payload = [{"content": {"Requirement": prompt}}]
+        # THIS IS THE KEY CHANGE: Payload is now a dictionary, not a list containing a dictionary
+        payload = {"content": {"Requirement": prompt}}
         headers = {
             'Authorization': f'Bearer {BEARER_TOKEN}',
             'Content-Type': 'application/json' # Specify content type for JSON payload
