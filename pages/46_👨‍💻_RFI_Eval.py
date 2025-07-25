@@ -42,8 +42,8 @@ def run_rfi_assistant():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # React to user input
-    prompt = st.chat_input("Ask me anything about RFI requirements...")
+    # React to user input, now with a unique key
+    prompt = st.chat_input("Ask me anything about RFI requirements...", key="chat_widget")
     if prompt:
         # Display user message
         with st.chat_message("user"):
@@ -102,7 +102,8 @@ if not st.session_state.authenticated:
     st.title("Login Required")
     st.write("Please enter the password to access the RFI Assistant.")
     
-    password_input = st.text_input("Password", type="password")
+    # Password input with a unique key
+    password_input = st.text_input("Password", type="password", key="password_widget")
     
     if st.button("Unlock"):
         if password_input == PASSWORD:
@@ -113,5 +114,4 @@ if not st.session_state.authenticated:
             st.error("The password you entered is incorrect. Please try again.")
 else:
     # If authenticated, run the main chatbot app
-    run_rfi_assistant()
     run_rfi_assistant()
