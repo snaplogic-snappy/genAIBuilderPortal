@@ -1,7 +1,13 @@
 import streamlit as st
 import requests
 import time
-# from dotenv import dotenv_values # Uncomment if you plan to use a .env file for credentials
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Trello", "Project Management", "Integration"]
+}
 
 # --- Configuration for Trello Companion Chatbot ---
 # API Endpoint for the SnapLogic Trello Companion

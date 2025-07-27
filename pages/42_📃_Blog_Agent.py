@@ -1,6 +1,14 @@
 import streamlit as st
 import requests
 import json
+import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Blog", "Content", "Writing"]
+}
 
 # Initialize chat history with welcome message
 def init_session_state():

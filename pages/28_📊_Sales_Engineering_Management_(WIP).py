@@ -1,6 +1,15 @@
 import streamlit as st
 import requests
 import urllib.parse
+import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["Sales Engineering", "Management"]
+}
+
 st.set_page_config(layout="wide")
 
 def fetch_svg_from_api(url, token):

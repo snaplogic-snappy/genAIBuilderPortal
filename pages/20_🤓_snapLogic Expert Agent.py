@@ -3,6 +3,12 @@ import requests
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Technical"],
+    "tags": ["SnapLogic", "Expert", "Support"]
+}
+
 # Load environment
 env = dotenv_values(".env")
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/ApiRfpAgent"

@@ -3,6 +3,13 @@ import requests
 import time
 import json
 import uuid
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Military", "Government", "Web"]
+}
 
 # Configuration
 URL = "https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/.Rich/Agent_Creator/USMC_Web_Scraper_Agent%20Task"

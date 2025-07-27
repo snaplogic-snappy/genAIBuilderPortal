@@ -2,7 +2,14 @@ import streamlit as st
 import pandas as pd
 import json
 import requests
+import time
+from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Wine", "Data Analysis", "Analytics"]
+}
 
 st.title("SnapLogic Workshop - GenAI Wine DB")
 

@@ -2,6 +2,13 @@ import streamlit as st
 import requests
 import time
 import threading
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Healthcare", "Inequality", "Analytics"]
+}
 
 # API details
 API_URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/Bootcamp_EMEA_June_2025/story_clch_twoFiles%20Task"

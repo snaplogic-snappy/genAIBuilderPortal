@@ -2,6 +2,13 @@ import streamlit as st
 import requests
 import json
 import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["RFI", "Testing", "Tools"]
+}
 
 # --- CONFIGURATION & PASSWORD ---
 PASSWORD = "RFIbuddy"  # A simple, hardcoded password

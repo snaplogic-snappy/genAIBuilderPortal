@@ -2,6 +2,14 @@ import streamlit as st
 import requests
 import json
 import urllib3
+import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Government", "Emergency Management", "FEMA"]
+}
 
 # Disable insecure request warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

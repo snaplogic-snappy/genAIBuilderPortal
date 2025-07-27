@@ -4,6 +4,12 @@ import time
 import json
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Insurance", "Documents", "Processing"]
+}
+
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic pipeline

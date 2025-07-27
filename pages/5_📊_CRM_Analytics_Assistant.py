@@ -3,6 +3,11 @@ import requests
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["CRM", "Analytics", "Sales"]
+}
 
 # Load environment
 env = dotenv_values(".env")

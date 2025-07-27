@@ -3,6 +3,12 @@ import requests
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Technical"],
+    "tags": ["Data Science", "Analytics", "Machine Learning"]
+}
+
 # Load environment
 env = dotenv_values(".env")
 # SnapLogic RAG pipeline

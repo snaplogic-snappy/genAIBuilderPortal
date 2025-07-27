@@ -1,6 +1,13 @@
 import streamlit as st
 import requests
 import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Reports", "Restaurant", "Annual"]
+}
 
 def typewriter(text: str, speed: int):
     tokens = text.split()

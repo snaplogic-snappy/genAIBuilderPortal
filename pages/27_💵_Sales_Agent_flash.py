@@ -7,6 +7,12 @@ from streamlit_oauth import OAuth2Component
 import base64
 import json
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["Sales", "Quick Response"]
+}
+
 # Load & Set environment variables 
 env = dotenv_values(".env")
 AUTHORIZE_URL = env["SF_AUTHORIZE_URL"]

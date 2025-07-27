@@ -1,6 +1,13 @@
 import streamlit as st
 import requests
 import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Cognism", "Data", "Analytics"]
+}
 
 # --- Configuration for Cognism Agent Chatbot ---
 # API Endpoint for the SnapLogic Cognism Agent

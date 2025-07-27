@@ -20,12 +20,19 @@ This Agent is built and maintained by Allot, for more information about Allot vi
 
 import streamlit as st
 import requests
+import time
 from typing import Optional
 from dotenv import dotenv_values
 import json
 import os
 import re
 import base64
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Blog", "Writing", "Content Creation"]
+}
 
 def add_logo():
     st.markdown(

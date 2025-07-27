@@ -1,4 +1,13 @@
 import streamlit as st
+import requests
+import time
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Technical"],
+    "tags": ["SnapLogic", "Bot", "Integration"]
+}
 
 #st.header("SnapBot - You flexible Chatbot")
 #st.subheader("You flexible Chatbot - powered by SnapLogic")

@@ -6,6 +6,12 @@ import os
 from dotenv import load_dotenv
 from PIL import Image
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["RAG", "Retrieval", "Knowledge Base"]
+}
+
 # Load environment variables
 load_dotenv()
 

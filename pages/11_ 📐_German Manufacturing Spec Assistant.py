@@ -3,6 +3,12 @@ import requests
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Technical"],
+    "tags": ["Manufacturing", "Specifications", "German"]
+}
+
 def typewriter(text: str, speed: int):
     tokens = text.split()
     container = st.empty()

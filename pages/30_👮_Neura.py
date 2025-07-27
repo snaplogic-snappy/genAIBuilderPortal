@@ -9,6 +9,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Security", "Law Enforcement"]
+}
+
 CHAT_HISTORY_FILE = 'chat_history.json'
 API_URL = 'https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/PartnerTrainingSandbox/jovanche_AgentDriver_Triggered_NEW'
 BEARER_TOKEN = 'disabled' #'4muMThpvh2NQoJ0XTNcvyxAOn2GElcsx'

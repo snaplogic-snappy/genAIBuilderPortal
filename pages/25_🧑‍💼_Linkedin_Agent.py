@@ -2,6 +2,13 @@ import streamlit as st
 import requests
 import time
 import json
+from dotenv import dotenv_values
+
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["LinkedIn", "Social Media", "Networking"]
+}
 
 # Configuration
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/LinkedinAgent/linkedinPostGenerator"

@@ -5,6 +5,11 @@ import time
 import os
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Invoices", "French", "Reconciliation"]
+}
 
 
 # SnapLogic RAG pipeline

@@ -4,6 +4,12 @@ import json
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["Invoices", "VAT", "Tax"]
+}
+
 # Configuration
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Konstantin/shared/InvoiceChecker"
 BEARER_TOKEN = "8jtHJpkQJYdpqvYaYfzZ19GtBuZYEn3i"

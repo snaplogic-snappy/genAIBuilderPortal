@@ -4,6 +4,12 @@ import time
 from dotenv import dotenv_values
 import os
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["Customer Intelligence", "Analytics"]
+}
+
 # Load environment
 env = dotenv_values(".env")
 

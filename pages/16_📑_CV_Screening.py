@@ -4,6 +4,12 @@ import json
 import time
 from dotenv import dotenv_values
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["CV", "Screening", "HR"]
+}
+
 # Environment config
 env = dotenv_values(".env")
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRecruiter/reviewCv"

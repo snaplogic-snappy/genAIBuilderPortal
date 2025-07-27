@@ -7,6 +7,11 @@ import requests
 import base64
 import json
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Business"],
+    "tags": ["Sales", "Customer Service"]
+}
 
 # Load & Set environment variables 
 env = dotenv_values(".env")
