@@ -21,13 +21,20 @@ def run_rfi_assistant():
     BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
     TIMEOUT = 300
 
-    # --- HELPER FUNCTION (MODIFIED) ---
-    def response_generator(text: str, speed: int = 50):
-        """Yields words from the input text to simulate a typewriter effect."""
+    # --- HELPER FUNCTION ---
+    def typewriter(text: str, speed: int = 50):
+        """Displays text with a typewriter effect."""
         tokens = text.split()
-        for token in tokens:
-            yield token + " "
+        container = st.empty()
+        
+        for index in range(len(tokens) + 1):
+            curr_full_text = " ".join(tokens[:index])
+            container.markdown(curr_full_text)
+            # Force UI update by creating and immediately clearing a placeholder
+            placeholder = st.empty()
+            placeholder.write("")
             time.sleep(1 / speed)
+            placeholder.empty()
 
     # --- PAGE SETUP ---
     st.title("🤖 RFI Analyst Assistant")
@@ -88,10 +95,7 @@ def run_rfi_assistant():
                     source = api_response.get("source")
 
                     if answer:
-                        # --- MODIFIED LINE ---
-                        # Use st.write_stream with the generator for proper rendering
-                        st.write_stream(response_generator(text=answer))
-                        
+                        typewriter(text=answer)
                         if source:
                             toggle_key = f"toggle_{len(st.session_state.rfi_chat)}"
                             if st.toggle("Show Sources", key=toggle_key):
