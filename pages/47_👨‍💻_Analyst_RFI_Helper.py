@@ -111,6 +111,9 @@ def run_rfi_assistant():
                     st.error(f"❌ Error calling the SnapLogic API: {e}")
                 except ValueError:
                     st.error("❌ Could not decode the JSON response from the API.")
+                
+                # Force Streamlit to refresh after typewriter effect
+                st.rerun()
 
 # --- PASSWORD GATE ---
 # Initialize session state for authentication
