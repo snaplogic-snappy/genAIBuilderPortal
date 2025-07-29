@@ -26,15 +26,10 @@ def run_rfi_assistant():
         """Displays text with a typewriter effect."""
         tokens = text.split()
         container = st.empty()
-        
         for index in range(len(tokens) + 1):
             curr_full_text = " ".join(tokens[:index])
             container.markdown(curr_full_text)
-            # Force UI update by creating and immediately clearing a placeholder
-            placeholder = st.empty()
-            placeholder.write("")
             time.sleep(1 / speed)
-            placeholder.empty()
 
     # --- PAGE SETUP ---
     st.title("🤖 RFI Analyst Assistant")
