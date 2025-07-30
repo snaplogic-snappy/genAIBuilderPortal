@@ -53,17 +53,17 @@ def run_rfi_assistant():
     col1, col2 = st.columns([3, 1])
     with col2:
         use_smart = st.toggle(
-            "Smart API", 
+            "Smart Search", 
             value=st.session_state.use_smart_api,
-            help="Toggle between RFI Agent (previous submissions only) and Smart API (comprehensive search)"
+            help="Toggle between Quick Search (previous submissions only) and Smart Search (comprehensive search)"
         )
         st.session_state.use_smart_api = use_smart
     
     with col1:
         if use_smart:
-            st.info("🧠 **Smart API**: Comprehensive search across all SnapLogic resources")
+            st.info("🧠 **Smart Search**: Comprehensive search across all SnapLogic resources")
         else:
-            st.info("📋 **RFI Agent**: Previous submissions only (faster responses)")
+            st.info("⚡ **Quick Search**: Previous submissions only (faster responses)")
     
     st.markdown("""
         **Sample questions:**
