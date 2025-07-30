@@ -137,7 +137,7 @@ def run_rfi_assistant():
                                 smart_answer = parsed_json.get("response_text")
                                 sources_used = parsed_json.get("sources_used", [])
                                 confidence_score = parsed_json.get("confidence_score", "N/A")
-                                smart_source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/10"
+                                smart_source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/30"
                             else:
                                 smart_answer = response_data
                                 smart_source = None
@@ -224,7 +224,7 @@ def run_rfi_assistant():
                                     # For smart API, we can get additional info
                                     sources_used = parsed_json.get("sources_used", [])
                                     confidence_score = parsed_json.get("confidence_score", "N/A")
-                                    source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/10"
+                                    source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/30"
                                 else:
                                     answer = response_data
                                     source = None
@@ -290,7 +290,7 @@ def run_rfi_assistant():
                                                     smart_answer = parsed_json.get("response_text")
                                                     sources_used = parsed_json.get("sources_used", [])
                                                     confidence_score = parsed_json.get("confidence_score", "N/A")
-                                                    smart_source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/10"
+                                                    smart_source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/30"
                                                 else:
                                                     smart_answer = response_data
                                                     smart_source = None
