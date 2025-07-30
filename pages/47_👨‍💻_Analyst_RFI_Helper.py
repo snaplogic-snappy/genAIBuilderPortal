@@ -17,8 +17,14 @@ def run_rfi_assistant():
     after the user has been authenticated.
     """
     # --- API & APP CONSTANTS ---
-    URL = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi"
-    BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
+    # RFI API - Fast (previous submissions only)
+    RFI_API_FAST = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed-master/queue/ConnectFasterInc/snapLogic4snapLogic/ToolsAsApi/RetrieverAnalystRFIsApi"
+    RFI_API_FAST_BEARER_TOKEN = "jPjAekEskIsx96xEmSqwzp5eJMtoCwqo"
+    
+    # RFI API - Smart (comprehensive search)
+    RFI_API_SMART = "https://prodeu-connectfasterinc-cloud-fm.emea.snaplogic.io/api/1/rest/feed/run/task/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/AnswerFinderApi"
+    RFI_API_SMART_BEARER_TOKEN = "CRmLuSqn2zDK40AVxavgTJ7RmHIXczJB"
+    
     TIMEOUT = 300
 
     # --- HELPER FUNCTION ---
@@ -36,7 +42,30 @@ def run_rfi_assistant():
     st.markdown("""
         ### AI-powered assistant for exploring RFI documents
         Ask questions in natural language about SnapLogic's platform capabilities.
-
+    """)
+    
+    # --- API SELECTION TOGGLE ---
+    # Initialize API selection in session state
+    if "use_smart_api" not in st.session_state:
+        st.session_state.use_smart_api = False
+    
+    # Create toggle for API selection
+    col1, col2 = st.columns([3, 1])
+    with col2:
+        use_smart = st.toggle(
+            "Smart API", 
+            value=st.session_state.use_smart_api,
+            help="Toggle between RFI Agent (previous submissions only) and Smart API (comprehensive search)"
+        )
+        st.session_state.use_smart_api = use_smart
+    
+    with col1:
+        if use_smart:
+            st.info("🧠 **Smart API**: Comprehensive search across all SnapLogic resources")
+        else:
+            st.info("📋 **RFI Agent**: Previous submissions only (faster responses)")
+    
+    st.markdown("""
         **Sample questions:**
         - Describe the elements of your platform that support the software development life cycle (SDLC), continuous integration and continuous delivery (CI/CD), and versioning.
         - How does SnapLogic support data governance?
