@@ -97,15 +97,24 @@ def run_rfi_assistant():
         # Display assistant response
         with st.chat_message("assistant"):
             with st.spinner("Analyzing documents..."):
-                payload = {"Requirement": prompt}
+                # Configure API based on toggle selection
+                if st.session_state.use_smart_api:
+                    url = RFI_API_SMART
+                    bearer_token = RFI_API_SMART_BEARER_TOKEN
+                    payload = {"question": prompt}
+                else:
+                    url = RFI_API_FAST
+                    bearer_token = RFI_API_FAST_BEARER_TOKEN
+                    payload = {"Requirement": prompt}
+                
                 headers = {
-                    'Authorization': f'Bearer {BEARER_TOKEN}',
+                    'Authorization': f'Bearer {bearer_token}',
                     'Content-Type': 'application/json'
                 }
 
                 try:
                     response = requests.post(
-                        url=URL,
+                        url=url,
                         json=payload,
                         headers=headers,
                         timeout=TIMEOUT,
@@ -114,9 +123,38 @@ def run_rfi_assistant():
                     response.raise_for_status()
 
                     result = response.json()
-                    api_response = result.get("response", {})
-                    answer = api_response.get("answer")
-                    source = api_response.get("source")
+                    
+                    # Parse response based on API type
+                    if st.session_state.use_smart_api:
+                        # Smart API returns a list with JSON string inside
+                        if isinstance(result, list) and len(result) > 0:
+                            response_data = result[0].get("response", "")
+                            if response_data.startswith("```json"):
+                                # Extract JSON from the markdown code block
+                                json_start = response_data.find("{")
+                                json_end = response_data.rfind("}") + 1
+                                if json_start != -1 and json_end != -1:
+                                    json_str = response_data[json_start:json_end]
+                                    parsed_json = json.loads(json_str)
+                                    answer = parsed_json.get("response_text")
+                                    # For smart API, we can get additional info
+                                    sources_used = parsed_json.get("sources_used", [])
+                                    confidence_score = parsed_json.get("confidence_score", "N/A")
+                                    source = f"Sources: {', '.join(sources_used)} | Confidence: {confidence_score}/10"
+                                else:
+                                    answer = response_data
+                                    source = None
+                            else:
+                                answer = response_data
+                                source = None
+                        else:
+                            answer = None
+                            source = None
+                    else:
+                        # Fast API (original format)
+                        api_response = result.get("response", {})
+                        answer = api_response.get("answer")
+                        source = api_response.get("source")
 
                     if answer:
                         typewriter(text=answer)
@@ -134,6 +172,8 @@ def run_rfi_assistant():
                     else:
                         st.error("❌ The API returned a response, but it did not contain an answer.")
 
+                except json.JSONDecodeError as json_err:
+                    st.error(f"❌ JSON parsing error: {json_err}")
                 except requests.exceptions.HTTPError as http_err:
                     st.error(f"❌ HTTP Error: {http_err} - {response.text}")
                 except requests.exceptions.RequestException as e:
