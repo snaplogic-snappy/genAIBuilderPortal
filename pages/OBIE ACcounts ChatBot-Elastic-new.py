@@ -46,7 +46,7 @@ def extract_doc_content(docx_path, image_dir="extracted_images"):
     return content, images
 
 # Load content and graphics
-doc_text, doc_images = extract_doc_content("Open Banking Query Tool V1.docx")
+doc_text, doc_images = extract_doc_content("../assets/Open Banking Query Tool V1.docx")
 
 # ===============================
 # Streamlit Page Setup
@@ -123,4 +123,5 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     bot_reply += "\n\n💡 *Tip:* Ask 'Show transactions over 100 USD last month' or 'List standing orders above 200 USD'."
 
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+
     st.rerun()
