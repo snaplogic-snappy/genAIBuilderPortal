@@ -77,16 +77,27 @@ if prompt:
 
         if response.status_code==200:
             result = response.json()
-            if len(result) > 0 :
-                response=result[0]
+            if len(result) > 0:
+                response_text = result[0]
+                
+                # Ensure we have a string for the typewriter function
+                if isinstance(response_text, dict):
+                    # If the response is a dict, extract the text field
+                    # Adjust the key name based on your API response structure
+                    response_text = response_text.get('text', '') or response_text.get('content', '') or str(response_text)
+                elif not isinstance(response_text, str):
+                    # Convert to string if it's not already
+                    response_text = str(response_text)
+                
                 # Display assistant response in chat message container
                 with st.chat_message("assistant"):
-                    typewriter(text=response, speed=10)
+                    typewriter(text=response_text, speed=10)
                 # Add assistant response to chat history
-                st.session_state.dealer_invoices.append({"role": "assistant", "content": response})
+                st.session_state.dealer_invoices.append({"role": "assistant", "content": response_text})
             else:
                 with st.chat_message("assistant"):
                     st.error(f"❌ Error in the SnapLogic API response: Empty Result")
         else:
-                st.error(f"❌ Error while calling the SnapLogic API")
+            with st.chat_message("assistant"):
+                st.error(f"❌ Error while calling the SnapLogic API: {response.status_code}")
         st.rerun()
