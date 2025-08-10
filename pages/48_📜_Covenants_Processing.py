@@ -42,8 +42,7 @@ I'm here to help you work through the Covenants workflow.
 **To get started:**
 - Ask me questions about the company or the Covenants process
 - I'll run the necessary processes for you
-
-How can I assist you with your Covenants processing today?""")
+""")
 
 # Initialize chat history
 if "dealer_invoices" not in st.session_state:
