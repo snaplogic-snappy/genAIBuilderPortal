@@ -80,18 +80,34 @@ def run_sales_agent_app():
                         if result and isinstance(result, list) and len(result) > 0 and "response" in result[0]:
                             # Extract the main response text
                             assistant_response_content = result[0].get("response", "No response text found.")
-                            # Extract the sources, if they exist
-                            sources = result[0].get("sources", [])
                             
                             full_response = assistant_response_content
-                            # If sources are found, format and append them to the response
+
+                            # --- MODIFIED SECTION START ---
+                            # Extract the sources, which are now a list of objects
+                            sources = result[0].get("sources", [])
+                            
+                            # Check if sources list is not empty
                             if sources:
-                                source_list = "\n- " + "\n- ".join(sources)
-                                full_response += f"\n\n**Sources:**{source_list}"
+                                markdown_links = []
+                                # Iterate over each source object in the list
+                                for source in sources:
+                                    # Ensure the source is a dictionary with 'name' and 'link' keys
+                                    if isinstance(source, dict) and "name" in source and "link" in source:
+                                        name = source["name"]
+                                        link = source["link"]
+                                        # Create a Markdown-formatted hyperlink
+                                        markdown_links.append(f"[{name}]({link})")
+                                
+                                # If any valid links were created, append them to the response
+                                if markdown_links:
+                                    source_list_str = "\n- " + "\n- ".join(markdown_links)
+                                    full_response += f"\n\n**Sources:**{source_list_str}"
+                            # --- MODIFIED SECTION END ---
 
                             # Display the assistant's full response
                             with st.chat_message("assistant"):
-                                st.markdown(full_response)
+                                st.markdown(full_response, unsafe_allow_html=True)
                             
                             # Add the full response to the chat history
                             st.session_state.sales_agent_messages.append({"role": "assistant", "content": full_response})
