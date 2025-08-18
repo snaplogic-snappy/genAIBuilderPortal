@@ -3,6 +3,7 @@ import requests
 from docx import Document
 import re
 import spacy
+from spacy.cli import download
 import json
 import os
 from PIL import Image
@@ -18,17 +19,21 @@ import base64
 #    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
 #    nlp = spacy.load("en_core_web_sm")
 # ===============================
-# Load NLP model with fallback (ms)
+# Load NLP model with caching
 # ===============================
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    # Use spacy's built-in CLI to download the model
-    from spacy.cli import download
-    st.write("Downloading spaCy model. This may take a moment...")
-    download("en_core_web_sm")
-    # Now that it's downloaded, try loading it again
-    nlp = spacy.load("en_core_web_sm")
+@st.cache_resource(show_spinner=False)
+def load_spacy_model():
+    # Attempt to load the model. If it fails, download it first.
+    try:
+        nlp = spacy.load("en_core_web_sm")
+    except OSError:
+        st.info("Downloading spaCy model. This may take a moment...")
+        download("en_core_web_sm")
+        nlp = spacy.load("en_core_web_sm")
+    return nlp
+
+# Call the function to load the model
+nlp = load_spacy_model()
 
 # ===============================
 # Extract text and images from Word document
@@ -137,4 +142,5 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
 
