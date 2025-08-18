@@ -117,8 +117,8 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
                 "Authorization": "Bearer rNZFKayKbCaydnseadwlxFdPxtQsnbLI",
                 "Content-Type": "application/json"
             },
-            #json={"prompt": refined_query}
-            json=json.dumps({"prompt": refined_query})
+            json={"prompt": refined_query}
+            #json=json.dumps({"prompt": refined_query})
         )
 
         #############ms test here#######################
@@ -143,6 +143,7 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
 
 
 
