@@ -117,8 +117,15 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
                 "Authorization": "Bearer rNZFKayKbCaydnseadwlxFdPxtQsnbLI",
                 "Content-Type": "application/json"
             },
-            json={"prompt": refined_query}
+            #json={"prompt": refined_query}
+            json=json.dumps(refined_query)
         )
+
+        #############ms test here#######################
+
+        # Make the POST request with the specified URL, headers, and JSON payload
+        #response = requests.post(api_url, headers=headers, data=json.dumps(payload))
+        ###############################################
 
         if response.status_code == 200:
             api_result = response.json()
@@ -136,6 +143,7 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
 
 
 
