@@ -11,11 +11,23 @@ import base64
 # ===============================
 # Load NLP model with fallback
 # ===============================
+#try:
+#    nlp = spacy.load("en_core_web_sm")
+#except OSError:
+#    import subprocess
+#    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+#    nlp = spacy.load("en_core_web_sm")
+# ===============================
+# Load NLP model with fallback (ms)
+# ===============================
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    import subprocess
-    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+    # Use spacy's built-in CLI to download the model
+    from spacy.cli import download
+    st.write("Downloading spaCy model. This may take a moment...")
+    download("en_core_web_sm")
+    # Now that it's downloaded, try loading it again
     nlp = spacy.load("en_core_web_sm")
 
 # ===============================
@@ -125,3 +137,4 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
