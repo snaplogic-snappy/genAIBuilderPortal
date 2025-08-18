@@ -22,34 +22,11 @@ import base64
 # ===============================
 # Load NLP model with fallback
 # ===============================
-@st.cache_resource(show_spinner=False)
+@st.cache_resource
 def load_spacy_model():
-    model_name = "en_core_web_sm"
-    try:
-        # Try to load the model from the system
-        nlp = spacy.load(model_name)
-    except OSError:
-        st.info(f"Downloading {model_name} model. This may take a moment...")
-        
-        # Create a temporary directory to download the model to
-        with tempfile.TemporaryDirectory() as tmpdir:
-            try:
-                # Use spacy's CLI to download the model into the temporary dir
-                download(model_name, '--target', tmpdir)
-                
-                # Update the system path to find the downloaded model
-                # This is a critical step
-                sys.path.append(tmpdir)
-                
-                # Now try loading the model from the temporary path
-                nlp = spacy.load(model_name)
-            except Exception as e:
-                st.error(f"Error downloading or loading spaCy model: {e}")
-                # You might want to handle this gracefully or stop the app
-                return None
+    nlp = spacy.load("en_core_web_sm")
     return nlp
 
-# Call the function to load the model
 nlp = load_spacy_model()
 
 # ===============================
@@ -159,6 +136,7 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
 
 
 
