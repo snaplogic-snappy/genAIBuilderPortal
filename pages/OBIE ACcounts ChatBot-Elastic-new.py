@@ -108,7 +108,7 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("Ask me about transactions, direct debits, or balances..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     refined_query = prompt
-
+    st.json()
     # API call
     try:
         response = requests.post(
@@ -143,6 +143,7 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
 
     st.rerun()
+
 
 
 
