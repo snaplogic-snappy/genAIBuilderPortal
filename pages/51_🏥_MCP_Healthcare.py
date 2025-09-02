@@ -23,7 +23,7 @@ Welcome to the **MCP Healthcare Data Analysis Platform** powered by SnapLogic.
 Info on this tool:
 - This tools was created by **Angelica Tacca**. Reach out to atdughetti@snaplogic.com for any doubts or questions.
 - The MCP server resides in a EC2 Ubuntu Machine in AWS and takes the code from https://github.com/cicatriiz/healthcare-mcp-public
-- Our own GitHub repo for this demo lives here: [angietd94/Healthcare-MCP-Demo](https://github.com/angietd94/Healthcare-MCP-Demo/tree/main)
+- Our own GitHub repo for this demo lives here: [github/Healthcare-MCP-Demo](https://github.com/angietd94/Healthcare-MCP-Demo/tree/main)
 
 - **Direct Pipelines Links**  
 -- [Driver](https://cdn.emea.snaplogic.com/sl/designer.html?v=26808#pipe_snode=68aec550dee0c2a2a73bb1ce)  
