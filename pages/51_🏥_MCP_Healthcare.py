@@ -22,8 +22,10 @@ Welcome to the **MCP Healthcare Data Analysis Platform** powered by SnapLogic.
 
 Info on this tool:
 - This tools was created by **Angelica Tacca**. Reach out to atdughetti@snaplogic.com for any doubts or questions.
-- The MCP server resides in a EC2 Ubuntu Machine in AWS and takes the code from https://github.com/cicatriiz/healthcare-mcp-public 
-- **Direct Links**  
+- The MCP server resides in a EC2 Ubuntu Machine in AWS and takes the code from https://github.com/cicatriiz/healthcare-mcp-public
+- Our own GitHub repo for this demo lives here: [angietd94/Healthcare-MCP-Demo](https://github.com/angietd94/Healthcare-MCP-Demo/tree/main)
+
+- **Direct Pipelines Links**  
 -- [Driver](https://cdn.emea.snaplogic.com/sl/designer.html?v=26808#pipe_snode=68aec550dee0c2a2a73bb1ce)  
 -- [Worker](https://cdn.emea.snaplogic.com/sl/designer.html?v=26808#pipe_snode=68aec55b1899534695fee030)
 
@@ -32,16 +34,12 @@ Examples of simple questions:
 - Give me the FDA label information for ibuprofen.
 - Find the most recent clinical studies on Alzheimer’s disease treatment published in the last 2 years.
 - Show me ongoing clinical trials for breast cancer.
-- What is the ICD-10 code for hypertension?
-- Give me adverse event reports for aspirin.
-
 
 More complex examples that force multiple tools:
 
 - What are the FDA adverse events reported for metformin, and show me recent PubMed papers on its side effects?
 - Give me the ICD-10 codes for asthma, find the most recent clinical trials recruiting for asthma, and summarize basic health information about asthma in Spanish.
 - Find the FDA label for sildenafil, check PubMed for recent studies about its cardiovascular effects, and show ongoing clinical trials related to erectile dysfunction.
-- Provide health topic information on Alzheimer’s disease in English, list ICD-10 codes for related dementia conditions, and show completed clinical trials from the last 5 years.
 - Look up the FDA label for fluoxetine, list common adverse events, retrieve the last 3 PubMed papers about its efficacy in anxiety, and give me the ICD-10 code for generalized anxiety disorder.
 """)
 
