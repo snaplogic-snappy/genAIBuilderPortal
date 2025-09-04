@@ -3,6 +3,12 @@ import requests
 import json
 import datetime
 
+# Demo metadata for search and filtering
+DEMO_METADATA = {
+    "categories": ["Content"],
+    "tags": ["Healthcare", "Demo", "MCP", "Agentic"]
+}
+
 # --- Streamlit Page Config ---
 st.set_page_config(page_title="MCP Healthcare Analysis", layout="wide")
 
