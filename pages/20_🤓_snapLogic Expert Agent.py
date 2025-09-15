@@ -39,7 +39,7 @@ col1, col2 = st.columns([1.2, 1.22])
 with col1:
     # Embed ElevenLabs widget with adjusted container
     elevenlabs_html = """
-    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    <elevenlabs-convai agent-id="nnoWPUe6P27G1OlPw25C" override-language="fr" language="fr"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
     """
     st.components.v1.html(elevenlabs_html, height=225, width=340)
 
