@@ -117,3 +117,13 @@ if uploaded_file is not None:
                     st.error(f"❌ {result['message']}")            
                     typewriter(text="The price revision formula extracted from the PDF Contract is the following:", speed=10)
                     st.latex(f"{result['pdf']['revisionFormulaPDF']}")
+                    time.sleep(1.0)
+                    st.markdown("""<hr style="height:10px;border:none;color:#333;background-color:#333;" /> """, unsafe_allow_html=True)
+                    c1, c2, c3 = st.columns(3)
+                    with c1:
+                        st.metric(label="Amount Billed by the ERP", value="2500,00 €")
+                    with c2:
+                        st.metric(label="Amount to be billed from the contract", value="3132,21 €")
+                    with c3:
+                        st.metric(label="Underbilled Amount", value="632,21 €")
+                
