@@ -60,7 +60,7 @@ def extract_doc_content(docx_path, image_dir="extracted_images"):
     return content, images
 
 # Load content and graphics
-doc_text, doc_images = extract_doc_content("Mainframe VSAM Accounts and Customer Data Query Tool V1.docx")
+doc_text, doc_images = extract_doc_content("assets/Mainframe VSAM Accounts and Customer Data Query Tool V1.docx")
 
 # ===============================
 # Display full document with graphics
@@ -133,4 +133,5 @@ if prompt := st.chat_input("Ask me about your accounts or balances..."):
     bot_reply += "\n\n💡 *Tip:* Ask 'What transactions are there on my accounts ?'."
 
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+
     st.rerun()
