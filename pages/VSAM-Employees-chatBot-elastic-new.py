@@ -57,7 +57,7 @@ def extract_doc_content(docx_path, image_dir="extracted_images"):
     return content, images
 
 # Load content and graphics
-doc_text, doc_images = extract_doc_content("Mainframe VSAM Employee Data Query Tool V1.docx")
+doc_text, doc_images = extract_doc_content("assets/Mainframe VSAM Employee Data Query Tool V1.docx")
 
 # ===============================
 # Display full document with graphics
@@ -130,4 +130,5 @@ if prompt := st.chat_input("Ask me about transactions, direct debits, or balance
     bot_reply += "\n\n💡 *Tip:* Ask 'How many employees are called John ?'."
 
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+
     st.rerun()
