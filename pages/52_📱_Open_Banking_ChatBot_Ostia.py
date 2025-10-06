@@ -1,33 +1,17 @@
 import streamlit as st
 import requests
 from docx import Document
-import re
-import spacy
-from spacy.cli import download
-import tempfile
 import json
 import os
 from PIL import Image
 import base64
 
-# ===============================
-# Load NLP model with fallback
-# ===============================
-#try:
-#    nlp = spacy.load("en_core_web_sm")
-#except OSError:
-#    import subprocess
-#    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
-#    nlp = spacy.load("en_core_web_sm")
-# ===============================
-# Load NLP model with fallback
-# ===============================
-@st.cache_resource
-def load_spacy_model():
-    nlp = spacy.load("en_core_web_sm")
-    return nlp
+# DEMO_METADATA - REQUIRED FOR SEARCH FUNCTIONALITY
+DEMO_METADATA = {
+    "categories": ["Industry"],
+    "tags": ["Banking", "Open Banking", "Financial", "Mainframe", "VSAM", "Ostia"]
+}
 
-nlp = load_spacy_model()
 
 # ===============================
 # Extract text and images from Word document
@@ -85,63 +69,51 @@ if doc_images:
 st.markdown("---")
 st.markdown("### 💬 Chat with the Assistant")
 
-# Initialize messages
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# Initialize messages with unique key for this demo
+if "openbanking_messages" not in st.session_state:
+    st.session_state.openbanking_messages = []
 
-# Show previous messages
-for message in st.session_state.messages:
-    if message["role"] == "user":
-        st.markdown(f"""
-        <div style='background-color:#DCF8C6; padding:10px; border-radius:10px; margin-bottom:5px; text-align:right'>
-        <b>👤 You:</b> {message["content"]}
-        </div>""", unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style='background-color:#F1F0F0; padding:10px; border-radius:10px; margin-bottom:5px; text-align:left'>
-        <b>🤖 Assistant:</b> {message["content"]}
-        </div>""", unsafe_allow_html=True)
+# Show previous messages using proper chat interface
+for message in st.session_state.openbanking_messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
 
 # ===============================
 # User input
 # ===============================
 if prompt := st.chat_input("Ask me about transactions, direct debits, or balances..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    refined_query = prompt
-    #st.json()
-    # API call
-    try:
-        response = requests.post(
-            url="https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/.Rich/mainframe_accelerator/Open%20Banking%20Driver%20Task",
-            headers={
-                "Authorization": "Bearer rNZFKayKbCaydnseadwlxFdPxtQsnbLI",
-                "Content-Type": "application/json"
-            },
-            json={"prompt": refined_query}
-            #json=json.dumps({"prompt": refined_query})
-        )
+    # Add user message
+    st.session_state.openbanking_messages.append({"role": "user", "content": prompt})
 
-        #############ms test here#######################
+    with st.spinner("Processing your banking query..."):
+        try:
+            response = requests.post(
+                url="https://elastic.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/.Rich/mainframe_accelerator/Open%20Banking%20Driver%20Task",
+                headers={
+                    "Authorization": "Bearer rNZFKayKbCaydnseadwlxFdPxtQsnbLI",
+                    "Content-Type": "application/json"
+                },
+                json={"prompt": prompt},
+                timeout=300
+            )
 
-        # Make the POST request with the specified URL, headers, and JSON payload
-        #response = requests.post(api_url, headers=headers, data=json.dumps(payload))
-        ###############################################
+            if response.status_code == 200:
+                api_result = response.json()
+                formatted_result = api_result[0].get("response", "No valid response from the API.")
+                bot_reply = f"✅ **Results for:** `{prompt}`\n\n{formatted_result}"
+            else:
+                bot_reply = f"⚠️ API request failed with status {response.status_code}"
 
-        if response.status_code == 200:
-            api_result = response.json()
-            formatted_result = api_result[0].get("response", "No valid response from the API.")
-            st.markdown(formatted_result)
-            bot_reply = f"✅ **Results for:** `{refined_query}`\n\n```json\n{formatted_result}\n```"
-        else:
-            bot_reply = f"⚠️ API request failed with status {response.status_code}"
+        except Exception as e:
+            bot_reply = f"❌ Error contacting the API: {str(e)}"
 
-    except Exception as e:
-        bot_reply = f"❌ Error contacting the API: {str(e)}"
+        bot_reply += "\n\n💡 *Tip:* Ask 'Show transactions over 100 USD last month' or 'List standing orders above 200 USD'."
 
-    bot_reply += "\n\n💡 *Tip:* Ask 'Show transactions over 100 USD last month' or 'List standing orders above 200 USD'."
+        # Add assistant response to chat history
+        st.session_state.openbanking_messages.append({"role": "assistant", "content": bot_reply})
 
-    st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-
+    # Rerun to display the new messages
     st.rerun()
 
 
