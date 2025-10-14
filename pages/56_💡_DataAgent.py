@@ -3,7 +3,7 @@ import requests
 import json
 import os
 import re
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import urllib3
 
 # Demo metadata for search and filtering
