@@ -18,13 +18,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 env = dotenv_values(".env")
 
 # Configuration
-URL = env["SL_GA_TASK_URL"]
-BEARER_TOKEN = env["SL_GA_TASK_TOKEN"]
-timeout = int(env["SL_TASK_TIMEOUT"])
-
-# API_URL = "https://a18c9f3a83b3e40a69da924330ab4acd-2111898486.eu-west-3.elb.amazonaws.com/api/1/rest/feed/run/task/ConnectFasterInc/Toni/Toni_Agent_Data/DataAgent_Orchestrator_API"
-# BEARER_TOKEN = "XkZD5Ac5WpKzlX9gC81pGDzEs84lfF2D"
-# timeout = 180
 API_URL = env["SL_DA_TASK_URL"]
 BEARER_TOKEN = env["SL_DA_TASK_TOKEN"]
 timeout = int(env["SL_TASK_TIMEOUT"])
