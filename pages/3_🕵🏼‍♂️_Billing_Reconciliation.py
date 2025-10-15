@@ -74,22 +74,55 @@ with tab2:
         st.pdf("Contract-Reconciliation-NOK-Formula-Not-Applied.pdf", height=800)
 
 with tab3:
-    if st.button("📄 See Contract with Wrong formula in ERP")
+    if st.button("📄 See Contract with Wrong formula in ERP"):
         st.pdf("Contract-Reconciliation-NOK-Wrong-Formula-Applied.pdf", height=800)
 
 st.divider()
 
 
 with st.chat_message("assistant"):
-    st.markdown("Welcome! 👋")
-with st.chat_message("assistant"):
-    st.markdown("Select the PDF Contract")
-uploaded_file = st.file_uploader(' ')
-if uploaded_file is not None:
-    file_bytes = uploaded_file.getvalue()
+    st.markdown("Select the PDF contract to check")
+
+contract_type = st.radio(
+    "Contract Type",
+    (
+        "Contract OK",
+        "Contract with Missing formula in ERP",
+        "Contract with Wrong formula in ERP",
+    ),
+)
+file_map = {
+    "Contract OK": "Contract-Reconciliation-OK.pdf",
+    "Contract with Missing formula in ERP": "Contract-Reconciliation-NOK-Formula-Not-Applied.pdf",
+    "Contract with Wrong formula in ERP": "Contract-Reconciliation-NOK-Wrong-Formula-Applied.pdf",
+}
+
+# --- Clear state if selection changes ---
+if "last_contract_type" not in st.session_state:
+    st.session_state.last_contract_type = contract_type
+elif st.session_state.last_contract_type != contract_type:
+    # Reset loaded contract when radio changes
+    st.session_state.pop("contract_bytes", None)
+    st.session_state.pop("contract_filename", None)
+    st.session_state.last_contract_type = contract_type
+
+# --- 1) Load the PDF once and persist it in session_state ---
+if st.button("Load the selected contract", key="btn_load"):
+    filepath = file_map[contract_type]
+    try:
+        with open(filepath, "rb") as f:
+            file_bytes = f.read()
+        st.session_state["contract_filename"] = filepath
+        st.session_state["contract_bytes"] = file_bytes
+        st.success(f"Contract loaded")
+    except FileNotFoundError:
+        st.error(f"Could not load the contract : {filepath}")
+
+# --- 2) Only show the 'Lancer le Contrôle !' button if a contract is loaded ---
+if "contract_bytes" in st.session_state:
     with st.chat_message("assistant"):
-        st.markdown("Successful Upload !Click below to launch the content comparison! ")
-    if st.button(":blue[Analyze!]"):
+        st.markdown("Contract loaded. You can now run the check")
+    if st.button(":blue[Run the check!]", key="btn_run"):
         with st.spinner("Comparing Contract and ERP ..."):
             headers = {
                 'Authorization': f'Bearer {BEARER_TOKEN}',
@@ -97,7 +130,7 @@ if uploaded_file is not None:
             }
             response = requests.post(
                 url=URL,
-                data=file_bytes,
+                data=st.session_state["contract_bytes"],
                 headers=headers,
                 timeout=timeout,
                 verify=False
