@@ -5,6 +5,7 @@ import time
 import os
 from dotenv import dotenv_values
 
+        
 # Demo metadata for search and filtering
 DEMO_METADATA = {
     "categories": ["Content"],
@@ -20,7 +21,6 @@ timeout = int(env["SL_TASK_TIMEOUT"])
 # Streamlit Page Properties
 page_title="Rapprochement de Factures"
 title="Rapprochement et contrôle de cohérence entre les contrats et le SI Facturation"
-
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
@@ -50,14 +50,32 @@ st.markdown(
     Conséquence : les clients sont **sous-facturés**.
     
     Échantillons Contrats:
+    - [Contrat OK](https://snaplogic.box.com/s/vbdo1942zjm7fsxmdx9vizoojjs3uu6q)
+    - [Contrat avec Formule de Révision de prix absente de l'ERP](https://snaplogic.box.com/s/9v4sn7hmw8mugismmftwodnnmrx2p92z)
+    - [Contrat avec Formule de Révision de prix erronée dans l'ERP](https://snaplogic.box.com/s/ao0zdxjmhfbgwwzeb0ew26acbf6z6sxn)
+
+    [Pipeline SnapLogic](https://cdn.emea.snaplogic.com/sl/designer.html#pipe_snode=65de0c5eede53772f6790592)
     """
 )
-with st.expander("Contrat conforme"):
-    st.pdf("Contract-Reconciliation-OK.pdf")
-with st.expander("Contrat dont la formule de révision est absente du SI"):
-    st.pdf("Contract-Reconciliation-NOK-Formula-Not-Applied.pdf")
-with st.expander("Contrat dont la formule de révision est erronée dans le SI"):
-    st.pdf("Contract-Reconciliation-NOK-Wrong-Formula-Applied.pdf")
+
+
+tab1, tab2, tab3 = st.tabs([
+    "✅ Contrat conforme",
+    "⚠️ Formule absente",
+    "❌ Formule erronée"
+])
+
+with tab1:
+    if st.button("📄 Voir Contrat conforme"):
+        st.pdf("Contract-Reconciliation-OK.pdf", height=800)
+
+with tab2:
+    if st.button("📄 Voir Contrat sans formule de révision"):
+        st.pdf("Contract-Reconciliation-NOK-Formula-Not-Applied.pdf", height=800)
+
+with tab3:
+    if st.button("📄 Voir Contrat avec formule erronée"):
+        st.pdf("Contract-Reconciliation-NOK-Wrong-Formula-Applied.pdf", height=800)
 
 st.divider()
 

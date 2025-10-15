@@ -59,6 +59,27 @@ st.markdown(
     """
 )
 
+tab1, tab2, tab3 = st.tabs([
+    "✅ Contract OK",
+    "⚠️ Contract with Missing formula in ERP",
+    "❌ Contract with Wrong formula in ERP"
+])
+
+with tab1:
+    if st.button("📄 See Contract OK"):
+        st.pdf("Contract-Reconciliation-OK.pdf", height=800)
+
+with tab2:
+    if st.button("📄 See Contract with Missing formula in ERP"):
+        st.pdf("Contract-Reconciliation-NOK-Formula-Not-Applied.pdf", height=800)
+
+with tab3:
+    if st.button("📄 See Contract with Wrong formula in ERP")
+        st.pdf("Contract-Reconciliation-NOK-Wrong-Formula-Applied.pdf", height=800)
+
+st.divider()
+
+
 with st.chat_message("assistant"):
     st.markdown("Welcome! 👋")
 with st.chat_message("assistant"):
