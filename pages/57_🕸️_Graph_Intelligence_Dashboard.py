@@ -53,7 +53,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # ==========================================================
-# HELPER FUNCTIONS
+# HELPER FUNCTION
 # ==========================================================
 def display_agent_response(content: str):
     """Displays structured or markdown responses from the agent."""
@@ -71,46 +71,47 @@ It integrates with **Neo4j (or any GraphDB)** to provide contextual insights int
 """)
 
 # ==========================================================
-# SCHEMA OVERVIEW
+# TWO-COLUMN SCHEMA + INTRO SECTION
 # ==========================================================
 st.markdown("---")
 st.subheader("📈 Schema Overview – Data Relationships")
 
-schema_url = "https://raw.githubusercontent.com/snaplogic-snappy/genAIBuilderPortal/main/assets/57_Graph_Schema.png"
+col_left, col_right = st.columns([1, 1.2])
 
-try:
-    st.image(
-        schema_url,
-        caption="Customer–Product–Opportunity–Case Data Model (Graph Intelligence Schema)",
-        use_container_width=True
-    )
-except Exception as e:
-    st.warning(f"⚠️ Could not load schema diagram. Error: {e}")
+with col_left:
+    st.markdown("""
+    **Entity Relationships:**
+    - 🧑‍💼 **Customer** connects to **Opportunities**, **Cases**, and **Products**  
+    - 💼 **Opportunities** link to **Products** and **Sales Stages**  
+    - 🧰 **Cases** represent support requests linked to **Issue Types**, **Status**, and **Priority**  
+    - 🌍 **Customers** belong to **Regions**, **Industries**, and **Tiers**, and are managed by an **Account Manager**
 
-st.markdown("""
-**Entity Relationships:**
-- 🧑‍💼 **Customer** connects to **Opportunities**, **Cases**, and **Products**  
-- 💼 **Opportunities** link to **Products** and **Sales Stages**  
-- 🧰 **Cases** represent support requests linked to **Issue Types**, **Status**, and **Priority**  
-- 🌍 **Customers** belong to **Regions**, **Industries**, and **Tiers**, and are managed by an **Account Manager**
-""")
+    👋 **Welcome!**  
+    I’m your **AI Sales & Support Intelligence Agent**, powered by the **SnapLogic Agent Creator** and connected to your graph database.
+
+    **Ask me about:**
+    - Customer performance and opportunities  
+    - Support case analytics and critical issues  
+    - Product recommendations and cross-sell opportunities  
+
+    **Here are some example queries you can try:**
+    """)
+
+with col_right:
+    schema_url = "https://raw.githubusercontent.com/snaplogic-snappy/genAIBuilderPortal/main/assets/57_Graph_Schema.png"
+    try:
+        st.image(
+            schema_url,
+            caption="Customer–Product–Opportunity–Case Data Model",
+            use_container_width=True
+        )
+    except Exception as e:
+        st.warning(f"⚠️ Could not load schema diagram. Error: {e}")
 
 # ==========================================================
 # EXAMPLE PROMPTS
 # ==========================================================
 if not st.session_state.messages:
-    st.markdown("""
-    👋 **Welcome!**  
-    I’m your **AI Sales & Support Intelligence Agent**, powered by the SnapLogic Agent Creator and connected to your graph database.
-
-    Ask me about:
-    - Customer performance and opportunities  
-    - Support case analytics and critical issues  
-    - Product recommendations and cross-sell opportunities  
-
-    Here are some **example queries** you can try:
-    """)
-
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -175,7 +176,7 @@ for msg in st.session_state.messages:
             display_agent_response(msg["content"])
 
 # ==========================================================
-# CHAT INPUT & API CALL
+# CHAT INPUT + API CALL
 # ==========================================================
 if prompt := st.chat_input("Ask about customers, opportunities, or support cases..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
