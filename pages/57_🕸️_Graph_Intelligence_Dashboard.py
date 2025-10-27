@@ -162,7 +162,7 @@ if not st.session_state.messages:
 
         with st.container(border=True):
             st.subheader("🎯 Account Manager Portfolio")
-            st.code("Show me the accounts managed by Lisa Chen.")
+            st.code("Show me the accounts managed by Jean Grey.")
 
         with st.container(border=True):
             st.subheader("🗂 Support Case History")
