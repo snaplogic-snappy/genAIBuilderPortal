@@ -1,10 +1,10 @@
 # 57_🕸️_Graph_Intelligence_Dashboard.py
 
 import streamlit as st
-import pandas as pd
-import json
 import requests
-import time
+import uuid
+import pandas as pd
+import re
 
 # ==========================================================
 # DEMO_METADATA - REQUIRED FOR SEARCH FUNCTIONALITY
@@ -15,43 +15,70 @@ DEMO_METADATA = {
 }
 
 # ==========================================================
-# PAGE CONFIGURATION
+# API CONFIGURATION
+# ==========================================================
+API_URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/KnowledgeAssistant/Knowledge%20Assistant%20AD%20Task"
+AUTH_TOKEN = "Bearer vpRYcSE4iBmlYBsPqkQnhrdSCAqEcoKt"
+
+# ==========================================================
+# PAGE SETUP
 # ==========================================================
 st.set_page_config(
-    page_title="Graph Intelligence Dashboard (GraphDB-agnostic)",
-    page_icon="🕸️",
-    layout="wide"
+    page_title="Sales & Support Intelligence Agent",
+    page_icon="🧠",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-page_title = "🕸️ Graph Intelligence Dashboard"
-st.title(page_title)
-st.markdown("*(Currently tested with **Neo4j**, but fully agnostic to any GraphDB such as TigerGraph or Memgraph.)*")
+# ==========================================================
+# SIDEBAR
+# ==========================================================
+with st.sidebar:
+    st.image("https://placehold.co/400x100/002B45/FFFFFF?text=Sales+%26+Support+Agent", use_column_width=True)
+    st.title("🧠 Sales & Support Intelligence Agent")
+    st.info("Your co-pilot for customer, sales, and support insights powered by Neo4j (Graph Intelligence Dashboard).")
+    
+    if st.button("Start New Chat"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
 
 # ==========================================================
-# HOMEPAGE OVERVIEW SECTION
+# SESSION INITIALIZATION
 # ==========================================================
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# ==========================================================
+# HELPER FUNCTIONS
+# ==========================================================
+def display_agent_response(content: str):
+    """Displays structured or markdown responses from the agent."""
+    st.markdown(content)
+
+# ==========================================================
+# MAIN HEADER
+# ==========================================================
+st.title("🧠 Sales & Support Intelligence Agent")
+st.caption(f"Session ID: {st.session_state.session_id}")
+
 st.markdown("""
-### 🔍 About This Demo
-This **Graph Intelligence Dashboard** illustrates the relationships between **Customers**, **Products**, **Opportunities**, and **Support Cases** in a unified business knowledge graph.
-
-It supports both **sales** and **service** intelligence scenarios such as:
-- Cross-sell and upsell detection  
-- Case clustering and priority insights  
-- Customer 360° and product performance analysis  
-
-Built with **SnapLogic Agent Creator** and designed to connect with any graph database via a pluggable adapter.
+This **AI-powered Graph Intelligence Dashboard** helps you reason across your sales, support, and product graph data.  
+It integrates with **Neo4j (or any GraphDB)** to provide contextual insights into customers, opportunities, and service cases.
 """)
 
 # ==========================================================
-# SCHEMA OVERVIEW (IMAGE TEMPORARILY REMOVED)
+# SCHEMA PLACEHOLDER
 # ==========================================================
 st.markdown("---")
 st.subheader("📈 Schema Overview – Data Relationships")
 
-st.info("📌 The schema visualization will be added once the diagram is uploaded to the `/assets` folder.")
-
+st.info("📌 The schema visualization will appear here once uploaded to the `/assets` folder.")
 st.markdown("""
-**Legend**
+**Entity Relationships:**
 - 🧑‍💼 **Customer** connects to **Opportunities**, **Cases**, and **Products**  
 - 💼 **Opportunities** link to **Products** and **Sales Stages**  
 - 🧰 **Cases** represent support requests linked to **Issue Types**, **Status**, and **Priority**  
@@ -59,82 +86,110 @@ st.markdown("""
 """)
 
 # ==========================================================
-# DATABASE CONNECTION SELECTION
+# EXAMPLE PROMPTS
 # ==========================================================
-st.markdown("---")
-st.subheader("⚙️ Connect to Your Graph Database")
-
-db_choice = st.selectbox(
-    "Select Graph Database Type",
-    ["Neo4j", "TigerGraph", "Memgraph", "Custom API"],
-    index=0
-)
-
-with st.expander("🔌 Connection Parameters", expanded=False):
-    st.text_input("Host / Endpoint", placeholder="e.g., bolt://localhost:7687 or https://api.tigergraph.com")
-    st.text_input("Username", placeholder="neo4j / tg_user / memgraph")
-    st.text_input("Password / Token", type="password", placeholder="Enter credentials")
-    st.text_input("Database Name (optional)", placeholder="neo4j, graph, or namespace")
-
-st.info(f"✅ Selected database type: **{db_choice}**. Use this to test connectivity via your SnapLogic agent or direct driver.")
-
-# ==========================================================
-# EXAMPLE QUERY INTERFACE
-# ==========================================================
-st.markdown("---")
-st.subheader("💬 Try a Sample Query")
-
-sample_query = st.text_area(
-    "Enter your graph query (Cypher, GSQL, or open format):",
-    value="MATCH (c:Customer)-[:HAS_OPPORTUNITY]->(o:Opportunity) RETURN c.name, COUNT(o) AS opportunities LIMIT 10"
-)
-
-if st.button("▶️ Run Query", type="primary", use_container_width=True):
-    st.info("This demo is front-end only – replace this with your SnapLogic pipeline or API call for execution.")
-    st.code(sample_query, language="cypher")
-
-    # Mock result preview
-    mock_data = [
-        {"Customer": "Gamma Connect Solutions", "Opportunities": 5},
-        {"Customer": "OmniTech Europe", "Opportunities": 3},
-        {"Customer": "BlueWave Medical", "Opportunities": 7},
-    ]
-    df = pd.DataFrame(mock_data)
-    st.dataframe(df, use_container_width=True)
-
-# ==========================================================
-# FUTURE EXTENSION SECTION
-# ==========================================================
-st.markdown("---")
-col1, col2 = st.columns([1, 1])
-
-with col1:
+if not st.session_state.messages:
     st.markdown("""
-    ### 🔮 Planned Extensions
-    - Agentic reasoning over graph data  
-    - Cross-graph unification via **SnapLogic pipelines**  
-    - Natural language query orchestration  
-    - Predictive account health scoring  
-    - Real-time case escalation alerts
+    👋 **Welcome!**  
+    I’m your **AI Sales & Support Intelligence Agent**, powered by the SnapLogic Agent Creator and connected to your graph database.
+
+    Ask me about:
+    - Customer performance and opportunities  
+    - Support case analytics and critical issues  
+    - Product recommendations and cross-sell opportunities  
+
+    Here are some **example queries** you can try:
     """)
 
-with col2:
-    st.markdown("""
-    ### 🧠 Technology Stack
-    - **Frontend**: Streamlit (Demo Portal)  
-    - **Backend**: SnapLogic Agent Creator  
-    - **Graph Layer**: Any GraphDB (Neo4j, TigerGraph, Memgraph)  
-    - **AI Orchestration**: OpenAI / LangChain  
-    - **Visualization**: Graph Data Science + Streamlit Charts  
-    """)
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        with st.container(border=True):
+            st.subheader("📊 Customer 360° Overview")
+            st.code("Show me the full customer overview for Gamma Connect Solutions.")
+
+        with st.container(border=True):
+            st.subheader("📈 Opportunity Performance")
+            st.code("List open opportunities by stage and expected close date.")
+
+        with st.container(border=True):
+            st.subheader("🎯 Account Manager Portfolio")
+            st.code("Show me the accounts managed by Lisa Chen.")
+
+        with st.container(border=True):
+            st.subheader("🗂 Support Case History")
+            st.code("Show all open support cases for Vertex Analytics LLC.")
+
+    with col2:
+        with st.container(border=True):
+            st.subheader("📦 Product Analytics")
+            st.code("Analyze sales and case history for the Catalyst 9300 Switch.")
+
+        with st.container(border=True):
+            st.subheader("🚨 Critical Case Overview")
+            st.code("List unresolved critical cases grouped by product.")
+
+        with st.container(border=True):
+            st.subheader("🏆 Top Performing Customers")
+            st.code("Which customers have the highest closed-won revenue in 2025?")
+
+        with st.container(border=True):
+            st.subheader("🧭 Industry Distribution")
+            st.code("Summarize opportunities by industry and tier.")
+
+    with col3:
+        with st.container(border=True):
+            st.subheader("🤝 Cross-Sell Recommendations")
+            st.code("Find cross-sell opportunities for Gamma Connect Solutions.")
+
+        with st.container(border=True):
+            st.subheader("🧠 Product Recommendations")
+            st.code("Recommend products for Evergreen Logistics Solutions.")
+
+        with st.container(border=True):
+            st.subheader("🔗 Similar Customers")
+            st.code("Find customers similar to Nexus Logistics Corp.")
+
+        with st.container(border=True):
+            st.subheader("🎯 Predict Opportunity Success")
+            st.code("Predict the win likelihood for opportunity OPP00042.")
 
 # ==========================================================
-# FOOTER
+# CHAT HISTORY
 # ==========================================================
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #666; font-size: 0.9em;'>
-    <p>🕸️ Graph Intelligence Dashboard – powered by SnapLogic Agent Creator</p>
-    <p>Supports Neo4j (reference), TigerGraph, and Memgraph integrations</p>
-</div>
-""", unsafe_allow_html=True)
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        if msg["role"] == "user":
+            st.markdown(msg["content"])
+        else:
+            display_agent_response(msg["content"])
+
+# ==========================================================
+# CHAT INPUT & API CALL
+# ==========================================================
+if prompt := st.chat_input("Ask about customers, opportunities, or support cases..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Querying graph data and reasoning across Neo4j..."):
+            try:
+                api_messages = [
+                    {"content": m["content"], "sl_role": "USER" if m["role"] == "user" else "ASSISTANT"}
+                    for m in st.session_state.messages
+                ]
+                payload = {"session_id": st.session_state.session_id, "messages": api_messages}
+                headers = {"Authorization": AUTH_TOKEN, "Content-Type": "application/json"}
+
+                response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
+                response.raise_for_status()
+                data = response.json()
+                agent_response = data[0].get("response", "No response received from the agent.")
+            except requests.exceptions.RequestException as e:
+                agent_response = f"⚠️ **Request failed:** {str(e)}"
+            except (KeyError, IndexError, ValueError) as e:
+                agent_response = f"⚠️ **Parsing error:** {e}\n\nRaw response:\n{response.text}"
+
+            display_agent_response(agent_response)
+            st.session_state.messages.append({"role": "assistant", "content": agent_response})
