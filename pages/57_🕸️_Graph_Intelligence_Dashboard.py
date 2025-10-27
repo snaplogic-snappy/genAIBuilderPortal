@@ -43,12 +43,12 @@ Built with **SnapLogic Agent Creator** and designed to connect with any graph da
 """)
 
 # ==========================================================
-# SCHEMA IMAGE DISPLAY
+# SCHEMA OVERVIEW (IMAGE TEMPORARILY REMOVED)
 # ==========================================================
 st.markdown("---")
 st.subheader("📈 Schema Overview – Data Relationships")
 
-st.image("Screenshot_2025-10-24_at_10.41.35.png", caption="Customer–Product–Opportunity–Case Data Model", use_container_width=True)
+st.info("📌 The schema visualization will be added once the diagram is uploaded to the `/assets` folder.")
 
 st.markdown("""
 **Legend**
