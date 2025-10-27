@@ -86,8 +86,19 @@ with col_left:
     - 🧰 **Cases** represent support requests linked to **Issue Types**, **Status**, and **Priority**  
     - 🌍 **Customers** belong to **Regions**, **Industries**, and **Tiers**, and are managed by an **Account Manager**
 
+    ---
+
     👋 **Welcome!**  
-    I’m your **AI Sales & Support Intelligence Agent**, powered by the **SnapLogic Agent Creator** and connected to your graph database.
+    I’m your **AI Sales & Support Intelligence Agent**, powered by the **SnapLogic Agent Creator** and connected to your **graph database**.
+
+    This workspace combines **Sales**, **Service**, and **Product Intelligence** in one unified data graph — helping you:
+    - Detect **cross-sell and upsell** opportunities from historical patterns  
+    - Predict **deal outcomes** and **customer churn** likelihood  
+    - Monitor **support case clusters** to identify recurring product issues  
+    - Highlight **top-performing products** and **high-value customers**  
+    - Uncover **similar accounts** to replicate winning strategies  
+
+    By leveraging **graph relationships** and **AI reasoning**, the agent can reveal insights hidden across CRM, ERP, and support systems — without requiring SQL or Cypher expertise.
 
     **Ask me about:**
     - Customer performance and opportunities  
@@ -96,6 +107,7 @@ with col_left:
 
     **Here are some example queries you can try:**
     """)
+
 
 with col_right:
     schema_url = "https://raw.githubusercontent.com/snaplogic-snappy/genAIBuilderPortal/main/assets/57_Graph_Schema.png"
