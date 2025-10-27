@@ -71,12 +71,22 @@ It integrates with **Neo4j (or any GraphDB)** to provide contextual insights int
 """)
 
 # ==========================================================
-# SCHEMA PLACEHOLDER
+# SCHEMA OVERVIEW
 # ==========================================================
 st.markdown("---")
 st.subheader("📈 Schema Overview – Data Relationships")
 
-st.info("📌 The schema visualization will appear here once uploaded to the `/assets` folder.")
+schema_url = "https://raw.githubusercontent.com/snaplogic-snappy/genAIBuilderPortal/main/assets/57_Graph_Schema.png"
+
+try:
+    st.image(
+        schema_url,
+        caption="Customer–Product–Opportunity–Case Data Model (Graph Intelligence Schema)",
+        use_container_width=True
+    )
+except Exception as e:
+    st.warning(f"⚠️ Could not load schema diagram. Error: {e}")
+
 st.markdown("""
 **Entity Relationships:**
 - 🧑‍💼 **Customer** connects to **Opportunities**, **Cases**, and **Products**  
