@@ -6,6 +6,31 @@ import uuid
 import pandas as pd
 import re
 
+# --- Custom CSS Styling ---
+st.markdown("""
+    <style>
+        /* Make code blocks smaller and tighter */
+        code, pre {
+            font-size: 0.85em !important;
+        }
+
+        /* Adjust container padding for a cleaner look */
+        .stContainer {
+            padding: 0.5rem !important;
+        }
+
+        /* Optional: slightly dim code color for softer contrast */
+        code {
+            color: #555 !important;
+        }
+
+        /* Reduce spacing between cards */
+        div[data-testid="stVerticalBlock"] > div:nth-child(1) {
+            margin-top: -0.25rem !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # ==========================================================
 # DEMO_METADATA - REQUIRED FOR SEARCH FUNCTIONALITY
 # ==========================================================
