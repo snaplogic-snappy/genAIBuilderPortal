@@ -136,14 +136,22 @@ with col_left:
 
 with col_right:
     schema_url = "https://raw.githubusercontent.com/snaplogic-snappy/genAIBuilderPortal/main/assets/57_Graph_Schema.png"
+
     try:
-        st.image(
-            schema_url,
-            caption="Customer–Product–Opportunity–Case Data Model",
-            use_container_width=True
+        st.markdown(
+            f"""
+            <div style="display:flex; justify-content:center; align-items:center;">
+                <img src="{schema_url}" alt="Graph Schema" style="max-height:600px; width:auto; border-radius:8px;"/>
+            </div>
+            <p style="text-align:center; font-size:0.9em; color:gray;">
+                Customer–Product–Opportunity–Case Data Model
+            </p>
+            """,
+            unsafe_allow_html=True
         )
     except Exception as e:
         st.warning(f"⚠️ Could not load schema diagram. Error: {e}")
+
 
 # ==========================================================
 # EXAMPLE PROMPTS
