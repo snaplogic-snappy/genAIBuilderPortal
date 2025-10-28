@@ -5,6 +5,7 @@ import requests
 import uuid
 import pandas as pd
 import re
+from urllib.parse import quote_plus
 
 # --- Custom CSS Styling ---
 st.markdown("""
@@ -85,15 +86,36 @@ def display_agent_response(content: str):
     st.markdown(content)
 
 # ==========================================================
-# MAIN HEADER
+# MAIN HEADER (with QR code on the right)
 # ==========================================================
-st.title("🧠 Sales & Support Intelligence Agent")
-st.caption(f"Session ID: {st.session_state.session_id}")
+app_url = "https://snaplogic-genai-builder.streamlit.app/Graph_Intelligence_Dashboard"
+qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={quote_plus(app_url)}"
 
-st.markdown("""
-This **AI-powered Graph Intelligence Dashboard** helps you reason across your sales, support, and product graph data.  
-It integrates with **Neo4j (or any GraphDB)** to provide contextual insights into customers, opportunities, and service cases.
-""")
+left, right = st.columns([3, 1], vertical_alignment="center")
+
+with left:
+    st.title("🧠 Sales & Support Intelligence Agent")
+    st.caption(f"Session ID: {st.session_state.session_id}")
+
+    st.markdown("""
+    This **AI-powered Graph Intelligence Dashboard** helps you reason across your **sales**, **support**, and **product** graph data.  
+    It integrates with **Neo4j (or any GraphDB)** to provide contextual insights into customers, opportunities, and service cases.
+    """)
+
+with right:
+    st.markdown(
+        f"""
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <img src="{qr_url}" alt="Scan to open Graph Intelligence Dashboard" 
+                 style="width: 180px; height: 180px; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);" />
+            <a href="{app_url}" target="_blank" style="font-size:0.85em; color:#6b7280; text-decoration:none;">
+                Open on your device ↗
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 # ==========================================================
 # TWO-COLUMN SCHEMA + INTRO SECTION
