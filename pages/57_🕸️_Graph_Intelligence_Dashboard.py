@@ -141,7 +141,7 @@ with col_right:
         st.markdown(
             f"""
             <div style="display:flex; justify-content:center; align-items:center;">
-                <img src="{schema_url}" alt="Graph Schema" style="max-height:600px; width:auto; border-radius:8px;"/>
+                <img src="{schema_url}" alt="Graph Schema" style="max-height:750px; width:auto; border-radius:8px;"/>
             </div>
             <p style="text-align:center; font-size:0.9em; color:gray;">
                 Customer–Product–Opportunity–Case Data Model
