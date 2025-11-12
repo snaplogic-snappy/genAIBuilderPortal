@@ -1,5 +1,5 @@
 # ai_data_analytics_insights_summit_live.py
-# Lead capture + SnapLogic AI Agent integration
+# Lead capture + SnapLogic AI Agent integration (fire-and-forget)
 
 import streamlit as st
 import requests
@@ -36,10 +36,8 @@ AUTH_TOKEN = "Bearer fvBUW1Du9KHQ2dHOv7XSkfcJyCJXH5JO"   # ⚠️ Move to secret
 
 EMAIL_REGEX = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
-
 def valid_email(addr: str) -> bool:
     return bool(re.match(EMAIL_REGEX, addr or ""))
-
 
 # ===================================
 # HEADER
@@ -88,7 +86,7 @@ with st.form("summit_form", clear_on_submit=False, border=True):
     )
 
 # ===================================
-# FORM PROCESSING
+# FORM PROCESSING — FIRE & FORGET
 # ===================================
 if submitted:
     errors = []
@@ -128,14 +126,11 @@ if submitted:
                 "company": company,
                 "notes": notes,
             },
-            # 👇 Converse-style messages: NO "type": "input_text"
             "messages": [
                 {
                     "role": "user",
                     "content": [
-                        {
-                            "text": lead_text
-                        }
+                        { "text": lead_text }
                     ],
                 }
             ],
@@ -146,27 +141,29 @@ if submitted:
                 "Authorization": AUTH_TOKEN,
                 "Content-Type": "application/json"
             }
-            response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
-            response.raise_for_status()
 
-            # SNAPLOGIC SUCCESS
+            # ⭐ Send-and-done — do not wait for agent processing
+            requests.post(API_URL, headers=headers, json=payload, timeout=8)
+
+            # ⭐ Immediate success for the user
             st.success("Thank you! Your information has been submitted successfully. ✅")
 
             st.markdown("""
 ### What happens next?
 
-Our **SnapLogic AI Agent** will now:
+Our **SnapLogic AI Agent** is now processing your information.
 
-- Enrich your profile with public info about your company  
+Behind the scenes it will:
+- Enrich your profile with public information  
 - Analyze your notes to understand your challenges  
-- Prepare a **personalized email tailored to your needs**  
-- Notify our **booth team**, so we can follow up with the right context  
+- Generate a **personalized follow-up email**  
+- Notify our **booth team** so we can follow up with the right context  
 
-You will hear from us very soon!
+You will hear from us soon — enjoy the summit!
             """)
 
-        except requests.exceptions.RequestException as e:
-            st.error("There was an issue sending your data to our AI system.")
+        except Exception as e:
+            st.error("There was an issue sending your data. Please try again.")
             st.code(str(e))
 
 # ===================================
