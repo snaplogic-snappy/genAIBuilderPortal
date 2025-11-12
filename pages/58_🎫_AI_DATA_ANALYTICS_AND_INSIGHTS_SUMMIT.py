@@ -1,10 +1,11 @@
 # ai_data_analytics_insights_summit_live.py
-# Lead capture + SnapLogic AI Agent integration (fire-and-forget)
+# Lead capture + SnapLogic AI Agent integration (fire-and-forget via background thread)
 
 import streamlit as st
 import requests
 import uuid
 import re
+import threading
 from datetime import datetime
 
 # ===================================
@@ -36,8 +37,27 @@ AUTH_TOKEN = "Bearer fvBUW1Du9KHQ2dHOv7XSkfcJyCJXH5JO"   # ⚠️ Move to secret
 
 EMAIL_REGEX = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
+
 def valid_email(addr: str) -> bool:
     return bool(re.match(EMAIL_REGEX, addr or ""))
+
+
+def async_post(url: str, headers: dict, payload: dict):
+    """
+    Fire-and-forget POST to SnapLogic.
+    Runs in a background thread so the UI never waits for the AI Agent to finish.
+    """
+    try:
+        # 30s is fine here because this does NOT block the UI.
+        requests.post(url, headers=headers, json=payload, timeout=30)
+    except Exception:
+        # We intentionally ignore any exceptions here:
+        # - network blips
+        # - timeouts
+        # The user already got a success message and the booth team
+        # can monitor failures via SnapLogic logs.
+        pass
+
 
 # ===================================
 # HEADER
@@ -126,32 +146,36 @@ if submitted:
                 "company": company,
                 "notes": notes,
             },
+            # Bedrock Converse-style messages for the orchestrator agent
             "messages": [
                 {
                     "role": "user",
                     "content": [
-                        { "text": lead_text }
+                        {"text": lead_text}
                     ],
                 }
             ],
         }
 
-        try:
-            headers = {
-                "Authorization": AUTH_TOKEN,
-                "Content-Type": "application/json"
-            }
+        headers = {
+            "Authorization": AUTH_TOKEN,
+            "Content-Type": "application/json"
+        }
 
-            # ⭐ Send-and-done — do not wait for agent processing
-            requests.post(API_URL, headers=headers, json=payload, timeout=8)
+        # Fire-and-forget: run the POST in a background thread
+        threading.Thread(
+            target=async_post,
+            args=(API_URL, headers, payload),
+            daemon=True
+        ).start()
 
-            # ⭐ Immediate success for the user
-            st.success("Thank you! Your information has been submitted successfully. ✅")
+        # Immediate success for the user (no waiting for AI Agent)
+        st.success("Thank you! Your information has been submitted successfully. ✅")
 
-            st.markdown("""
+        st.markdown("""
 ### What happens next?
 
-Our **SnapLogic AI Agent** is now processing your information.
+Our **SnapLogic AI Agent** is now processing your information in the background.
 
 Behind the scenes it will:
 - Enrich your profile with public information  
@@ -160,11 +184,7 @@ Behind the scenes it will:
 - Notify our **booth team** so we can follow up with the right context  
 
 You will hear from us soon — enjoy the summit!
-            """)
-
-        except Exception as e:
-            st.error("There was an issue sending your data. Please try again.")
-            st.code(str(e))
+        """)
 
 # ===================================
 # FOOTER
