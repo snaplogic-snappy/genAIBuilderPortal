@@ -36,6 +36,7 @@ AUTH_TOKEN = "Bearer fvBUW1Du9KHQ2dHOv7XSkfcJyCJXH5JO"   # ⚠️ Move to secret
 
 EMAIL_REGEX = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
+
 def valid_email(addr: str) -> bool:
     return bool(re.match(EMAIL_REGEX, addr or ""))
 
@@ -104,43 +105,41 @@ if submitted:
     if errors:
         for e in errors:
             st.error(e)
-
     else:
         # Build the Bedrock-style messages array directly here
         lead_text = (
-    "New AI Summit booth lead:\n"
-    f"Name: {name}\n"
-    f"Email: {email}\n"
-    f"Role: {role}\n"
-    f"Company: {company}\n\n"
-    "Notes:\n"
-    f"{notes or 'n/a'}"
-)
+            "New AI Summit booth lead:\n"
+            f"Name: {name}\n"
+            f"Email: {email}\n"
+            f"Role: {role}\n"
+            f"Company: {company}\n\n"
+            "Notes:\n"
+            f"{notes or 'n/a'}"
+        )
 
-payload = {
-    "session_id": str(uuid.uuid4()),
-    "timestamp": datetime.utcnow().isoformat(),
-    "source": "AI Summit DACH 2025 booth",
-    "lead": {
-        "name": name,
-        "email": email,
-        "role": role,
-        "company": company,
-        "notes": notes,
-    },
-    # 👇 Converse-style messages: NO "type": "input_text"
-    "messages": [
-        {
-            "role": "user",
-            "content": [
+        payload = {
+            "session_id": str(uuid.uuid4()),
+            "timestamp": datetime.utcnow().isoformat(),
+            "source": "AI Summit DACH 2025 booth",
+            "lead": {
+                "name": name,
+                "email": email,
+                "role": role,
+                "company": company,
+                "notes": notes,
+            },
+            # 👇 Converse-style messages: NO "type": "input_text"
+            "messages": [
                 {
-                    "text": lead_text
+                    "role": "user",
+                    "content": [
+                        {
+                            "text": lead_text
+                        }
+                    ],
                 }
             ],
         }
-    ],
-}
-
 
         try:
             headers = {
