@@ -108,39 +108,39 @@ if submitted:
     else:
         # Build the Bedrock-style messages array directly here
         lead_text = (
-            "New AI Summit booth lead:\n"
-            f"Name: {name}\n"
-            f"Email: {email}\n"
-            f"Role: {role}\n"
-            f"Company: {company}\n\n"
-            "Notes:\n"
-            f"{notes or 'n/a'}"
-        )
+    "New AI Summit booth lead:\n"
+    f"Name: {name}\n"
+    f"Email: {email}\n"
+    f"Role: {role}\n"
+    f"Company: {company}\n\n"
+    "Notes:\n"
+    f"{notes or 'n/a'}"
+)
 
-        payload = {
-            "session_id": str(uuid.uuid4()),
-            "timestamp": datetime.utcnow().isoformat(),
-            "source": "AI Summit DACH 2025 booth",
-            "lead": {
-                "name": name,
-                "email": email,
-                "role": role,
-                "company": company,
-                "notes": notes,
-            },
-            # 👇 This is what the Bedrock Converse Snap will use
-            "messages": [
+payload = {
+    "session_id": str(uuid.uuid4()),
+    "timestamp": datetime.utcnow().isoformat(),
+    "source": "AI Summit DACH 2025 booth",
+    "lead": {
+        "name": name,
+        "email": email,
+        "role": role,
+        "company": company,
+        "notes": notes,
+    },
+    # 👇 Converse-style messages: NO "type": "input_text"
+    "messages": [
+        {
+            "role": "user",
+            "content": [
                 {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": lead_text,
-                        }
-                    ],
+                    "text": lead_text
                 }
             ],
         }
+    ],
+}
+
 
         try:
             headers = {
