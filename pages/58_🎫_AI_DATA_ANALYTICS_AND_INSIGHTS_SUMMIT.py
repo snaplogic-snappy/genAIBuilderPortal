@@ -106,6 +106,17 @@ if submitted:
             st.error(e)
 
     else:
+        # Build the Bedrock-style messages array directly here
+        lead_text = (
+            "New AI Summit booth lead:\n"
+            f"Name: {name}\n"
+            f"Email: {email}\n"
+            f"Role: {role}\n"
+            f"Company: {company}\n\n"
+            "Notes:\n"
+            f"{notes or 'n/a'}"
+        )
+
         payload = {
             "session_id": str(uuid.uuid4()),
             "timestamp": datetime.utcnow().isoformat(),
@@ -115,8 +126,20 @@ if submitted:
                 "email": email,
                 "role": role,
                 "company": company,
-                "notes": notes
-            }
+                "notes": notes,
+            },
+            # 👇 This is what the Bedrock Converse Snap will use
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": lead_text,
+                        }
+                    ],
+                }
+            ],
         }
 
         try:
@@ -146,7 +169,6 @@ You will hear from us very soon!
         except requests.exceptions.RequestException as e:
             st.error("There was an issue sending your data to our AI system.")
             st.code(str(e))
-
 
 # ===================================
 # FOOTER
