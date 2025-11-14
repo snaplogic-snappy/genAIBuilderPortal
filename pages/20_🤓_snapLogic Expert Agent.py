@@ -13,7 +13,7 @@ DEMO_METADATA = {
 env = dotenv_values(".env")
 URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/AutoRFPAgent/ApiRfpAgent"
 BEARER_TOKEN = "nNpLBJrd8FAtFh3TVC9xR97QAwWtJHgF"
-timeout = 300
+timeout = 1200
 
 def typewriter(text: str, speed: int):
     tokens = text.split()
