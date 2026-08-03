@@ -313,7 +313,7 @@ st.dataframe(
         "Executions":     "{:,}",
         "Exec Minutes":   "{:,.1f}",
         "Error Rate (%)": "{:.1f}%",
-    }).background_gradient(subset=["Est. Cost ($)"], cmap="Blues"),
+    }),
     use_container_width=True,
     hide_index=True,
 )
