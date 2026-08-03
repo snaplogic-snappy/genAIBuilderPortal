@@ -1,0 +1,111 @@
+{
+  "user_mappings": [],
+  "excluded_users": [],
+  "platform_users": [],
+  "project_mappings": [
+    {
+      "project_path": "/ConnectFasterInc/Jean-Claude",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Jean Claude",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/LunaWang",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Agent Creator",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/snapLogic4snapLogic",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/toolsasapi",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/toolsasmcp",
+      "bu_id": "bu_genai"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Nilesh",
+      "bu_id": "bu_platform"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Angelica",
+      "bu_id": "bu_platform"
+    },
+    {
+      "project_path": "/ConnectFasterInc/projects",
+      "bu_id": "bu_platform"
+    },
+    {
+      "project_path": "/ConnectFasterInc/autosync",
+      "bu_id": "bu_platform"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Konstantin",
+      "bu_id": "bu_presales"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Ravik",
+      "bu_id": "bu_presales"
+    },
+    {
+      "project_path": "/ConnectFasterInc/SteveC Project Space",
+      "bu_id": "bu_proserv"
+    },
+    {
+      "project_path": "/ConnectFasterInc/RG",
+      "bu_id": "bu_platform"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Markus",
+      "bu_id": "bu_presales"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Toni",
+      "bu_id": "bu_insurance"
+    },
+    {
+      "project_path": "/ConnectFasterInc/James",
+      "bu_id": "bu_healthcare"
+    },
+    {
+      "project_path": "/ConnectFasterInc/apim",
+      "bu_id": "bu_mcp"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Joe",
+      "bu_id": "bu_insurance"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Jordan Millhausen",
+      "bu_id": "bu_insurance"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Jee",
+      "bu_id": "bu_insurance"
+    },
+    {
+      "project_path": "/ConnectFasterInc/Jocelyn",
+      "bu_id": "bu_healthcare"
+    },
+    {
+      "project_path": "/ConnectFasterInc/00_GauravSubhedar",
+      "bu_id": "bu_healthcare"
+    },
+    {
+      "project_path": "/ConnectFasterInc/bromano",
+      "bu_id": "bu_healthcare"
+    },
+    {
+      "project_path": "/ConnectFasterInc/IWConnect",
+      "bu_id": "bu_other"
+    }
+  ]
+}
