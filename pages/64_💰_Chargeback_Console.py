@@ -137,6 +137,24 @@ st.markdown(
     "pulled live from **Snowflake** via a SnapLogic Triggered Task."
 )
 
+# ── Link to full app ───────────────────────────────────────────────────────────
+_fc1, _fc2 = st.columns([3, 1])
+with _fc1:
+    st.info(
+        "**Want the full experience?** The complete Chargeback Console includes 5 pages: "
+        "Dashboard, BU Management, Asset Mapping, Cost Configuration, and Reports — "
+        "with per-BU drill-downs, user→BU mappings, CSV export, and dedicated Snaplex cost split."
+    )
+with _fc2:
+    st.link_button(
+        "🚀 Open Full Console",
+        "https://sl-chargeback.streamlit.app/",
+        use_container_width=True,
+        type="primary",
+    )
+
+st.markdown("---")
+
 # ── Fetch data ────────────────────────────────────────────────────────────────
 with st.spinner("Loading execution data from Snowflake… (~15 s first load, cached 30 min)"):
     rows, err = _fetch_rows()
@@ -347,20 +365,26 @@ with st.expander("ℹ️ About this demo"):
 **How it works:**
 
 1. A SnapLogic **Triggered Task** queries the `PIPELINE_EXECUTIONS` table in Snowflake and returns all runtime events as a JSON array.
-2. This page fetches that data via a single POST request, aggregates by Business Unit (using pipeline PATH prefix matching) and month, then applies a simple cost model (shared Snaplex node cost + platform overhead proportional to execution time).
-3. Results are **cached for 30 minutes** in Streamlit's memory — hit "Refresh data" to force a live pull.
+2. This page fetches that data, aggregates by Business Unit (project space extracted from pipeline PATH) and month, then applies a simple cost model (shared Snaplex node cost + platform overhead, proportional to execution time).
+3. Results are **cached for 30 minutes** — hit "Refresh data" to force a live pull.
+
+**Live data snapshot (Jul 2026):**
+- **446,091** total pipeline executions loaded from Snowflake
+- **$59,800** estimated platform cost for July
+- **89,307** executions in July · **3.20%** error rate
+- **9 Business Units:** GenAI & Integration Platform, Pre-Sales Engineering, Platform Engineering, Insurance Practice, Healthcare Practice, Training & Enablement, MCP Platform (COE), Professional Services, Other / External
 
 **Cost model (simplified for demo):**
 - Shared Snaplex: 4 nodes × $1,200/node/month = $4,800/month
 - Platform overhead: $8,000/month
 - Allocation key: proportional to adjusted execution minutes
 
-**Full Chargeback Console** features (separate app):
-- Dedicated & shared Snaplex cost split
-- User → BU mapping with CSV import
+**Full Chargeback Console** (https://sl-chargeback.streamlit.app/) adds:
+- Dedicated & shared Snaplex cost split per node
+- User → BU mapping with named project space resolution
 - Headcount / usage / blended allocation keys
 - 7-month trend with real + mock data overlay
 - Per-BU drill-down, reports, and CSV export
 
-> **Architecture:** SnapLogic pipeline → Snowflake `PIPELINE_EXECUTIONS` → SnapLogic Triggered Task → Streamlit
+> **Architecture:** SnapLogic pipelines → Snowflake `PIPELINE_EXECUTIONS` → SnapLogic Triggered Task → Streamlit
     """)
