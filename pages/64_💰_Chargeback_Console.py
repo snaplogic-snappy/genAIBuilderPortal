@@ -30,23 +30,12 @@ _SHARED_NODES      = 4
 _PLATFORM_OVERHEAD = 8_000
 _MAX_EXEC_SEC      = 3_600
 
-# BU detection: PATH prefix → BU name (longest-match wins)
-_PATH_TO_BU = {
-    "ConnectFasterInc/Konstantin/": "Platform Engineering",
-    "ConnectFasterInc/projects/":   "Engineering",
-    "ConnectFasterInc/SalesOps/":   "Sales Operations",
-    "ConnectFasterInc/Marketing/":  "Marketing",
-    "ConnectFasterInc/Finance/":    "Finance",
-    "ConnectFasterInc/":            "Other",
-}
-_BU_COLORS = {
-    "Platform Engineering": "#4073FF",
-    "Engineering":          "#42A5D2",
-    "Sales Operations":     "#FF7D3F",
-    "Marketing":            "#6366F1",
-    "Finance":              "#10B981",
-    "Other":                "#8A9BB5",
-}
+# Color palette — assigned round-robin to discovered project spaces
+_COLOR_PALETTE = [
+    "#4073FF", "#42A5D2", "#FF7D3F", "#6366F1",
+    "#10B981", "#F59E0B", "#EC4899", "#8B5CF6",
+    "#14B8A6", "#F97316", "#3B82F6", "#84CC16",
+]
 
 
 # ── Data fetching ─────────────────────────────────────────────────────────────
@@ -79,11 +68,13 @@ def _fetch_rows():
 
 
 def _bu_from_path(path):
-    best_key, best_bu = "", "Other"
-    for prefix, bu in _PATH_TO_BU.items():
-        if path.startswith(prefix) and len(prefix) > len(best_key):
-            best_key, best_bu = prefix, bu
-    return best_bu
+    """Extract project space (second path segment) as the BU name."""
+    parts = path.lstrip("/").split("/")
+    return parts[1] if len(parts) >= 2 else "Other"
+
+
+def _bu_color_map(bus):
+    return {bu: _COLOR_PALETTE[i % len(_COLOR_PALETTE)] for i, bu in enumerate(sorted(bus))}
 
 
 def _parse_month(ts):
@@ -168,58 +159,84 @@ all_months = sorted(
     ),
 )
 
-# Current/latest month
-latest_month = all_months[-1] if all_months else None
-latest_stats = monthly_bu.get(latest_month, {})
-latest_costs = _cost_for_month(latest_stats)
+# Build dynamic BU color map from all discovered BUs
+all_bus = sorted({bu for month_data in monthly_bu.values() for bu in month_data})
+BU_COLORS = _bu_color_map(all_bus)
 
-total_exec     = sum(s["count"]    for s in latest_stats.values())
-total_failures = sum(s["failures"] for s in latest_stats.values())
-total_cost     = sum(latest_costs.values())
+# ── Sidebar controls ──────────────────────────────────────────────────────────
+st.sidebar.title("💰 Chargeback Console")
+st.sidebar.markdown("---")
+
+selected_month = st.sidebar.selectbox(
+    "📅 Select Month",
+    options=all_months,
+    index=len(all_months) - 1,
+)
+
+# BU filter
+bu_filter = st.sidebar.multiselect(
+    "🏢 Filter Business Units",
+    options=all_bus,
+    default=all_bus,
+    help="Show only selected project spaces",
+)
+if not bu_filter:
+    bu_filter = all_bus
+
+st.sidebar.markdown("---")
+if st.sidebar.button("🔄 Refresh data"):
+    st.cache_data.clear()
+    st.rerun()
+
+fetched_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+st.sidebar.caption(f"📡 {len(rows):,} rows · cached 30 min\n{fetched_at}")
+
+# ── Filtered stats for selected month ────────────────────────────────────────
+sel_stats  = {bu: v for bu, v in monthly_bu.get(selected_month, {}).items() if bu in bu_filter}
+sel_costs  = _cost_for_month(sel_stats)
+
+total_exec     = sum(s["count"]    for s in sel_stats.values())
+total_failures = sum(s["failures"] for s in sel_stats.values())
+total_cost     = sum(sel_costs.values())
 error_rate     = (total_failures / total_exec * 100) if total_exec else 0
 
 # ── Data source banner ────────────────────────────────────────────────────────
-fetched_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 st.success(
-    f"📡 **Live Snowflake data** — {len(rows):,} executions loaded · "
-    f"cached 30 min · last fetched {fetched_at}"
+    f"📡 **Live Snowflake data** — {len(rows):,} executions · "
+    f"{len(all_bus)} project spaces · last fetched {fetched_at}"
 )
-
-if st.button("🔄 Refresh data"):
-    st.cache_data.clear()
-    st.rerun()
 
 st.markdown("---")
 
 # ── KPIs ──────────────────────────────────────────────────────────────────────
-st.subheader(f"Platform Snapshot — {latest_month}")
+st.subheader(f"Platform Snapshot — {selected_month}")
 k1, k2, k3, k4 = st.columns(4)
 k1.metric("Estimated Platform Cost", f"${total_cost:,.0f}", help="Shared node + overhead, proportional to exec time")
 k2.metric("Pipeline Executions",     f"{total_exec:,}")
 k3.metric("Error Rate",              f"{error_rate:.1f}%")
-k4.metric("Business Units Active",   str(len(latest_stats)))
+k4.metric("Project Spaces Active",   str(len(sel_stats)))
 
 st.markdown("---")
 
 # ── Monthly cost trend ────────────────────────────────────────────────────────
-st.subheader("Monthly Cost by Business Unit")
+st.subheader("Monthly Cost by Project Space")
 
 trend_rows = []
 for m in all_months:
-    costs = _cost_for_month(monthly_bu[m])
+    costs = _cost_for_month({bu: v for bu, v in monthly_bu[m].items() if bu in bu_filter})
     for bu, cost in costs.items():
-        trend_rows.append({"Month": m, "Business Unit": bu, "Cost ($)": cost})
+        trend_rows.append({"Month": m, "Project Space": bu, "Cost ($)": cost})
 
 if trend_rows:
     df_trend = pd.DataFrame(trend_rows)
     fig_trend = px.bar(
-        df_trend, x="Month", y="Cost ($)", color="Business Unit",
-        color_discrete_map=_BU_COLORS,
+        df_trend, x="Month", y="Cost ($)", color="Project Space",
+        color_discrete_map=BU_COLORS,
         barmode="stack", height=360,
     )
     fig_trend.update_layout(
         xaxis_title="", yaxis_tickformat="$,.0f",
-        legend_title="Business Unit",
+        legend_title="Project Space",
         margin=dict(t=10, b=10),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -228,15 +245,15 @@ if trend_rows:
 
 st.markdown("---")
 
-# ── Current month: cost share + exec volume ───────────────────────────────────
+# ── Selected month: cost share + exec volume ──────────────────────────────────
 c1, c2 = st.columns(2)
 
 with c1:
-    st.subheader(f"Cost Share by BU — {latest_month}")
-    if latest_costs:
-        names  = list(latest_costs.keys())
-        values = list(latest_costs.values())
-        colors = [_BU_COLORS.get(n, "#888") for n in names]
+    st.subheader(f"Cost Share — {selected_month}")
+    if sel_costs:
+        names  = list(sel_costs.keys())
+        values = list(sel_costs.values())
+        colors = [BU_COLORS.get(n, "#888") for n in names]
         fig_donut = go.Figure(go.Pie(
             labels=names, values=values,
             hole=0.45,
@@ -244,39 +261,43 @@ with c1:
             hovertemplate="<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>",
             textinfo="percent",
             textfont_size=11,
-            textfont_color="white",
             textposition="inside",
         ))
         fig_donut.update_layout(
-            height=340,
-            margin=dict(t=10, b=10, l=20, r=160),
-            legend=dict(orientation="v", x=1.02, y=0.5, xanchor="left", font=dict(size=11)),
+            height=360,
+            margin=dict(t=10, b=10, l=20, r=180),
+            legend=dict(orientation="v", x=1.02, y=0.5, xanchor="left", font=dict(size=10)),
             paper_bgcolor="rgba(0,0,0,0)",
         )
         st.plotly_chart(fig_donut, use_container_width=True)
 
 with c2:
-    st.subheader(f"Execution Volume by BU — {latest_month}")
-    if latest_stats:
+    st.subheader(f"Execution Volume — {selected_month}")
+    if sel_stats:
         exec_rows = sorted(
-            [{"Business Unit": bu, "Executions": s["count"], "Failures": s["failures"]}
-             for bu, s in latest_stats.items()],
+            [{"Project Space": bu, "Executions": s["count"], "Failures": s["failures"]}
+             for bu, s in sel_stats.items()],
             key=lambda x: -x["Executions"],
         )
         df_exec = pd.DataFrame(exec_rows)
+        _n = len(df_exec)
         fig_bar = go.Figure()
         for _, row in df_exec.iterrows():
             fig_bar.add_trace(go.Bar(
-                name=row["Business Unit"],
-                y=[row["Business Unit"]],
+                name=row["Project Space"],
+                y=[row["Project Space"]],
                 x=[row["Executions"]],
                 orientation="h",
-                marker_color=_BU_COLORS.get(row["Business Unit"], "#888"),
-                hovertemplate=f"<b>{row['Business Unit']}</b><br>{row['Executions']:,} executions<br>{row['Failures']:,} failures<extra></extra>",
+                marker_color=BU_COLORS.get(row["Project Space"], "#888"),
+                hovertemplate=(
+                    f"<b>{row['Project Space']}</b><br>"
+                    f"{row['Executions']:,} executions<br>"
+                    f"{row['Failures']:,} failures<extra></extra>"
+                ),
                 showlegend=False,
             ))
         fig_bar.update_layout(
-            height=340,
+            height=max(360, _n * 30 + 60),
             xaxis_title="Executions",
             xaxis_tickformat=",.0f",
             yaxis=dict(autorange="reversed"),
@@ -289,14 +310,14 @@ with c2:
 st.markdown("---")
 
 # ── Allocation table ──────────────────────────────────────────────────────────
-st.subheader(f"Detailed Allocation — {latest_month}")
+st.subheader(f"Detailed Allocation — {selected_month}")
 
 tbl_rows = []
-for bu in sorted(latest_costs, key=lambda b: -latest_costs[b]):
-    s = latest_stats.get(bu, {})
-    cost = latest_costs[bu]
+for bu in sorted(sel_costs, key=lambda b: -sel_costs[b]):
+    s = sel_stats.get(bu, {})
+    cost = sel_costs[bu]
     tbl_rows.append({
-        "Business Unit":  bu,
+        "Project Space":  bu,
         "Est. Cost ($)":  cost,
         "Share (%)":      round(cost / total_cost * 100, 1) if total_cost else 0,
         "Executions":     s.get("count", 0),
