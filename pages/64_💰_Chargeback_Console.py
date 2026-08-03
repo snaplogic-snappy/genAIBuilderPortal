@@ -53,7 +53,7 @@ _BU_COLORS = {
 @st.cache_data(ttl=1800, show_spinner=False)
 def _fetch_rows():
     try:
-        resp = requests.post(
+        resp = requests.get(
             _TASK_URL,
             headers={"Authorization": f"Bearer {_BEARER}"},
             timeout=180,
