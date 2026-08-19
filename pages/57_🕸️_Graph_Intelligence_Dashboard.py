@@ -270,10 +270,7 @@ if prompt := st.chat_input("Ask about customers, opportunities, or support cases
             except requests.exceptions.RequestException as e:
                 agent_response = f"⚠️ **Request failed:** {str(e)}"
             except (KeyError, IndexError, ValueError) as e:
-                agent_response = f"⚠️ **Parsing error:** {e}
-
-Raw response:
-{response.text}"
+                agent_response = f"⚠️ **Parsing error:** {e}\n\nRaw response:\n{response.text}"
 
             display_agent_response(agent_response)
             st.session_state.messages.append({"role": "assistant", "content": agent_response})
