@@ -263,11 +263,17 @@ if prompt := st.chat_input("Ask about customers, opportunities, or support cases
                 response = requests.post(API_URL, headers=headers, json=payload, timeout=120)
                 response.raise_for_status()
                 data = response.json()
-                agent_response = data[0].get("response", "No response received from the agent.")
+                try:
+                    agent_response = data[0]["output"]["message"]["content"][0]["text"]
+                except (KeyError, IndexError, TypeError):
+                    agent_response = data[0].get("response", "No response received from the agent.")
             except requests.exceptions.RequestException as e:
                 agent_response = f"⚠️ **Request failed:** {str(e)}"
             except (KeyError, IndexError, ValueError) as e:
-                agent_response = f"⚠️ **Parsing error:** {e}\n\nRaw response:\n{response.text}"
+                agent_response = f"⚠️ **Parsing error:** {e}
+
+Raw response:
+{response.text}"
 
             display_agent_response(agent_response)
             st.session_state.messages.append({"role": "assistant", "content": agent_response})
