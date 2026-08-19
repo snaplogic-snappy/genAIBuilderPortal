@@ -43,8 +43,8 @@ DEMO_METADATA = {
 # ==========================================================
 # API CONFIGURATION
 # ==========================================================
-API_URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/KnowledgeAssistant/Knowledge%20Assistant%20AD%20Task"
-AUTH_TOKEN = "Bearer vpRYcSE4iBmlYBsPqkQnhrdSCAqEcoKt"
+API_URL = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/snapLogic4snapLogic/KnowledgeAssistant/Knowledge%20Assistant%20Task"
+AUTH_TOKEN = "Bearer jaNndpfqwIYc3D1IatSCZJGACuh44y3b"
 
 # ==========================================================
 # PAGE SETUP
