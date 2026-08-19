@@ -60,7 +60,7 @@ st.set_page_config(
 # SIDEBAR
 # ==========================================================
 with st.sidebar:
-    st.image("https://placehold.co/400x100/002B45/FFFFFF?text=Sales+%26+Support+Agent", use_column_width=True)
+    st.image("https://placehold.co/400x100/002B45/FFFFFF?text=Sales+%26+Support+Agent", use_container_width=True)
     st.title("🧠 Sales & Support Intelligence Agent")
     st.info("Your co-pilot for customer, sales, and support insights powered by Neo4j (Graph Intelligence Dashboard).")
     
@@ -267,7 +267,10 @@ if prompt := st.chat_input("Ask about customers, opportunities, or support cases
             except requests.exceptions.RequestException as e:
                 agent_response = f"⚠️ **Request failed:** {str(e)}"
             except (KeyError, IndexError, ValueError) as e:
-                agent_response = f"⚠️ **Parsing error:** {e}\n\nRaw response:\n{response.text}"
+                agent_response = f"⚠️ **Parsing error:** {e}
+
+Raw response:
+{response.text}"
 
             display_agent_response(agent_response)
             st.session_state.messages.append({"role": "assistant", "content": agent_response})
