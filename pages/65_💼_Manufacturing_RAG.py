@@ -1,3 +1,4 @@
+import re
 import streamlit as st
 import requests
 import time
@@ -11,10 +12,15 @@ TITLE        = "Golden Products AI Assistant"
 # ─────────────────────────────────────────────────────────────────────────────
  
 def typewriter(text: str, speed: int):
-    tokens = text.split()
+    # Split into words *while keeping whitespace* (including newlines) as
+    # its own list items, instead of text.split() which discards all
+    # whitespace/newlines. Re-joining with "".join(...) then reproduces the
+    # original text exactly (markdown tables, headers, bullet lists, etc.)
+    # rather than flattening everything onto one line.
+    tokens = re.split(r"(\s+)", text)
     container = st.empty()
     for index in range(len(tokens) + 1):
-        curr_full_text = " ".join(tokens[:index])
+        curr_full_text = "".join(tokens[:index])
         container.markdown(curr_full_text)
         time.sleep(1 / speed)
  
@@ -90,14 +96,16 @@ if prompt:
                 if isinstance(raw, str):
                     answer = raw
                 elif isinstance(raw, dict):
-                    # Try common key names a Snap might use for the answer
-                    # text. Adjust/add keys here once you see the real
-                    # shape via the DEBUG line above.
+                    # Case-insensitive lookup — the pipeline actually returns
+                    # the key as "Response" (capital R), which is why the
+                    # earlier lowercase-only .get() calls all missed it and
+                    # fell through to the str(raw) fallback.
+                    lower_map = {k.lower(): v for k, v in raw.items()}
                     answer = (
-                        raw.get("answer")
-                        or raw.get("response")
-                        or raw.get("text")
-                        or raw.get("content")
+                        lower_map.get("response")
+                        or lower_map.get("answer")
+                        or lower_map.get("text")
+                        or lower_map.get("content")
                         or str(raw)
                     )
                 else:
