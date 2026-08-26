@@ -3,11 +3,11 @@ import requests
 import time
 
 # ── Configuration ────────────────────────────────────────────────────────────
-URL          = "https://emea.snaplogic.com/api/1/rest/slsched/feed/ConnectFasterInc/Nilesh/GenAI/FNT_Retriever_Task"
-BEARER_TOKEN = "S6PxXMLihJ9nW67N2NeW9UfZJvsnZlET"
+URL          = "https://uat.elastic.snaplogic.com/api/1/rest/slsched/feed/snaplogic/Ravi%20Krishnan/MKB/GoldentTech_API"
+BEARER_TOKEN = "12345"
 TIMEOUT      = 120
-PAGE_TITLE   = "FNT Node Health"
-TITLE        = "FNT Node Operational Health Assistant"
+PAGE_TITLE   = "Golden Technologies"
+TITLE        = "Golden Products AI Assistant"
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -25,17 +25,18 @@ st.title(TITLE)
 
 st.markdown(
     """
-    ### FNT Node Operational Health Assistant
-    Ask questions about node health, stability, change history, and operational risk across the network estate.
+    ### Golden Product AI Assistant
+    Ask questions about Golden Products.
 
     **Examples**
-    - Which nodes are currently in a CRITICAL health state and how long have they been that way?
-    - Rank the top 5 most unstable nodes and explain what makes them risky.
-    - Which team has made the most changes across the estate, and to which nodes?
-    - Are there any nodes with high alert counts but still showing OK health status?
-    - Classify all nodes by lifecycle maturity — newly deployed, stable, actively evolving, or aging.
-    - Which nodes have been touched by multiple different teams? Does this correlate with poor health?
-    - Are there any ACTIVE nodes with no change history at all?
+    - What is the UN number and transport hazard class for the 15Ah battery pack, and what special packing requirements apply when shipping it?
+    - What conditions should be avoided with the 15Ah battery to prevent a hazardous reaction, and what are the hazardous decomposition products if it's exposed to those conditions?
+    - What are the steps to install the power fuse on the Buzzaround CarryOn scooter, and what happens if it isn't installed?
+    - In the fuse installation diagram, where does the fuse get moved from and to?
+    - What is the maximum weight capacity and top speed of the GB120?
+    - What is the GB120's operating range with the standard 15 AH battery versus the optional 6.5 AH battery?
+    - What is the rated capacity, energy, and nominal voltage of the 12.5Ah battery pack?
+    - What happens if the internal cell of the 12.5Ah battery pack is compromised, and what routes of exposure to the electrolyte can occur?
     """
 )
 
@@ -49,7 +50,7 @@ for message in st.session_state.node_query_messages:
         st.markdown(message["content"])
 
 # Handle new user input
-prompt = st.chat_input("Ask me anything")
+prompt = st.chat_input("Ask me anything about Golden Products")
 if prompt:
     st.chat_message("user").markdown(prompt)
     st.session_state.node_query_messages.append({"role": "user", "content": prompt})
