@@ -74,8 +74,35 @@ if prompt:
  
         if response.status_code == 200:
             result = response.json()
+ 
+            # DEBUG: uncomment this line to see the raw shape of the API
+            # response while you're diagnosing the extraction below, then
+            # remove/comment it out again once you know the correct shape.
+            # st.write("DEBUG raw result:", result)
+ 
             if result:
-                answer = result[0]
+                # The endpoint may not return a plain string in result[0] —
+                # it can come back as a list item that's itself a dict, or
+                # as a dict/object instead of a list. Handle each shape so
+                # this doesn't crash with AttributeError on .split().
+                raw = result[0] if isinstance(result, list) else result
+ 
+                if isinstance(raw, str):
+                    answer = raw
+                elif isinstance(raw, dict):
+                    # Try common key names a Snap might use for the answer
+                    # text. Adjust/add keys here once you see the real
+                    # shape via the DEBUG line above.
+                    answer = (
+                        raw.get("answer")
+                        or raw.get("response")
+                        or raw.get("text")
+                        or raw.get("content")
+                        or str(raw)
+                    )
+                else:
+                    answer = str(raw)
+ 
                 with st.chat_message("assistant"):
                     typewriter(text=answer, speed=10)
                 st.session_state.node_query_messages.append({"role": "assistant", "content": answer})
@@ -85,3 +112,4 @@ if prompt:
             st.error(f"❌ SnapLogic API error — HTTP {response.status_code}")
  
     st.rerun()
+ 
