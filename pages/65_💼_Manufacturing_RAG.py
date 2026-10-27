@@ -42,6 +42,32 @@ st.markdown(
     - What is the GB120's operating range with the standard 15 AH battery versus the optional 6.5 AH battery?
     - What is the rated capacity, energy, and nominal voltage of the 12.5Ah battery pack?
     - What happens if the internal cell of the 12.5Ah battery pack is compromised, and what routes of exposure to the electrolyte can occur?
+
+    This chat bot can query information in text, tables, and images in the following documents only (in alphabetical order):
+    1. 15Ah Battery MSDS.pdf
+    2. Buzzaround_Carry On_Fuse Install_031720.pdf
+    3. CIN_GB120_2025-03-13.pdf
+    4. GB120 CarryOn Sell Sheet NEW BLACK.pdf
+    5. GB120 CarryOn Sell Sheet.pdf
+    6. GB120 SELL SHEET OLD.pdf
+    7. GC440 Companion Sell Sheet.pdf
+    8. GC440E DASH RESET.pdf
+    9. GC540 Companion Sell Sheet.pdf
+    10. GC540 DASH RESET.pdf
+    11. Golden Companion Product Overview.pdf
+    12. LC26-0163 (Released).pdf
+    13. LC26-0163.xlsx
+    14. LC26-0213 (Released).pdf
+    15. LC26-0213.xlsx
+    16. LC26-0222 (Released).pdf
+    17. LC26-0222.xlsx
+    18. LC26-0230 (Released).pdf
+    19. LC26-0230.xlsx
+    20. LC26-0280 (Released).pdf
+    21. LC26-0280.xlsx
+    22. MSDS with 12.5Ah Battery (1).pdf
+    23. SERVICE GUIDE 08.05.2021.pdf
+    
     """
 )
  
