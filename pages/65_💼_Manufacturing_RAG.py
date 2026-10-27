@@ -43,7 +43,7 @@ st.markdown(
     - What is the rated capacity, energy, and nominal voltage of the 12.5Ah battery pack?
     - What happens if the internal cell of the 12.5Ah battery pack is compromised, and what routes of exposure to the electrolyte can occur?
 
-    This chat bot can query information in text, tables, and images in the following documents only (in alphabetical order):
+    **This chat bot can query information in text, tables, and images in the following documents only (in alphabetical order):**
     1. 15Ah Battery MSDS.pdf
     2. Buzzaround_Carry On_Fuse Install_031720.pdf
     3. CIN_GB120_2025-03-13.pdf
