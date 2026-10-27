@@ -65,7 +65,7 @@ st.markdown(
     19. LC26-0230.xlsx
     20. LC26-0280 (Released).pdf
     21. LC26-0280.xlsx
-    22. MSDS with 12.5Ah Battery (1).pdf
+    22. MSDS with 12.5Ah Battery.pdf
     23. SERVICE GUIDE 08.05.2021.pdf
     
     """
